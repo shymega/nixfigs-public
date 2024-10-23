@@ -72,6 +72,7 @@
   location.provider = "geoclue2";
 
   services = {
+    udisks2.enable = lib.mkDefault false;
     avahi = {
       enable = true;
       nssmdns4 = true;
