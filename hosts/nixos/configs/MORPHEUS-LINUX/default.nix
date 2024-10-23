@@ -107,7 +107,7 @@ in
       grub.enable = lib.mkForce false;
       efi = {
         canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot";
+        efiSysMountPoint = "/boot/efi";
       };
       generationsDir.copyKernels = true;
       timeout = lib.mkForce 6;
