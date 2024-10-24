@@ -263,7 +263,6 @@ in
       steamtinkerlaunch
       wemod-launcher
     ];
-    protontricks.enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
