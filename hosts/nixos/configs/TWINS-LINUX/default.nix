@@ -128,6 +128,29 @@ in
     udev.extraRules = ''
       SUBSYSTEM=="power_supply", KERNEL=="AC", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
       SUBSYSTEM=="power_supply", KERNEL=="AC", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+
+      # workstation - keyboard & mouse suspension.
+      action=="add|change", subsystem=="usb", attr{idvendor}=="05ac", attr{idproduct}=="024f", attr{power/autosuspend}="-1"
+      action=="add|change", subsystem=="usb", attr{idvendor}=="1bcf", attr{idproduct}=="0005", attr{power/autosuspend}="-1"
+
+      # workstation - dock targets.
+      subsystem=="usb", action=="add|change", attr{idvendor}=="0b95", attr{idproduct}=="1790", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
+      subsystem=="usb", action=="add|change", attr{idvendor}=="17ef", attr{idproduct}=="3060", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
+
+      # kvm switch target.
+      subsystem=="usb", action=="add|change|remove", attr{idvendor}=="1bcf", attr{idproduct}=="0005",  symlink+="kvm-active", tag+="systemd"
+
+      # rename network interface.
+      subsystem=="net", action=="add|change", drivers=="?*", env{devtype}=="wlan", kernel=="wlan*", name="wlan0"
+
+      # my personal iphone.
+      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="12a8", kernel=="eth*", name="iphone0"
+
+      # my personal op6t.
+      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="9024", kernel=="usb*", name="android0"
+
+      # docking station ethernet - rename.
+      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="1790", kernel=="eth*", name="docketh0"
     '';
     auto-cpufreq.enable = false;
     thermald.enable = true;

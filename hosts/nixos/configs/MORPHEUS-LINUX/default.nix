@@ -236,38 +236,38 @@ in
     thermald.enable = true;
     udev = {
       packages = with pkgs; [ gnome.gnome-settings-daemon ];
-      extraRules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+      extrarules = ''
+        subsystem=="power_supply", kernel=="ADP1", attr{online}=="0", run+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        subsystem=="power_supply", kernel=="ADP1", attr{online}=="1", run+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
-        # Workstation - keyboard & mouse suspension.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        # workstation - keyboard & mouse suspension.
+        action=="add|change", subsystem=="usb", attr{idvendor}=="05ac", attr{idproduct}=="024f", attr{power/autosuspend}="-1"
+        action=="add|change", subsystem=="usb", attr{idvendor}=="1bcf", attr{idproduct}=="0005", attr{power/autosuspend}="-1"
 
-        # 4G LTE modem.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="2c7c", ATTR{idProduct}=="0125", ATTR{power/autosuspend}="-1"
+        # 4g lte modem.
+        action=="add|change", subsystem=="usb", attr{idvendor}=="2c7c", attr{idproduct}=="0125", attr{power/autosuspend}="-1"
 
-        # Workstation - dock targets.
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="0b95", ATTR{idProduct}=="1790", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3060", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
+        # workstation - dock targets.
+        subsystem=="usb", action=="add|change", attr{idvendor}=="0b95", attr{idproduct}=="1790", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
+        subsystem=="usb", action=="add|change", attr{idvendor}=="17ef", attr{idproduct}=="3060", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
 
-        # KVM switch target.
-        SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005",  SYMLINK+="kvm-active", TAG+="systemd"
+        # kvm switch target.
+        subsystem=="usb", action=="add|change|remove", attr{idvendor}=="1bcf", attr{idproduct}=="0005",  symlink+="kvm-active", tag+="systemd"
 
-        # Rename network interface.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
+        # rename network interface.
+        subsystem=="net", action=="add|change", drivers=="?*", env{devtype}=="wlan", kernel=="wlan*", name="wlan0"
 
-        # My personal iPhone.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
+        # my personal iphone.
+        subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="12a8", kernel=="eth*", name="iphone0"
 
-        # My personal OP6T.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
+        # my personal op6t.
+        subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="9024", kernel=="usb*", name="android0"
 
-        # Docking station Ethernet - rename.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="1790", KERNEL=="eth*", NAME="docketh0"
+        # docking station ethernet - rename.
+        subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="1790", kernel=="eth*", name="docketh0"
 
-        # WM2 I2C fixes.
-        SUBSYSTEM=="i2c", KERNEL=="i2c-GXTP7385:00", ATTR{power/wakeup}="disabled"
+        # wm2 i2c fixes.
+        subsystem=="i2c", kernel=="i2c-gxtp7385:00", attr{power/wakeup}="disabled"
       '';
     };
     ofono = {
