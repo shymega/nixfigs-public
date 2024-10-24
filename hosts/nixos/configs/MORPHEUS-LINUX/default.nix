@@ -174,7 +174,7 @@ in
       extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
     };
     amdgpu = {
-      initrd.enable = truee;
+      initrd.enable = true;
       amdvlk = {
         enable = true;
         support32Bit.enable = true;
