@@ -151,6 +151,7 @@ in
       extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
     };
     amdgpu = {
+      initrd.enable = true;
       amdvlk = {
         enable = true;
         support32Bit.enable = true;
@@ -162,7 +163,7 @@ in
 
   services.ollama = {
     enable = true;
-    package = pkgs.unstable.ollama;
+    package = pkgs.ollama;
     acceleration = "rocm";
     sandbox = false;
     models = "/data/AI/LLMs/Ollama/Models/";
@@ -231,7 +232,11 @@ in
   programs.steam = {
     enable = true;
     gamescopeSession.enable = false;
+    extest.enable = true;
     package = pkgs.steam.override {
+      extraEnv = {
+        LIBVA_DRIVER_NAME = "radeonsi";
+      };
       extraPkgs =
         pkgs: with pkgs; [
           deckcheatz
@@ -246,7 +251,19 @@ in
           wineWowPackages.stable
           winetricks
         ];
+      extraLibraries = p: with p; [ (lib.getLib networkmanager) ];
     };
+    extraPackages = with pkgs; [
+      deckcheatz
+      protonup-qt
+      python3Full
+      python3Packages.pip
+      python3Packages.virtualenv
+      steamcmd
+      steamtinkerlaunch
+      wemod-launcher
+    ];
+    protontricks.enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
