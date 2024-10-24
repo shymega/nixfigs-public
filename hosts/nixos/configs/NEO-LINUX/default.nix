@@ -232,10 +232,9 @@ in
   programs.steam = {
     enable = true;
     gamescopeSession.enable = false;
-    extest.enable = true;
     package = pkgs.steam.override {
       extraEnv = {
-        LIBVA_DRIVER_NAME = "radeonsi";
+        LIBVA_DRIVER_NAME = "vdpau";
       };
       extraPkgs =
         pkgs: with pkgs; [
