@@ -130,27 +130,27 @@ in
       SUBSYSTEM=="power_supply", KERNEL=="AC", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
       # workstation - keyboard & mouse suspension.
-      action=="add|change", subsystem=="usb", attr{idvendor}=="05ac", attr{idproduct}=="024f", attr{power/autosuspend}="-1"
-      action=="add|change", subsystem=="usb", attr{idvendor}=="1bcf", attr{idproduct}=="0005", attr{power/autosuspend}="-1"
+      ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
+      ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
 
       # workstation - dock targets.
-      subsystem=="usb", action=="add|change", attr{idvendor}=="0b95", attr{idproduct}=="1790", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
-      subsystem=="usb", action=="add|change", attr{idvendor}=="17ef", attr{idproduct}=="3060", symlink+="docked", symlink+="home-office-docked", tag+="systemd"
+      SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="0b95", ATTR{idProduct}=="1790", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
+      SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3060", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
 
       # kvm switch target.
-      subsystem=="usb", action=="add|change|remove", attr{idvendor}=="1bcf", attr{idproduct}=="0005",  symlink+="kvm-active", tag+="systemd"
+      SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005",  SYMLINK+="kvm-active", TAG+="systemd"
 
       # rename network interface.
-      subsystem=="net", action=="add|change", drivers=="?*", env{devtype}=="wlan", kernel=="wlan*", name="wlan0"
+      SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
 
       # my personal iphone.
-      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="12a8", kernel=="eth*", name="iphone0"
+      SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
 
       # my personal op6t.
-      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="9024", kernel=="usb*", name="android0"
+      SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
       # docking station ethernet - rename.
-      subsystem=="net", action=="add|change", drivers=="?*", env{id_model_id}=="1790", kernel=="eth*", name="docketh0"
+      SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="1790", KERNEL=="eth*", NAME="docketh0"
     '';
     auto-cpufreq.enable = false;
     thermald.enable = true;
