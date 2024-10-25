@@ -195,6 +195,7 @@ in
   ];
 
   services = {
+    fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
       enable = true;
@@ -219,7 +220,6 @@ in
     ollama = {
       enable = true;
       package = pkgs.ollama;
-      sandbox = false;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
       environmentVariables = {

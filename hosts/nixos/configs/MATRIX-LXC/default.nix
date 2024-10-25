@@ -35,7 +35,7 @@
   services = {
     cloudflared = {
       enable = true;
-      package = pkgs.unstable.cloudflared;
+      package = pkgs.cloudflared;
       tunnels = {
         "b487d2dd-b67d-4ee6-a610-9c1c0486de4b" = {
           ingress = {
