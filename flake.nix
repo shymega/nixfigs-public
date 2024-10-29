@@ -91,13 +91,15 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixpkgs-shymega.url = "github:shymega/nixpkgs/shymega/staging";
+    nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
     nixfigs-secrets.url = "github:shymega/nixfigs-secrets";
     nixfigs-networks.url = "github:shymega/nixfigs-networks";
     nixfigs-homes.url = "github:shymega/nixfigs-homes";
     nixfigs-pkgs.url = "github:shymega/nixfigs-pkgs";
     nixfigs-helpers.url = "github:shymega/nixfigs-helpers";
     nixfigs-common.url = "github:shymega/nixfigs-common";
+    nixfigs-virtual-private.url = "github:shymega/nixfigs-virtual-private";
+    nixfigs-virtual.url = "github:shymega/nixfigs-virtual";
     flake-registry = {
       url = "github:NixOS/flake-registry";
       flake = false;
@@ -182,5 +184,11 @@
     shypkgs-private.url = "github:shymega/shypkgs-private";
     shypkgs-public.url = "github:shymega/shypkgs-public";
     _1password-shell-plugins.url = "github:1Password/shell-plugins";
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
+    nur-xddxdd = {
+      url = "github:xddxdd/nur-packages";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    ucodenix.url = "github:e-tho/ucodenix";
   };
 }
