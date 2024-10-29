@@ -101,7 +101,6 @@ in
       inputs.hardware.nixosModules.common-pc
     ];
     extraModules = [
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
       { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
     ];
@@ -121,6 +120,7 @@ in
     remoteBuild = true;
     deployable = false;
     monolithConfig = false;
+    embedHm = true;
   };
 
   MORPHEUS-LINUX = mkHost rec {
@@ -131,7 +131,6 @@ in
     embedHm = true;
     hardwareModules = [ inputs.hardware.nixosModules.gpd-win-max-2-2023 ];
     extraModules = [
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
       { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
     ];
@@ -150,6 +149,7 @@ in
     remoteBuild = true;
     deployable = false;
     monolithConfig = false;
+    embedHm = true;
   };
 
   TWINS-LINUX = mkHost rec {
@@ -159,13 +159,13 @@ in
     hostPlatform = "x86_64-linux";
     hardwareModules = [ inputs.hardware.nixosModules.lenovo-thinkpad-x270 ];
     extraModules = [
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
       { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
     ];
     pubkey = "";
     remoteBuild = true;
     deployable = false;
+    embedHm = true;
   };
 
   TWINS-WSL = mkHost {
@@ -178,6 +178,7 @@ in
     remoteBuild = true;
     deployable = false;
     monolithConfig = false;
+    embedHm = true;
   };
 
   SMITH-LINUX = mkHost rec {
