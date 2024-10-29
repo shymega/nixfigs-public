@@ -144,8 +144,10 @@
 
   networking = {
     timeServers = lib.mkForce [ "uk.pool.ntp.org" ];
+
     firewall = {
       enable = true;
+      interfaces."podman+".allowedUDPPorts = [ 53 ];
       allowedTCPPortRanges = [
         {
           from = 1714;
@@ -182,6 +184,16 @@
   };
 
   virtualisation = {
+
+    podman = {
+      autoPrune.enable = true;
+      defaultNetwork.settings = {
+        # Required for container networking to be able to use names.
+        dns_enabled = true;
+      };
+    };
+
+    oci-containers.backend = "docker";
     spiceUSBRedirection.enable = true;
 
     waydroid.enable = true;
