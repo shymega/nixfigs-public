@@ -91,7 +91,7 @@ in
 {
   NEO-LINUX = mkHost rec {
     type = "nixos";
-    address = "NEO-LINUX.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "NEO-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-LINUX";
     hostPlatform = "x86_64-linux";
     hardwareModules = [
@@ -110,9 +110,31 @@ in
     deployable = false;
   };
 
+  NEO-JOVIAN = mkHost {
+    type = "nixos";
+    address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+    hostname = "NEO-JOVIAN";
+    hostPlatform = "x86_64-linux";
+    embedHm = false;
+    monolithConfig = true;
+    hostRoles = [ "gaming" ];
+    extraModules = [
+      inputs.hardware.nixosModules.common-cpu-amd
+      inputs.hardware.nixosModules.common-gpu-amd
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc
+      inputs.chaotic.nixosModules.default
+      inputs.lanzaboote.nixosModules.lanzaboote
+    ];
+    pubkey = null;
+    remoteBuild = true;
+    deployable = false;
+    embedHm = true;
+  };
+
   NEO-WSL = mkHost {
     type = "nixos";
-    address = "NEO-WSL.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "NEO-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-WSL";
     hostRoles = [ "minimal" ];
     hostPlatform = "x86_64-linux";
@@ -125,7 +147,7 @@ in
 
   MORPHEUS-LINUX = mkHost rec {
     type = "nixos";
-    address = "MORPHEUS-LINUX.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "MORPHEUS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-LINUX";
     hostPlatform = "x86_64-linux";
     embedHm = true;
@@ -139,9 +161,32 @@ in
     deployable = true;
   };
 
+  MORPHEUS-JOVIAN = mkHost {
+    type = "nixos";
+    address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+    hostname = "MORPHEUS-JOVIAN";
+    hostPlatform = "x86_64-linux";
+    embedHm = false;
+    monolithConfig = true;
+    hostRoles = [ "gaming" ];
+    hardwareModules = [ inputs.hardware.nixosModules.gpd-win-max-2-2023 ];
+    extraModules = [
+      inputs.hardware.nixosModules.common-cpu-amd
+      inputs.hardware.nixosModules.common-gpu-amd
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc
+      inputs.chaotic.nixosModules.default
+      inputs.lanzaboote.nixosModules.lanzaboote
+    ];
+    pubkey = null;
+    remoteBuild = true;
+    deployable = false;
+    embedHm = true;
+  };
+
   MORPHEUS-WSL = mkHost {
     type = "nixos";
-    address = "MORPHEUS-WSL.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "MORPHEUS-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-WSL";
     hostRoles = [ "minimal" ];
     hostPlatform = "x86_64-linux";
@@ -152,9 +197,31 @@ in
     embedHm = true;
   };
 
+  TRINITY-JOVIAN = mkHost {
+    type = "nixos";
+    address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+    hostname = "TRINITY-JOVIAN";
+    hostPlatform = "x86_64-linux";
+    embedHm = false;
+    monolithConfig = true;
+    hostRoles = [ "gaming" ];
+    extraModules = [
+      inputs.hardware.nixosModules.common-cpu-amd
+      inputs.hardware.nixosModules.common-gpu-amd
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc
+      inputs.chaotic.nixosModules.default
+      inputs.lanzaboote.nixosModules.lanzaboote
+    ];
+    pubkey = null;
+    remoteBuild = true;
+    deployable = false;
+    embedHm = true;
+  };
+
   TWINS-LINUX = mkHost rec {
     type = "nixos";
-    address = "TWINS-LINUX.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "TWINS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TWINS-LINUX";
     hostPlatform = "x86_64-linux";
     hardwareModules = [ inputs.hardware.nixosModules.lenovo-thinkpad-x270 ];
@@ -170,7 +237,7 @@ in
 
   TWINS-WSL = mkHost {
     type = "nixos";
-    address = "TWINS-WSL.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "TWINS-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TWINS-WSL";
     hostRoles = [ "minimal" ];
     hostPlatform = "x86_64-linux";
@@ -183,7 +250,7 @@ in
 
   SMITH-LINUX = mkHost rec {
     type = "nixos";
-    address = "SMITH-LINUX.dzr.devices.10bsk.rnet.rodriguez.org.uk";
+    address = "SMITH-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "SMITH-LINUX";
     hostPlatform = "aarch64-linux";
     monolithConfig = false;
