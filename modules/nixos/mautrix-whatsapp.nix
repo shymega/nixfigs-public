@@ -1,20 +1,18 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   lib,
   config,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.services.mautrix-whatsapp;
   dataDir = "/var/lib/mautrix-whatsapp";
   registrationFile = "${dataDir}/whatsapp-registration.yaml";
   settingsFile = "${dataDir}/config.json";
   settingsFileUnsubstituted = settingsFormat.generate "mautrix-whatsapp-config-unsubstituted.json" cfg.settings;
-  settingsFormat = pkgs.formats.json { };
+  settingsFormat = pkgs.formats.json {};
   appservicePort = 29318;
 
   mkDefaults = lib.mapAttrsRecursive (_: v: lib.mkDefault v);
@@ -34,8 +32,8 @@ let
     bridge = {
       username_template = "whatsapp_{{.}}";
       displayname_template = "{{if .BusinessName}}{{.BusinessName}}{{else if .PushName}}{{.PushName}}{{else}}{{.JID}}{{end}} (WA)";
-      double_puppet_server_map = { };
-      login_shared_secret_map = { };
+      double_puppet_server_map = {};
+      login_shared_secret_map = {};
       command_prefix = "!wa";
       permissions."*" = "relay";
       relay.enabled = true;
@@ -49,9 +47,7 @@ let
       };
     };
   };
-
-in
-{
+in {
   options.services.mautrix-whatsapp = {
     enable = lib.mkEnableOption "mautrix-whatsapp, a puppeting/relaybot bridge between Matrix and WhatsApp";
 
@@ -127,7 +123,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-
     users.users.mautrix-whatsapp = {
       isSystemUser = true;
       group = "mautrix-whatsapp";
@@ -135,29 +130,29 @@ in
       description = "Mautrix-WhatsApp bridge user";
     };
 
-    users.groups.mautrix-whatsapp = { };
+    users.groups.mautrix-whatsapp = {};
 
     services.matrix-synapse = lib.mkIf cfg.registerToSynapse {
-      settings.app_service_config_files = [ registrationFile ];
+      settings.app_service_config_files = [registrationFile];
     };
     systemd.services.matrix-synapse = lib.mkIf cfg.registerToSynapse {
-      serviceConfig.SupplementaryGroups = [ "mautrix-whatsapp" ];
+      serviceConfig.SupplementaryGroups = ["mautrix-whatsapp"];
     };
 
     services.mautrix-whatsapp.settings = lib.mkMerge (
       map mkDefaults [
         defaultConfig
         # Note: this is defined here to avoid the docs depending on `config`
-        { homeserver.domain = config.services.matrix-synapse.settings.server_name; }
+        {homeserver.domain = config.services.matrix-synapse.settings.server_name;}
       ]
     );
 
     systemd.services.mautrix-whatsapp = {
       description = "Mautrix-WhatsApp Service - A WhatsApp bridge for Matrix";
 
-      wantedBy = [ "multi-user.target" ];
-      wants = [ "network-online.target" ] ++ cfg.serviceDependencies;
-      after = [ "network-online.target" ] ++ cfg.serviceDependencies;
+      wantedBy = ["multi-user.target"];
+      wants = ["network-online.target"] ++ cfg.serviceDependencies;
+      after = ["network-online.target"] ++ cfg.serviceDependencies;
 
       preStart = ''
         # substitute the settings file by environment variables
@@ -224,12 +219,12 @@ in
         RestrictSUIDSGID = true;
         SystemCallArchitectures = "native";
         SystemCallErrorNumber = "EPERM";
-        SystemCallFilter = [ "@system-service" ];
+        SystemCallFilter = ["@system-service"];
         Type = "simple";
         UMask = 27;
       };
-      restartTriggers = [ settingsFileUnsubstituted ];
+      restartTriggers = [settingsFileUnsubstituted];
     };
   };
-  meta.maintainers = with lib.maintainers; [ frederictobiasc ];
+  meta.maintainers = with lib.maintainers; [frederictobiasc];
 }
