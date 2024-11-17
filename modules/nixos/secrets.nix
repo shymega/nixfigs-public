@@ -1,9 +1,11 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ config, pkgs, ... }:
 {
+  config,
+  pkgs,
+  ...
+}: {
   system.activationScripts = {
     "zerotier-networks-secret".text = ''
       secret="${config.age.secrets.zerotier_networks.path}"

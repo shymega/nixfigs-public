@@ -1,53 +1,53 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ self, inputs, ... }:
-let
-  genPkgs =
-    system:
+{
+  self,
+  inputs,
+  ...
+}: let
+  genPkgs = system:
     import inputs.nixpkgs {
       inherit system;
       overlays = builtins.attrValues self.overlays;
       config = self.nixpkgs-config;
     };
   inherit (inputs.nixpkgs.lib.strings) hasSuffix;
-  mkHost =
-    {
-      type ? "nixos",
-      address ? null,
-      hostname ? null,
-      hostPlatform ? "x86_64-linux",
-      username ? "dzrodriguez",
-      baseModules ? [
-        {
-          environment.systemPackages = [
-            inputs.agenix.packages.${hostPlatform}.default
-            inputs.nix-alien.packages.${hostPlatform}.nix-alien
-          ];
-        }
-        (import inputs.nixfigs-common.common.core {
-          inherit inputs;
-          inherit hostname;
-          pkgs = genPkgs hostPlatform;
-          inherit (inputs.nixpkgs) lib;
-        })
-        inputs.nixfigs-secrets.system
-      ],
-      monolithConfig ? true,
-      overlays ? [ ],
-      hostRoles ? [ "workstation" ],
-      hardwareModules ? [ ],
-      extraModules ? [ ],
-      pubkey ? null,
-      remoteBuild ? true,
-      deployable ? false,
-      embedHm ? false,
-    }:
-    if type == "nixos" then
-      assert address != null;
-      assert (hasSuffix "linux" hostPlatform);
+  mkHost = {
+    type ? "nixos",
+    address ? null,
+    hostname ? null,
+    hostPlatform ? "x86_64-linux",
+    username ? "dzrodriguez",
+    baseModules ? [
       {
+        environment.systemPackages = [
+          inputs.agenix.packages.${hostPlatform}.default
+          inputs.nix-alien.packages.${hostPlatform}.nix-alien
+        ];
+      }
+      (import inputs.nixfigs-common.common.core {
+        inherit inputs;
+        inherit hostname;
+        pkgs = genPkgs hostPlatform;
+        inherit (inputs.nixpkgs) lib;
+      })
+      inputs.nixfigs-secrets.system
+    ],
+    monolithConfig ? true,
+    overlays ? [],
+    hostRoles ? ["workstation"],
+    hardwareModules ? [],
+    extraModules ? [],
+    pubkey ? null,
+    remoteBuild ? true,
+    deployable ? false,
+    embedHm ? false,
+  }:
+    if type == "nixos"
+    then
+      assert address != null;
+      assert (hasSuffix "linux" hostPlatform); {
         inherit
           address
           baseModules
@@ -66,10 +66,10 @@ let
           username
           ;
       }
-    else if type == "darwin" then
+    else if type == "darwin"
+    then
       assert address != null;
-      assert (hasSuffix "darwin" hostPlatform);
-      {
+      assert (hasSuffix "darwin" hostPlatform); {
         inherit
           address
           baseModules
@@ -85,10 +85,8 @@ let
           username
           ;
       }
-    else
-      throw "unknown host type '${type}'";
-in
-{
+    else throw "unknown host type '${type}'";
+in {
   NEO-LINUX = mkHost rec {
     type = "nixos";
     address = "NEO-LINUX.dzr.devices.rnet.rodriguez.org.uk";
@@ -102,7 +100,7 @@ in
     ];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
-      { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
     embedHm = true;
@@ -115,9 +113,8 @@ in
     address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
-    hostRoles = [ "gaming" ];
+    hostRoles = ["gaming"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -136,7 +133,7 @@ in
     type = "nixos";
     address = "NEO-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-WSL";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     hostPlatform = "x86_64-linux";
     pubkey = "";
     remoteBuild = true;
@@ -151,10 +148,10 @@ in
     hostname = "MORPHEUS-LINUX";
     hostPlatform = "x86_64-linux";
     embedHm = true;
-    hardwareModules = [ inputs.hardware.nixosModules.gpd-win-max-2-2023 ];
+    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
-      { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
     remoteBuild = true;
@@ -166,10 +163,9 @@ in
     address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
-    hostRoles = [ "gaming" ];
-    hardwareModules = [ inputs.hardware.nixosModules.gpd-win-max-2-2023 ];
+    hostRoles = ["gaming"];
+    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -188,7 +184,7 @@ in
     type = "nixos";
     address = "MORPHEUS-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-WSL";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     hostPlatform = "x86_64-linux";
     pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
     remoteBuild = true;
@@ -202,9 +198,8 @@ in
     address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TRINITY-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
-    hostRoles = [ "gaming" ];
+    hostRoles = ["gaming"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -224,10 +219,10 @@ in
     address = "TWINS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TWINS-LINUX";
     hostPlatform = "x86_64-linux";
-    hardwareModules = [ inputs.hardware.nixosModules.lenovo-thinkpad-x270 ];
+    hardwareModules = [inputs.hardware.nixosModules.lenovo-thinkpad-x270];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
-      { environment.systemPackages = [ inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl ]; }
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
     remoteBuild = true;
@@ -239,7 +234,7 @@ in
     type = "nixos";
     address = "TWINS-WSL.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TWINS-WSL";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     hostPlatform = "x86_64-linux";
     pubkey = "";
     remoteBuild = true;
@@ -254,8 +249,8 @@ in
     hostname = "SMITH-LINUX";
     hostPlatform = "aarch64-linux";
     monolithConfig = false;
-    hostRoles = [ "minimal" ];
-    hardwareModules = [ inputs.hardware.nixosModules.raspberry-pi-4 ];
+    hostRoles = ["minimal"];
+    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
       ../nix/24.05-compat.nix
       {
@@ -277,7 +272,7 @@ in
     hostname = "MATRIX-LXC";
     username = "dzrodriguez";
     monolithConfig = false;
-    hostRoles = [ "server" ];
+    hostRoles = ["server"];
     hostPlatform = "x86_64-linux";
     extraModules = [
       inputs.srvos.nixosModules.server
@@ -302,7 +297,7 @@ in
     ];
     monolithConfig = false;
     hostPlatform = "x86_64-linux";
-    hostRoles = [ "server" ];
+    hostRoles = ["server"];
     pubkey = "";
     remoteBuild = true;
     deployable = false;
@@ -319,7 +314,7 @@ in
     ];
     monolithConfig = false;
     hostPlatform = "x86_64-linux";
-    hostRoles = [ "server" ];
+    hostRoles = ["server"];
     pubkey = "";
     remoteBuild = true;
     deployable = false;
@@ -337,8 +332,8 @@ in
     remoteBuild = true;
     deployable = false;
     monolithConfig = false;
-    hostRoles = [ "minimal" ];
-    hardwareModules = [ inputs.hardware.nixosModules.raspberry-pi-4 ];
+    hostRoles = ["minimal"];
+    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
       ../nix/24.05-compat.nix
       {
@@ -360,11 +355,11 @@ in
     username = "dzrodriguez";
     hostPlatform = "aarch64-linux";
     hostname = "CLOCKWORK-DT-CM4";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     remoteBuild = true;
     deployable = false;
     monolithConfig = false;
-    hardwareModules = [ inputs.hardware.nixosModules.raspberry-pi-4 ];
+    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
       ../nix/24.05-compat.nix
       {
@@ -384,11 +379,11 @@ in
     username = "dzrodriguez";
     hostPlatform = "x86_64-linux";
     hostname = "INSTALLER-SERVER-ISO-X86-64";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     remoteBuild = false;
     deployable = false;
     monolithConfig = false;
-    baseModules = [ ];
+    baseModules = [];
     extraModules = [
       inputs.srvos.nixosModules.server
       inputs.srvos.nixosModules.mixins-terminfo
@@ -405,11 +400,11 @@ in
     username = "dzrodriguez";
     hostPlatform = "x86_64-linux";
     hostname = "INSTALLER-WORKSTATION-ISO-X86-64";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     remoteBuild = false;
     deployable = false;
     monolithConfig = false;
-    baseModules = [ ];
+    baseModules = [];
     extraModules = [
       inputs.srvos.nixosModules.server
       inputs.srvos.nixosModules.mixins-terminfo
@@ -427,11 +422,11 @@ in
     username = "dzrodriguez";
     hostPlatform = "aarch64-linux";
     hostname = "INSTALLER-SERVER-ISO-ARM";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     remoteBuild = false;
     deployable = false;
     monolithConfig = false;
-    baseModules = [ ];
+    baseModules = [];
     extraModules = [
       inputs.srvos.nixosModules.server
       inputs.srvos.nixosModules.mixins-terminfo
@@ -448,11 +443,11 @@ in
     username = "dzrodriguez";
     hostPlatform = "aarch64-linux";
     hostname = "INSTALLER-WORKSTATION-ISO-ARM";
-    hostRoles = [ "minimal" ];
+    hostRoles = ["minimal"];
     remoteBuild = false;
     deployable = false;
     monolithConfig = false;
-    baseModules = [ ];
+    baseModules = [];
     extraModules = [
       inputs.srvos.nixosModules.server
       inputs.srvos.nixosModules.mixins-terminfo

@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ modulesPath, lib, ... }:
 {
-  imports = [ "${toString modulesPath}/virtualisation/docker-image.nix" ];
+  modulesPath,
+  lib,
+  ...
+}: {
+  imports = ["${toString modulesPath}/virtualisation/docker-image.nix"];
 
   boot = {
     isContainer = true;
@@ -24,5 +26,4 @@
   users.allowNoPasswordLogin = true;
 
   system.stateVersion = "24.05";
-
 }
