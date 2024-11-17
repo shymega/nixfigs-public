@@ -1,20 +1,18 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   lib,
   config,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.services.mautrix-slack;
   dataDir = "/var/lib/mautrix-slack";
   registrationFile = "${dataDir}/slack-registration.yaml";
   settingsFile = "${dataDir}/config.yaml";
   settingsFileUnsubstituted = settingsFormat.generate "mautrix-slack-config-unsubstituted.json" cfg.settings;
-  settingsFormat = pkgs.formats.json { };
+  settingsFormat = pkgs.formats.json {};
   appservicePort = 29335;
 
   # to be used with a list of lib.mkIf values
@@ -40,8 +38,8 @@ let
       displayname_template = "{{.RealName}} (S)";
       bot_displayname_template = "{{.Name}} (bot)";
       channel_name_template = "#{{.Name}}";
-      double_puppet_server_map = { };
-      login_shared_secret_map = { };
+      double_puppet_server_map = {};
+      login_shared_secret_map = {};
       command_prefix = "!slack";
       permissions."*" = "relay";
       relay.enabled = true;
@@ -55,8 +53,7 @@ let
       };
     };
   };
-in
-{
+in {
   options.services.mautrix-slack = {
     enable = lib.mkEnableOption "mautrix-slack, a Matrix-Signal puppeting bridge.";
 
@@ -150,19 +147,18 @@ in
       description = "Mautrix-Signal bridge user";
     };
 
-    users.groups.mautrix-slack = { };
+    users.groups.mautrix-slack = {};
 
     services.matrix-synapse = lib.mkIf cfg.registerToSynapse {
-      settings.app_service_config_files = [ registrationFile ];
+      settings.app_service_config_files = [registrationFile];
     };
     systemd.services.matrix-synapse = lib.mkIf cfg.registerToSynapse {
-      serviceConfig.SupplementaryGroups = [ "mautrix-slack" ];
+      serviceConfig.SupplementaryGroups = ["mautrix-slack"];
     };
 
     # Note: this is defined here to avoid the docs depending on `config`
     services.mautrix-slack.settings.homeserver = optOneOf (
-      with config.services;
-      [
+      with config.services; [
         (lib.mkIf matrix-synapse.enable (mkDefaults {
           domain = matrix-synapse.settings.server_name;
         }))
@@ -176,11 +172,11 @@ in
     systemd.services.mautrix-slack = {
       description = "mautrix-slack, a Matrix-Signal puppeting bridge.";
 
-      wantedBy = [ "multi-user.target" ];
-      wants = [ "network-online.target" ] ++ cfg.serviceDependencies;
-      after = [ "network-online.target" ] ++ cfg.serviceDependencies;
+      wantedBy = ["multi-user.target"];
+      wants = ["network-online.target"] ++ cfg.serviceDependencies;
+      after = ["network-online.target"] ++ cfg.serviceDependencies;
       # ffmpeg is required for conversion of voice messages
-      path = [ pkgs.ffmpeg-headless ];
+      path = [pkgs.ffmpeg-headless];
 
       preStart = ''
         # substitute the settings file by environment variables
@@ -231,12 +227,12 @@ in
         RestrictSUIDSGID = true;
         SystemCallArchitectures = "native";
         SystemCallErrorNumber = "EPERM";
-        SystemCallFilter = [ "@system-service" ];
+        SystemCallFilter = ["@system-service"];
         Type = "simple";
         UMask = 27;
       };
-      restartTriggers = [ settingsFileUnsubstituted ];
+      restartTriggers = [settingsFileUnsubstituted];
     };
   };
-  meta.maintainers = with lib.maintainers; [ kittywitch ];
+  meta.maintainers = with lib.maintainers; [kittywitch];
 }
