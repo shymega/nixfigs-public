@@ -1,18 +1,15 @@
 # SPDX-FileCopyrightText: 2024 Various Authors <generic@example.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   pkgs,
   inputs,
   config,
   ...
-}:
-let
+}: let
   fqdn = "${config.networking.hostName}.${config.networking.domain}";
   baseUrl = "https://${fqdn}";
-in
-{
+in {
   disabledModules = [
     "services/matrix/synapse.nix"
     "services/matrix/mautrix-whatsapp.nix"
@@ -27,13 +24,14 @@ in
   ];
   nixpkgs.overlays = [
     (_final: _prev: {
-      inherit (inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system})
+      inherit
+        (inputs.nixpkgs-master.legacyPackages.${pkgs.stdenv.hostPlatform.system})
         matrix-synapse-unwrapped
         ;
     })
   ];
 
-  users.users."matrix-synapse".extraGroups = [ "users" ];
+  users.users."matrix-synapse".extraGroups = ["users"];
   services = {
     matrix-synapse = {
       enable = true;
@@ -96,7 +94,7 @@ in
         listeners = [
           {
             port = 8008;
-            bind_addresses = [ "127.0.0.1" ];
+            bind_addresses = ["127.0.0.1"];
             type = "http";
             tls = false;
             x_forwarded = true;
@@ -115,11 +113,11 @@ in
             type = "metrics";
             tls = false;
             x_forwarded = true;
-            bind_addresses = [ "127.0.0.1" ];
+            bind_addresses = ["127.0.0.1"];
             resources = [
               {
                 compress = false;
-                names = [ "metrics" ];
+                names = ["metrics"];
               }
             ];
           }
@@ -152,7 +150,7 @@ in
           disable_existing_loggers: True
         '';
       };
-      extraConfigFiles = [ config.age.secrets.synapse_secret.path ];
+      extraConfigFiles = [config.age.secrets.synapse_secret.path];
     };
 
     matrix-sliding-sync = {
@@ -192,8 +190,8 @@ in
         bridge = {
           command_prefix = "!wa";
           displayname_template = "{{if .BusinessName}}{{.BusinessName}}{{else if .PushName}}{{.PushName}}{{else}}{{.JID}}{{end}} (WA)";
-          double_puppet_server_map = { };
-          login_shared_secret_map = { };
+          double_puppet_server_map = {};
+          login_shared_secret_map = {};
           permissions = {
             "@shymega:mtx.shymega.org.uk" = "admin";
           };
@@ -251,7 +249,6 @@ in
           permissions = {
             "@shymega:mtx.shymega.org.uk" = "admin";
           };
-
         };
       };
     };
@@ -268,7 +265,6 @@ in
         database = {
           type = "postgres";
           uri = "postgres://matrix:matrix4me@localhost/mautrix_telegram?sslmode=disable";
-
         };
 
         appservice = rec {
@@ -281,14 +277,12 @@ in
           allow = true;
           default = true;
           require = true;
-
         };
 
         bridge = {
           permissions = {
             "@shymega:mtx.shymega.org.uk" = "admin";
           };
-
         };
       };
     };
@@ -313,7 +307,6 @@ in
             port = 29314;
             address = "http://localhost:${toString port}";
             hostname = "127.0.0.1";
-
           };
           encryption = {
             allow = true;
@@ -342,7 +335,6 @@ in
           database = {
             type = "postgres";
             uri = "postgres://matrix:matrix4me@localhost/mautrix_meta_instagram?sslmode=disable";
-
           };
 
           appservice = rec {
@@ -402,7 +394,6 @@ in
             permissions = {
               "@shymega:mtx.shymega.org.uk" = "admin";
             };
-
           };
 
           meta.mode = "messenger";

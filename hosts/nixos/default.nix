@@ -1,37 +1,35 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ inputs, self, ... }:
-let
-  genPkgs =
-    system: overlays:
+{
+  inputs,
+  self,
+  ...
+}: let
+  genPkgs = system: overlays:
     import inputs.nixpkgs {
       inherit system;
       overlays = builtins.attrValues self.overlays ++ overlays;
       config = self.nixpkgs-config;
     };
-  genConfiguration =
-    hostname:
-    {
-      address,
-      hostPlatform,
-      type,
-      extraModules,
-      username,
-      deployable,
-      monolithConfig,
-      overlays,
-      embedHm,
-      hostRoles,
-      hardwareModules,
-      baseModules,
-      ...
-    }:
-    let
-      libx = inputs.nixfigs-helpers.libx.${hostPlatform};
-      inherit (inputs.nixpkgs) lib;
-    in
+  genConfiguration = hostname: {
+    address,
+    hostPlatform,
+    type,
+    extraModules,
+    username,
+    deployable,
+    monolithConfig,
+    overlays,
+    embedHm,
+    hostRoles,
+    hardwareModules,
+    baseModules,
+    ...
+  }: let
+    libx = inputs.nixfigs-helpers.libx.${hostPlatform};
+    inherit (inputs.nixpkgs) lib;
+  in
     inputs.nixpkgs.lib.nixosSystem rec {
       system = hostPlatform;
       pkgs = genPkgs hostPlatform overlays;
@@ -57,7 +55,6 @@ let
             extraSpecialArgs = {
               inherit
                 self
-                inputs
                 embedHm
                 username
                 hostRoles
@@ -68,6 +65,7 @@ let
                 hostPlatform
                 ;
               system = hostPlatform;
+              inherit (inputs.nixfigs-homes.self) inputs;
             };
           };
         })
@@ -93,6 +91,6 @@ let
       };
     };
 in
-inputs.nixpkgs.lib.mapAttrs genConfiguration (
-  inputs.nixpkgs.lib.filterAttrs (_: host: host.type == "nixos") self.hosts
-)
+  inputs.nixpkgs.lib.mapAttrs genConfiguration (
+    inputs.nixpkgs.lib.filterAttrs (_: host: host.type == "nixos") self.hosts
+  )
