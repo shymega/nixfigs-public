@@ -115,7 +115,6 @@ in
     address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
     hostRoles = [ "gaming" ];
     extraModules = [
@@ -166,7 +165,6 @@ in
     address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
     hostRoles = [ "gaming" ];
     hardwareModules = [ inputs.hardware.nixosModules.gpd-win-max-2-2023 ];
@@ -202,7 +200,6 @@ in
     address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TRINITY-JOVIAN";
     hostPlatform = "x86_64-linux";
-    embedHm = false;
     monolithConfig = true;
     hostRoles = [ "gaming" ];
     extraModules = [
