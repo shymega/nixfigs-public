@@ -2,10 +2,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 {
   imports = [ ./disks.nix ];
