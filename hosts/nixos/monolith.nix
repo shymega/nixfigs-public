@@ -1,9 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 #
-
 {
   config,
   lib,
@@ -11,8 +9,7 @@
   pkgs,
   inputs,
   ...
-}:
-{
+}: {
   imports = [
     ../../modules/nixos/secrets.nix
     inputs.nixfigs-common.common.nixos
@@ -106,7 +103,7 @@
     };
     zerotierone = {
       enable = true;
-      joinNetworks = [ "@secret@" ];
+      joinNetworks = ["@secret@"];
     };
     geoclue2 = {
       enable = true;
@@ -143,11 +140,11 @@
   };
 
   networking = {
-    timeServers = lib.mkForce [ "uk.pool.ntp.org" ];
+    timeServers = lib.mkForce ["uk.pool.ntp.org"];
 
     firewall = {
       enable = true;
-      interfaces."podman+".allowedUDPPorts = [ 53 ];
+      interfaces."podman+".allowedUDPPorts = [53];
       allowedTCPPortRanges = [
         {
           from = 1714;
@@ -179,12 +176,11 @@
     _1password-gui = {
       enable = true;
       package = pkgs._1password-gui;
-      polkitPolicyOwners = [ "dzrodriguez" ];
+      polkitPolicyOwners = ["dzrodriguez"];
     };
   };
 
   virtualisation = {
-
     podman = {
       autoPrune.enable = true;
       defaultNetwork.settings = {
@@ -214,7 +210,8 @@
             (OVMFFull.override {
               secureBoot = true;
               tpmSupport = true;
-            }).fd
+            })
+            .fd
             pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
