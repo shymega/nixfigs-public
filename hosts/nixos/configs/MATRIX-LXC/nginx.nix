@@ -1,9 +1,7 @@
 # SPDX-FileCopyrightText: 2024 Various Authors <generic@example.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ config, ... }:
-let
+{config, ...}: let
   clientConfig = {
     "m.homeserver" = {
       "base_url" = "https://mtx.shymega.org.uk";
@@ -21,8 +19,7 @@ let
     add_header Access-Control-Allow-Origin *;
     return 200 '${builtins.toJSON data}';
   '';
-in
-{
+in {
   networking.firewall = {
     allowedTCPPorts = [
       80
@@ -31,10 +28,10 @@ in
   };
 
   # Grant nginx access to certificates
-  systemd.services.nginx.serviceConfig.SupplementaryGroup = [ "acme" ];
+  systemd.services.nginx.serviceConfig.SupplementaryGroup = ["acme"];
 
   # Reload nginx after certificate renewal
-  security.acme.defaults.reloadServices = [ "nginx.service" ];
+  security.acme.defaults.reloadServices = ["nginx.service"];
 
   services.nginx = {
     enable = true;
