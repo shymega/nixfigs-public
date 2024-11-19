@@ -1,12 +1,11 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ lib, ... }:
-{
+{lib, ...}: {
   # Backward-compat for 24.05, can be removed after we drop 24.05 support
   imports = lib.optionals (lib.versionOlder lib.version "24.11pre") [
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
@@ -18,7 +17,8 @@
         "enable"
       ]
     )
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
@@ -30,7 +30,8 @@
         "extraPackages"
       ]
     )
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
@@ -42,7 +43,8 @@
         "extraPackages32"
       ]
     )
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
@@ -54,7 +56,8 @@
         "driSupport32Bit"
       ]
     )
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
@@ -66,7 +69,8 @@
         "package"
       ]
     )
-    (lib.mkAliasOptionModule
+    (
+      lib.mkAliasOptionModule
       [
         "hardware"
         "graphics"
