@@ -1,18 +1,15 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   inputs,
   config,
   pkgs,
   lib,
   ...
-}:
-let
+}: let
   enableXanmod = true;
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     inputs.jovian-nixos.nixosModules.default
@@ -27,7 +24,7 @@ in
       "ntfs"
       "zfs"
     ];
-    zfs.extraPools = [ "ztank" ];
+    zfs.extraPools = ["ztank"];
     zfs.devNodes = "/dev/disk/by-partuuid";
 
     initrd.supportedFilesystems = [
@@ -35,7 +32,7 @@ in
       "zfs"
     ];
 
-    kernelParams = [ "nohibernate" ];
+    kernelParams = ["nohibernate"];
 
     initrd = {
       availableKernelModules = [
@@ -53,7 +50,8 @@ in
     '';
 
     kernelPackages =
-      if enableXanmod then
+      if enableXanmod
+      then
         pkgs.linuxPackagesFor (
           pkgs.unstable.linux_xanmod_latest.override {
             argsOverride = rec {
@@ -70,16 +68,14 @@ in
             };
           }
         )
-      else
-        config.boot.zfs.package.latestCompatibleLinuxPackages;
+      else config.boot.zfs.package.latestCompatibleLinuxPackages;
 
-    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
+    extraModulePackages = with config.boot.kernelPackages; [zfs];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
     };
-
   };
 
   powerManagement = {
@@ -135,7 +131,7 @@ in
     };
     xserver = {
       enable = true;
-      videoDrivers = [ "amdgpu" ];
+      videoDrivers = ["amdgpu"];
     };
     fstrim.enable = true;
     smartd = {
@@ -146,7 +142,7 @@ in
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      packages = with pkgs; [gnome.gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
