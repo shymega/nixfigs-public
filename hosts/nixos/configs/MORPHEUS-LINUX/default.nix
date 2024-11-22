@@ -214,6 +214,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
