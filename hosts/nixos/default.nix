@@ -55,7 +55,6 @@
             extraSpecialArgs = {
               inherit
                 self
-                inputs
                 embedHm
                 username
                 hostRoles
@@ -66,6 +65,7 @@
                 hostPlatform
                 ;
               system = hostPlatform;
+              inherit (inputs.nixfigs-homes.self) inputs;
             };
           };
         })
