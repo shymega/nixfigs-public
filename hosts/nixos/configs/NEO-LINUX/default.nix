@@ -238,7 +238,6 @@ in {
       enable = true;
       videoDrivers = ["amdgpu"];
     };
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     thermald.enable = true;
   };
 
