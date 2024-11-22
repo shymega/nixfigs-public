@@ -116,6 +116,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     handheld-daemon = {
       enable = true;
       package = pkgs.handheld-daemon;
@@ -141,7 +142,6 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {

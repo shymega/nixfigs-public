@@ -252,7 +252,6 @@ in {
     hostRoles = ["minimal"];
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      ../nix/24.11-compat.nix
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
@@ -335,7 +334,6 @@ in {
     hostRoles = ["minimal"];
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      ../nix/24.11-compat.nix
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
@@ -361,7 +359,6 @@ in {
     monolithConfig = false;
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      ../nix/24.11-compat.nix
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
@@ -389,7 +386,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
@@ -410,7 +406,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
     ];
@@ -432,7 +427,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
@@ -453,7 +447,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
