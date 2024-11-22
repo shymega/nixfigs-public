@@ -109,6 +109,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     handheld-daemon = {
       enable = true;
       package = pkgs.handheld-daemon;
@@ -134,11 +135,10 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [gnome.gnome-settings-daemon];
+      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         # Workstation - keyboard & mouse
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"

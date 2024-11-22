@@ -144,6 +144,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     xserver = {
       enable = true;
       videoDrivers = [
