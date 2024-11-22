@@ -198,6 +198,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     udev = {
       packages = with pkgs; [gnome.gnome-settings-daemon];
       extraRules = ''
