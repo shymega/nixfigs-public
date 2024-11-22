@@ -113,6 +113,7 @@ in {
   ];
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     handheld-daemon = {
       enable = true;
       package = pkgs.handheld-daemon;
@@ -138,11 +139,10 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [gnome.gnome-settings-daemon];
+      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
