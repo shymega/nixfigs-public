@@ -141,7 +141,6 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {

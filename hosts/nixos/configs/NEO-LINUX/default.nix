@@ -237,7 +237,6 @@ in {
       enable = true;
       videoDrivers = ["amdgpu"];
     };
-    auto-cpufreq.enable = false;
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
     thermald.enable = true;
   };
