@@ -109,6 +109,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     handheld-daemon = {
       enable = true;
       package = pkgs.handheld-daemon;
