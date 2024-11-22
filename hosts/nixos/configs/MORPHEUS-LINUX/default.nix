@@ -214,6 +214,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
@@ -237,7 +238,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
@@ -250,7 +251,6 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
@@ -322,22 +322,12 @@ in {
 
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = false;
+    gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          protontricks
-          protonup-qt
-          python3Full
-          python3Packages.pip
-          python3Packages.virtualenv
-          steamcmd
           steamtinkerlaunch
-          # wemod-launcher
-          wineWowPackages.stable
-          winetricks
         ];
-      extraLibraries = p: with p; [(lib.getLib networkmanager)];
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
