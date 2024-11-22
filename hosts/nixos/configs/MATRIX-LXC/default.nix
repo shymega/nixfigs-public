@@ -163,7 +163,7 @@
     mosh.enable = true;
   };
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 
   services.openssh.authorizedKeysFiles = lib.mkOverride 40 [
     "%h/.ssh/authorized_keys"
