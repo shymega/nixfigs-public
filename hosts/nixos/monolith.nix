@@ -171,7 +171,7 @@
 
     _1password = {
       enable = true;
-      package = pkgs._1password;
+      package = pkgs._1password-cli;
     };
     _1password-gui = {
       enable = true;
@@ -187,6 +187,7 @@
         # Required for container networking to be able to use names.
         dns_enabled = true;
       };
+      enable = true;
     };
 
     oci-containers.backend = "docker";
@@ -194,9 +195,9 @@
 
     waydroid.enable = true;
     docker.enable = true;
-    podman.enable = true;
     lxc.enable = true;
     lxd.enable = true;
+    vmware.host.enable = true;
 
     libvirtd = lib.optionalAttrs pkgs.stdenv.isx86_64 {
       enable = true;
@@ -204,7 +205,7 @@
         package = pkgs.qemu_full;
         runAsRoot = true;
         swtpm.enable = true;
-        ovmf = lib.optionalAttrs pkgs.stdenv.isx86_64 {
+        ovmf = {
           enable = true;
           packages = with pkgs; [
             (OVMFFull.override {
