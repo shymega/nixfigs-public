@@ -187,7 +187,7 @@ in {
   };
 
   services.ollama = {
-    enable = true;
+    enable = false;
     package = pkgs.ollama;
     acceleration = "rocm";
     sandbox = false;
@@ -247,7 +247,7 @@ in {
   };
 
   programs.steam = {
-    enable = true;
+    enable = false;
     gamescopeSession.enable = false;
     package = pkgs.steam.override {
       extraPkgs = pkgs:

@@ -238,7 +238,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
@@ -321,7 +321,7 @@ in {
   };
 
   programs.steam = {
-    enable = true;
+    enable = false;
     gamescopeSession.enable = false;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
