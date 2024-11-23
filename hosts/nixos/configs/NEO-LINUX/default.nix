@@ -252,16 +252,9 @@ in {
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          python3Full
-          python3Packages.pip
-          python3Packages.virtualenv
           steamcmd
           steamtinkerlaunch
-          # wemod-launcher
-          wineWowPackages.stable
-          winetricks
         ];
-      extraLibraries = p: with p; [(lib.getLib networkmanager)];
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
