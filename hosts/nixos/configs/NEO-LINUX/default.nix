@@ -252,8 +252,6 @@ in {
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          protontricks
-          protonup-qt
           python3Full
           python3Packages.pip
           python3Packages.virtualenv
