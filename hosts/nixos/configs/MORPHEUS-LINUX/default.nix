@@ -321,8 +321,8 @@ in {
   };
 
   programs.steam = {
-    enable = false;
-    gamescopeSession.enable = false;
+    enable = true;
+    gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
