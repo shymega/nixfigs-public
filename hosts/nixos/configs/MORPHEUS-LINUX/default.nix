@@ -326,7 +326,6 @@ in {
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          steamcmd
           steamtinkerlaunch
         ];
     };
