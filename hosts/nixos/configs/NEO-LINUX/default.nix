@@ -20,7 +20,6 @@
             (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
-          && (!kernelPackages.nvidia_x11.meta.broken)
           && (!kernelPackages.evdi.meta.broken)
           && (!kernelPackages.vmware.meta.broken)
         )
