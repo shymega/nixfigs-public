@@ -227,25 +227,25 @@ in {
   #    deployable = true;
   #  };
 
-  TRINITY-JOVIAN = mkHost {
-    type = "nixos";
-    address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "TRINITY-JOVIAN";
-    hostPlatform = "x86_64-linux";
-    monolithConfig = true;
-    hostRoles = ["gaming" "steam-deck" "personal"];
-    extraModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      inputs.lanzaboote.nixosModules.lanzaboote
-    ];
-    pubkey = null;
-    remoteBuild = true;
-    deployable = false;
-    embedHm = true;
-  };
+  # TRINITY-JOVIAN = mkHost {
+  #  type = "nixos";
+  #  address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+  #  hostname = "TRINITY-JOVIAN";
+  #  hostPlatform = "x86_64-linux";
+  #  monolithConfig = true;
+  #  hostRoles = ["gaming" "steam-deck" "personal"];
+  #  extraModules = [
+  #    inputs.hardware.nixosModules.common-cpu-amd
+  #    inputs.hardware.nixosModules.common-gpu-amd
+  #    inputs.hardware.nixosModules.common-pc-ssd
+  #    inputs.hardware.nixosModules.common-pc
+  #    inputs.lanzaboote.nixosModules.lanzaboote
+  #  ];
+  #  pubkey = null;
+  #  remoteBuild = true;
+  #  deployable = false;
+  #  embedHm = true;
+  # };
 
   TWINS-LINUX = mkHost rec {
     type = "nixos";
