@@ -16,14 +16,13 @@
   ];
   users = {
     mutableUsers = false;
-    users."root".password = "passw0rd"; # Lock account.
+    users."root".password = "!"; # Lock account.
     users."dzrodriguez" = {
       uid = 1000;
       isNormalUser = true;
       shell = pkgs.zsh;
       description = "Dom RODRIGUEZ";
-      password = "passw0rd";
-      # hashedPasswordFile = config.age.secrets.dzrodriguez.path;
+      hashedPasswordFile = config.age.secrets.dzrodriguez.path;
       linger = true;
       subUidRanges = [
         {
