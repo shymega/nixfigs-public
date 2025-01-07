@@ -193,6 +193,40 @@ in {
     embedHm = true;
   };
 
+  DEUSEX-LINUX = mkHost rec {
+    type = "nixos";
+    address = "DEUSEX-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    hostname = "DEUSEX-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = ["workstation" "gaming" "personal"];
+    embedHm = true;
+    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "";
+    remoteBuild = true;
+    deployable = true;
+  };
+
+  DEUSEX-JOVIAN = mkHost rec {
+    type = "nixos";
+    address = "DEUSEX-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+    hostname = "DEUSEX-JOVIAN";
+    hostPlatform = "x86_64-linux";
+    hostRoles = ["workstation" "gaming" "personal"];
+    embedHm = true;
+    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "";
+    remoteBuild = true;
+    deployable = true;
+  };
+
   TRINITY-JOVIAN = mkHost {
     type = "nixos";
     address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
