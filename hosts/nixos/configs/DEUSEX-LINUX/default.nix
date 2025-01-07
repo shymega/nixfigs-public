@@ -95,7 +95,7 @@ in {
       };
     };
     zfs = {
-      extraPools = ["ztank", "zdata"];
+      extraPools = ["ztank" "zdata"];
       devNodes = "/dev/disk/by-partuuid";
     };
 
