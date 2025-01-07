@@ -161,7 +161,6 @@ in {
   };
 
   hardware = {
-    gpd.ppt.enable = lib.mkForce false;
     graphics = {
       enable = true;
       enable32Bit = true;
