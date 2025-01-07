@@ -94,7 +94,7 @@
     };
 
     "/home/dzrodriguez/.local/share/atuin" = {
-      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos"; # Replace with by-label.
+      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos/linux"; # Replace with by-label.
       fsType = "ext4";
       neededForBoot = false;
       options = ["x-systemd.automount"];
