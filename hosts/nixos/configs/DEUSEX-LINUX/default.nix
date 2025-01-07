@@ -90,7 +90,7 @@ in {
           unitConfig.DefaultDependencies = "no";
           serviceConfig.Type = "oneshot";
           script = ''
-            zfs rollback -r ztank/crypt/nixos/stock/local/root@blank
+            zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
           '';
         };
         create-needed-for-boot-dirs = {
