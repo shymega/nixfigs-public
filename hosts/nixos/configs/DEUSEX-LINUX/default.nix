@@ -23,7 +23,7 @@
           && (!kernelPackages.vmware.meta.broken)
         )
     )
-    pkgs.linuxKernel.packages;
+    pkgs.unstable.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -193,10 +193,9 @@ in {
 
   services = {
     ucodenix = {
-      enable = false; # TODO: Find `cpuModelId` and re-enable.
-      cpuModelId = "00A70F52";
+      enable = true;
+      cpuModelId = "00B20F40";
     };
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
@@ -233,13 +232,13 @@ in {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = true;
+    input-remapper.enable = false;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -270,19 +269,6 @@ in {
       extraConfig = ''
         LidSwitchIgnoreInhibited=no
       '';
-    };
-    auto-cpufreq = {
-      enable = true;
-      settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
-      };
     };
   };
 
