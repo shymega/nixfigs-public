@@ -23,7 +23,7 @@
           && (!kernelPackages.vmware.meta.broken)
         )
     )
-    pkgs.linuxKernel.packages;
+    pkgs.unstable.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -193,14 +193,13 @@ in {
 
   services = {
     ucodenix = {
-      enable = false; # TODO: Find `cpuModelId` and re-enable.
-      cpuModelId = "00A70F52";
+      enable = true;
+      cpuModelId = "00B20F40";
     };
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
-      enable = false;
+      enable = true;
       package = pkgs.handheld-daemon;
       user = "dzrodriguez";
     };
@@ -220,12 +219,12 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
       environmentVariables = {
-        HSA_OVERRIDE_GFX_VERSION = "11.0.0"; # 780M.
+        HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
       };
     };
     fstrim.enable = false;
@@ -233,13 +232,13 @@ in {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = true;
+    input-remapper.enable = false;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -250,9 +249,6 @@ in {
 
         # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
-
-        # rename network interface.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
 
         # my personal iphone.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
@@ -270,19 +266,6 @@ in {
       extraConfig = ''
         LidSwitchIgnoreInhibited=no
       '';
-    };
-    auto-cpufreq = {
-      enable = true;
-      settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
-      };
     };
   };
 
