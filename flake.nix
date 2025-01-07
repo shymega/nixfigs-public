@@ -108,6 +108,7 @@
     };
     devenv.url = "github:cachix/devenv/latest";
     hardware.url = "github:NixOS/nixos-hardware";
+    hardware-shymega.url = "github:shymega/nixos-hardware?ref=shymega";
     impermanence.url = "github:nix-community/impermanence";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     agenix = {
