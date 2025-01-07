@@ -252,9 +252,9 @@ in {
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
-      extrarules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+      extraRules = ''
+        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -277,9 +277,6 @@ in {
 
         # my personal op6t.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", name="android0"
-
-        # my personal moto g.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", name="android0"
 
         # thinkpad docking station ethernet.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", name="docketh0"
