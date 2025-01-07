@@ -97,7 +97,7 @@ in {
     };
     zfs = {
       extraPools = ["ztank" "zdata"];
-      devNodes = "/dev/disk/by-partuuid";
+      devNodes = "/dev/disk/by-uuid";
     };
 
     kernelParams = [
