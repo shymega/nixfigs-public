@@ -18672,6 +18672,22 @@
         "type": "github"
       }
     },
+    "hardware-shymega": {
+      "locked": {
+        "lastModified": 1735404317,
+        "narHash": "sha256-2gQ16HkAGfvWtQu49paGhEOf97kGXmtWl2/jVt9MmrM=",
+        "owner": "shymega",
+        "repo": "nixos-hardware",
+        "rev": "d4e30e9c84e4dc14886f16f4a7f8bfe16e9e19c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "shymega",
+        "ref": "shymega",
+        "repo": "nixos-hardware",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -20347,6 +20363,7 @@
       },
       "original": {
         "owner": "Jovian-Experiments",
+        "ref": "development",
         "repo": "Jovian-NixOS",
         "type": "github"
       }
@@ -33971,6 +33988,7 @@
         "flake-utils": "flake-utils_4",
         "flatpaks": "flatpaks",
         "hardware": "hardware",
+        "hardware-shymega": "hardware-shymega",
         "home-manager": "home-manager_3",
         "impermanence": "impermanence",
         "jovian-nixos": "jovian-nixos",
