@@ -109,25 +109,25 @@ in {
     deployable = true;
   };
 
-  NEO-JOVIAN = mkHost {
-    type = "nixos";
-    address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "NEO-JOVIAN";
-    hostPlatform = "x86_64-linux";
-    monolithConfig = true;
-    hostRoles = ["jovian" "gaming" "personal"];
-    extraModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      inputs.lanzaboote.nixosModules.lanzaboote
-    ];
-    pubkey = null;
-    remoteBuild = true;
-    deployable = false;
-    embedHm = true;
-  };
+#  NEO-JOVIAN = mkHost {
+#    type = "nixos";
+#    address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+#    hostname = "NEO-JOVIAN";
+#    hostPlatform = "x86_64-linux";
+#    monolithConfig = true;
+#    hostRoles = ["jovian" "gaming" "personal"];
+#    extraModules = [
+#      inputs.hardware.nixosModules.common-cpu-amd
+#      inputs.hardware.nixosModules.common-gpu-amd
+#      inputs.hardware.nixosModules.common-pc-ssd
+#      inputs.hardware.nixosModules.common-pc
+#      inputs.lanzaboote.nixosModules.lanzaboote
+#    ];
+#    pubkey = null;
+#    remoteBuild = true;
+#    deployable = false;
+#    embedHm = true;
+#  };
 
   NEO-WSL = mkHost {
     type = "nixos";
@@ -159,26 +159,26 @@ in {
     deployable = true;
   };
 
-  MORPHEUS-JOVIAN = mkHost {
-    type = "nixos";
-    address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "MORPHEUS-JOVIAN";
-    hostPlatform = "x86_64-linux";
-    monolithConfig = true;
-    hostRoles = ["jovian" "gaming" "personal"];
-    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
-    extraModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      inputs.lanzaboote.nixosModules.lanzaboote
-    ];
-    pubkey = null;
-    remoteBuild = true;
-    deployable = false;
-    embedHm = true;
-  };
+#  MORPHEUS-JOVIAN = mkHost {
+#    type = "nixos";
+#    address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+#    hostname = "MORPHEUS-JOVIAN";
+#    hostPlatform = "x86_64-linux";
+#    monolithConfig = true;
+#    hostRoles = ["jovian" "gaming" "personal"];
+#    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
+#    extraModules = [
+#      inputs.hardware.nixosModules.common-cpu-amd
+#      inputs.hardware.nixosModules.common-gpu-amd
+#      inputs.hardware.nixosModules.common-pc-ssd
+#      inputs.hardware.nixosModules.common-pc
+#      inputs.lanzaboote.nixosModules.lanzaboote
+#    ];
+#    pubkey = null;
+#    remoteBuild = true;
+#    deployable = false;
+#    embedHm = true;
+#  };
 
   MORPHEUS-WSL = mkHost {
     type = "nixos";
@@ -210,22 +210,22 @@ in {
     deployable = true;
   };
 
-  DEUSEX-JOVIAN = mkHost rec {
-    type = "nixos";
-    address = "DEUSEX-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "DEUSEX-JOVIAN";
-    hostPlatform = "x86_64-linux";
-    hostRoles = ["workstation" "gaming" "personal"];
-    embedHm = true;
-    extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.hardware-shymega.nixosModules.gpd-duo
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-    ];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = true;
-  };
+#  DEUSEX-JOVIAN = mkHost rec {
+#    type = "nixos";
+#    address = "DEUSEX-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
+#    hostname = "DEUSEX-JOVIAN";
+#    hostPlatform = "x86_64-linux";
+#    hostRoles = ["workstation" "gaming" "personal"];
+#    embedHm = true;
+#    extraModules = [
+#      inputs.lanzaboote.nixosModules.lanzaboote
+#      inputs.hardware-shymega.nixosModules.gpd-duo
+#      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+#    ];
+#    pubkey = "";
+#    remoteBuild = true;
+#    deployable = true;
+#  };
 
   TRINITY-JOVIAN = mkHost {
     type = "nixos";
