@@ -193,8 +193,8 @@ in {
 
   services = {
     ucodenix = {
-      enable = false; # TODO: Find `cpuModelId` and re-enable.
-      cpuModelId = "00A70F52";
+      enable = true; # TODO: Find `cpuModelId` and re-enable.
+      cpuModelId = "00B20F40";
     };
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
@@ -233,7 +233,7 @@ in {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = true;
+    input-remapper.enable = false;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
