@@ -189,6 +189,7 @@ in {
     };
     i2c.enable = true;
     cpu.amd.ryzen-smu.enable = true;
+    sensor.iio.enable = lib.mkForce false;
   };
 
   services = {
