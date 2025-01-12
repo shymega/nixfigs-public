@@ -23,7 +23,7 @@
           && (!kernelPackages.vmware.meta.broken)
         )
     )
-    pkgs.linuxKernel.packages;
+    pkgs.unstable.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -104,12 +104,13 @@ in {
       devNodes = "/dev/disk/by-uuid";
     };
 
-    kernelParams = lib.mkAfter [
+    kernelParams = [
       "nohibernate"
       "zfs.zfs_arc_max=${zfs_arc_max}"
       "zfs.zfs_arc_min=${zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
+      "fbcon=rotate:2"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
@@ -189,15 +190,13 @@ in {
     };
     i2c.enable = true;
     cpu.amd.ryzen-smu.enable = true;
-    sensor.iio.enable = lib.mkForce false;
   };
 
   services = {
     ucodenix = {
-      enable = true; # TODO: Find `cpuModelId` and re-enable.
+      enable = true;
       cpuModelId = "00B20F40";
     };
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
@@ -239,8 +238,8 @@ in {
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -271,19 +270,6 @@ in {
       extraConfig = ''
         LidSwitchIgnoreInhibited=no
       '';
-    };
-    auto-cpufreq = {
-      enable = true;
-      settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
-      };
     };
   };
 
