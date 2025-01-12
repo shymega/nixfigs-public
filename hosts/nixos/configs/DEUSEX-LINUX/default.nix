@@ -104,12 +104,13 @@ in {
       devNodes = "/dev/disk/by-uuid";
     };
 
-    kernelParams = lib.mkAfter [
+    kernelParams = [
       "nohibernate"
       "zfs.zfs_arc_max=${zfs_arc_max}"
       "zfs.zfs_arc_min=${zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
+      "fbcon=rotate:2"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
