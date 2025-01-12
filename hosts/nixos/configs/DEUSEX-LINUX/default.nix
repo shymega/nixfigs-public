@@ -110,8 +110,6 @@ in {
       "zfs.zfs_arc_min=${zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
-      "video=eDP-1:2880x1800"
-      "video=DP-3:2880x1800"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
