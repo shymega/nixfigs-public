@@ -56,12 +56,6 @@ in {
         "wasm64-wasi"
       ];
     };
-    # Set the eDP-1 panel video parameters for display rotation
-    kernelParams = lib.mkAfter [
-      "video=eDP-1:2880x1800"
-      "video=DP-3:2880x1800"
-    ];
-
     supportedFilesystems = [
       "ntfs"
       "zfs"
@@ -110,12 +104,14 @@ in {
       devNodes = "/dev/disk/by-uuid";
     };
 
-    kernelParams = [
+    kernelParams = lib.mkAfter [
       "nohibernate"
       "zfs.zfs_arc_max=${zfs_arc_max}"
       "zfs.zfs_arc_min=${zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
+      "video=eDP-1:2880x1800"
+      "video=DP-3:2880x1800"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
