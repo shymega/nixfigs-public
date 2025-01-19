@@ -16,14 +16,14 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
           && (!kernelPackages.vmware.meta.broken)
         )
     )
-    pkgs.unstable.linuxKernel.packages;
+    pkgs.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -219,7 +219,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
@@ -227,12 +227,12 @@ in {
         HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
       };
     };
-    fstrim.enable = false;
+    fstrim.enable = true;
     smartd = {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = false;
+    input-remapper.enable = true;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
@@ -258,6 +258,9 @@ in {
 
         # thinkpad docking station ethernet.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
+
+        # FIXME: experimental wm2 i2c fixes.
+        SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
       '';
     };
     logind = {
