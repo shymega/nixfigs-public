@@ -15,7 +15,7 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
