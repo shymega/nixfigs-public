@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: 2024 Various Authors <generic@example.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ modulesPath, lib, ... }:
 {
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  modulesPath,
+  lib,
+  ...
+}: {
+  imports = [(modulesPath + "/profiles/qemu-guest.nix")];
   boot = {
     loader = {
       efi = {
@@ -27,7 +29,7 @@
       "nvme"
       "virtio_gpu"
     ];
-    kernelParams = [ "console=tty" ];
+    kernelParams = ["console=tty"];
   };
   fileSystems."/" = {
     device = "/dev/sda1";
