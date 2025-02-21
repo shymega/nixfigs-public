@@ -40,9 +40,6 @@ in {
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
   ];
-  users."root".password = "passw0rd"; # Lock account.
-  users."dzrodriguez".password = "passw0rd"; # Lock account.
-
   lantian.qemu-user-static-binfmt = {
     enable = true;
     package = pkgs.qemu;
