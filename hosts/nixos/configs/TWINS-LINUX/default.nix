@@ -4,49 +4,66 @@
 
 {
   pkgs,
+  inputs,
   config,
   lib,
   ...
 }:
 let
-  enableXanmod = true;
+  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
+  myCompatibleKernelPackages = lib.filterAttrs (
+    name: kernelPackages:
+    (lib.hasInfix "_xanmod" name)
+    && (builtins.tryEval kernelPackages).success
+    && (
+      (
+        (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+        || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
+      )
+      && (!kernelPackages.nvidia_x11.meta.broken)
+      && (!kernelPackages.evdi.meta.broken)
+      && (!kernelPackages.vmware.meta.broken)
+    )
+  ) pkgs.linuxKernel.packages;
+  latestKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myCompatibleKernelPackages
+    )
+  );
+  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
+  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
 in
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    inputs.nur-xddxdd.nixosModules.setupOverlay
+    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    inputs.nur-xddxdd.nixosModules.nix-cache-attic
+  ];
+  lantian.qemu-user-static-binfmt = {
+    enable = true;
+    package = pkgs.qemu;
+  };
 
   networking = {
     hostName = "TWINS-LINUX";
-    hostId = "6842efa5";
+    hostId = "c6153b29";
   };
 
   boot = {
+    binfmt = {
+      emulatedSystems = [
+        "wasm32-wasi"
+        "wasm64-wasi"
+      ];
+    };
     supportedFilesystems = [
       "ntfs"
       "zfs"
     ];
+    kernelPackages = latestKernelPackage;
 
-    kernelPackages =
-      if enableXanmod then
-        pkgs.unstable.linuxPackagesFor (
-          pkgs.unstable.linux_xanmod_latest.override {
-            argsOverride = rec {
-              modDirVersion = "${version}-${suffix}";
-              suffix = "xanmod1";
-              version = "6.11.2";
-
-              src = pkgs.fetchFromGitHub {
-                owner = "xanmod";
-                repo = "linux";
-                rev = "${version}-${suffix}";
-                hash = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
-              };
-            };
-          }
-        )
-      else
-        config.boot.zfs.package.latestCompatibleLinuxPackages;
-
-    kernelPatches = lib.optionals (!enableXanmod) [
+    kernelPatches = [
       {
         name = "enable RT_FULL";
         patch = null;
@@ -65,13 +82,17 @@ in
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
     extraModprobeConfig = ''
-      options zfs l2arc_noprefetch=0 l2arc_write_boost=33554432 l2arc_write_max=16777216 zfs_arc_max=12884901888
       options kvm_intel nested=1
       options kvm_intel emulate_invalid_guest_state=0
       options kvm ignore_msrs=1 report_ignored_msrs=0
-
     '';
-    kernelParams = [ "nohibernate" ];
+    kernelParams = [
+      "nohibernate"
+      "zfs.zfs_arc_max=${zfs_arc_max}"
+      "zfs.zfs_arc_min=${zfs_arc_min}"
+      "zfs.l2arc_write_boost=33554432"
+      "zfs.l2arc_write_max=16777216"
+    ];
 
     kernel.sysctl = {
       "dev.i915.perf_stream_paranoid" = "0";
@@ -184,12 +205,6 @@ in
     enable = true;
     cpuFreqGovernor = "powersave";
   };
-
-  boot.binfmt.emulatedSystems = [
-    "aarch64-linux"
-    "armv6l-linux"
-    "armv7l-linux"
-  ];
 
   hardware = {
     opengl = {
