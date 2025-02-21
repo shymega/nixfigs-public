@@ -253,9 +253,9 @@ in {
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
-      extraRules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
+      extrarules = ''
+        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="0", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="1", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -264,26 +264,26 @@ in {
         # 4g lte modem.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="2c7c", ATTR{idProduct}=="0125", ATTR{power/autosuspend}="-1"
 
-        # workstation - Thinkpad dock (40AC).
+        # workstation - thinkpad dock (40ac).
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
-        # KVM input - active.
+        # kvm input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
 
         # rename network interface.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", name="wlan0"
 
         # my personal iphone.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", name="iphone0"
 
         # my personal op6t.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", name="android0"
 
-        # my personal Moto G.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", NAME="android0"
+        # my personal moto g.
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", name="android0"
 
-        # Thinkpad docking station ethernet.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
+        # thinkpad docking station ethernet.
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", name="docketh0"
 
         # wm2 i2c fixes.
         SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
