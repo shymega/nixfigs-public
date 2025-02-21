@@ -200,7 +200,6 @@ in {
     hostPlatform = "x86_64-linux";
     hostRoles = ["workstation" "gaming" "personal"];
     embedHm = true;
-    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
@@ -217,7 +216,6 @@ in {
     hostPlatform = "x86_64-linux";
     hostRoles = ["workstation" "gaming" "personal"];
     embedHm = true;
-    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
