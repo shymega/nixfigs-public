@@ -15,7 +15,6 @@
     ollama = {
       enable = false;
       acceleration = "rocm";
-      sandbox = false;
       models = "/data/AI/LLMs/Ollama/Models/";
       writablePaths = ["/data/AI/LLMs/Ollama/Models/"];
       environmentVariables = {
