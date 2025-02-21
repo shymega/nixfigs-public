@@ -199,7 +199,7 @@ in {
     hostname = "TRINITY-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["gaming" "steam-deck", "personal"];
+    hostRoles = ["gaming" "steam-deck" "personal"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
