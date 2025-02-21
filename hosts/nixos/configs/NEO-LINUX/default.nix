@@ -187,10 +187,9 @@ in {
   };
 
   services.ollama = {
-    enable = true;
+    enable = false;
     package = pkgs.ollama;
     acceleration = "rocm";
-    sandbox = false;
     models = "/data/AI/LLMs/Ollama/Models/";
     environmentVariables = {
       HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 680M.
@@ -198,8 +197,9 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     udev = {
-      packages = with pkgs; [gnome.gnome-settings-daemon];
+      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -237,8 +237,6 @@ in {
       enable = true;
       videoDrivers = ["amdgpu"];
     };
-    auto-cpufreq.enable = false;
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     thermald.enable = true;
   };
 
@@ -249,22 +247,12 @@ in {
 
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = false;
+    gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          protontricks
-          protonup-qt
-          python3Full
-          python3Packages.pip
-          python3Packages.virtualenv
-          steamcmd
           steamtinkerlaunch
-          # wemod-launcher
-          wineWowPackages.stable
-          winetricks
         ];
-      extraLibraries = p: with p; [(lib.getLib networkmanager)];
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;

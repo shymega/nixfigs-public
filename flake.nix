@@ -53,6 +53,7 @@
     forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
   in {
     inherit (inputs.nixfigs-pkgs) overlays packages nixpkgs-config;
+    inherit (inputs.nixfigs-roles) roles utils;
     # for `nix fmt`
     formatter = treeFmtEachSystem (pkgs: treeFmtEval.${pkgs.system}.config.build.wrapper);
     # for `nix flake check`
@@ -92,6 +93,7 @@
     nixfigs-common.url = "github:shymega/nixfigs-common";
     nixfigs-virtual-private.url = "github:shymega/nixfigs-virtual-private";
     nixfigs-virtual.url = "github:shymega/nixfigs-virtual";
+    nixfigs-roles.url = "github:shymega/nixfigs-roles";
     flake-registry = {
       url = "github:NixOS/flake-registry";
       flake = false;
