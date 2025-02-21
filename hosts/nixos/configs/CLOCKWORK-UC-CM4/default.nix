@@ -83,12 +83,6 @@
     networkmanager.enable = lib.mkForce false;
     wireless = {
       enable = true;
-      environmentFile = config.age.secrets.wireless.path;
-      networks = {
-        "RNET" = {
-          psk = "@PSK_RNET@";
-        };
-      };
     };
   };
 }

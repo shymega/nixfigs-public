@@ -15,7 +15,7 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
@@ -49,6 +49,7 @@ in {
   networking = {
     hostName = "DEUSEX-JOVIAN";
     hostId = "8e47d5d7";
+    usePredictableInterfaceNames = false;
   };
   boot = {
     binfmt = {
@@ -237,9 +238,6 @@ in {
 
            # KVM input - active.
            SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
-
-           # rename network interface.
-           SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
 
            # my personal iphone.
            SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"

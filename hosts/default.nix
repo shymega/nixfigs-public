@@ -23,7 +23,7 @@
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
-          inputs.nix-alien.packages.${hostPlatform}.nix-alien
+          # inputs.nix-alien.packages.${hostPlatform}.nix-alien
         ];
       }
       (import inputs.nixfigs-common.common.core {
@@ -289,7 +289,6 @@ in {
   #       {
   #         environment.systemPackages = [
   #           inputs.agenix.packages.${hostPlatform}.default
-  #           inputs.nix-alien.packages.${hostPlatform}.nix-alien
   #         ];
   #       }
   #       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
