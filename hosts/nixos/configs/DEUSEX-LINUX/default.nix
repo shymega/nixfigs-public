@@ -8,27 +8,6 @@
   lib,
   ...
 }: let
-  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages =
-    lib.filterAttrs (
-      name: kernelPackages:
-        (lib.hasInfix "_xanmod" name)
-        && (builtins.tryEval kernelPackages).success
-        && (
-          (
-            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
-            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-          )
-          && (!kernelPackages.evdi.meta.broken)
-          && (!kernelPackages.vmware.meta.broken)
-        )
-    )
-    pkgs.unstable.linuxKernel.packages;
-  latestKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myCompatibleKernelPackages
-    )
-  );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
 in {
@@ -48,6 +27,7 @@ in {
   networking = {
     hostName = "DEUSEX-LINUX";
     hostId = "aa1cf1f3";
+    usePredictableInterfaceNames = false;
   };
   boot = {
     binfmt = {
@@ -116,9 +96,24 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = latestKernelPackage;
+    kernelPackages = let
+      zfsCompatibleKernelPackages0 =
+        lib.filterAttrs (
+          name: kernelPackages:
+            (builtins.match "linux_[0-9]+_[0-9]+" name)
+            != null
+            && (builtins.tryEval kernelPackages).success
+            && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+        )
+        pkgs.linuxKernel.packages;
+    in
+      lib.last (
+        lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+          builtins.attrValues zfsCompatibleKernelPackages0
+        )
+      );
 
-    extraModulePackages = with config.boot.kernelPackages; [zfs evdi vmware];
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -219,7 +214,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
@@ -227,12 +222,12 @@ in {
         HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
       };
     };
-    fstrim.enable = false;
+    fstrim.enable = true;
     smartd = {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = false;
+    input-remapper.enable = true;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
@@ -245,19 +240,22 @@ in {
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
 
         # workstation - Thinkpad Dock (40AC).
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
+        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
         # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
 
-        # my personal iphone.
+        # My personal iPhone 13.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
 
-        # my personal op6t.
+        # my personal OP6T.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
         # thinkpad docking station ethernet.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="8153", KERNEL=="eth*", NAME="docketh0"
+
+        # FIXME: experimental wm2 i2c fixes.
+        SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
       '';
     };
     logind = {
