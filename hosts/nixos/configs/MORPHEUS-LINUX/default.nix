@@ -325,28 +325,5 @@ in {
     localNetworkGameTransfers.openFirewall = true;
   };
 
-  security = {
-    pam.loginLimits = [
-      {
-        domain = "*";
-        item = "nofile";
-        type = "-";
-        value = "524288";
-      }
-      {
-        domain = "*";
-        item = "memlock";
-        type = "-";
-        value = "524288";
-      }
-    ];
-  };
-
-  #  environment = {
-  #    variables = {
-  #      WLR_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1:/dev/dri/card2";
-  #    };
-  #  };
-
   system.stateVersion = "24.11";
 }
