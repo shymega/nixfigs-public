@@ -141,6 +141,7 @@
 
   networking = {
     timeServers = lib.mkForce ["uk.pool.ntp.org"];
+    usePredictableInterfaceNames = lib.mkForce false;
 
     firewall = {
       enable = true;
