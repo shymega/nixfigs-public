@@ -12,6 +12,7 @@
 }: {
   imports = [
     ../../modules/nixos/secrets.nix
+    ../../modules/nixos/roles.nix
     inputs.nixfigs-common.common.nixos
   ];
   users = {
