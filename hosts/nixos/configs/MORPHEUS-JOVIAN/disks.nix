@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   boot.zfs = {
     requestEncryptionCredentials = true;
@@ -25,7 +24,7 @@
       device = "/dev/zvol/zdata/crypt/shared/homes/atuin/jovian";
       fsType = "ext4";
       neededForBoot = false;
-      options = [ "x-systemd.automount" ];
+      options = ["x-systemd.automount"];
     };
 
     "/etc/nixos" = {
