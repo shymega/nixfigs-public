@@ -1,12 +1,12 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 #
-
-{ config, lib, ... }:
 {
-
+  config,
+  lib,
+  ...
+}: {
   boot = {
     initrd.availableKernelModules = [
       "nvme"
@@ -21,8 +21,8 @@
       "dm-snapshot"
       "amdgpu"
     ];
-    kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
+    kernelModules = ["kvm-amd"];
+    extraModulePackages = [];
     zfs = {
       requestEncryptionCredentials = true;
       forceImportAll = true;
@@ -84,14 +84,14 @@
       ];
     };
     "/etc/ssh" = {
-      depends = [ "/persist" ];
+      depends = ["/persist"];
       device = "/persist/etc/ssh";
       fsType = "none";
       neededForBoot = true;
-      options = [ "bind" ];
+      options = ["bind"];
     };
   };
-  swapDevices = [ { device = "/dev/disk/by-label/SWAP"; } ];
+  swapDevices = [{device = "/dev/disk/by-label/SWAP";}];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
