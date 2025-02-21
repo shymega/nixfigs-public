@@ -9,37 +9,62 @@
 
   fileSystems = {
     "/" = {
-      device = "ztank/crypt/jovian/local/root";
+      device = "ztank/crypt/nixos/jovian/local/root";
       fsType = "zfs";
       neededForBoot = true;
     };
 
+    "/data/Games" = {
+      device = "zdata/crypt/shared/games";
+      fsType = "zfs";
+      neededForBoot = true;
+    };
+
+    "/home/dzrodriguez/Games" = {
+      depends = ["/data/Games"];
+      device = "/data/Games";
+      fsType = "none";
+      neededForBoot = false;
+      options = [
+        "bind"
+        "nofail"
+        "x-systemd.automount"
+      ];
+    };
+
     "/home" = {
-      device = "zdata/crypt/shared/home/dzrodriguez";
+      device = "zdata/crypt/shared/homes/nixos/jovian";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/etc/nixos" = {
-      device = "ztank/crypt/jovian/safe/nixos-config";
+      device = "zdata/crypt/shared/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/persist" = {
-      device = "ztank/crypt/jovian/safe/persist";
+      device = "ztank/crypt/nixos/jovian/safe/persist";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/nix" = {
-      device = "ztank/crypt/jovian/local/nix-store";
+      device = "ztank/crypt/nixos/jovian/local/nix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
+    "/home/dzrodriguez/.local/share/atuin" = {
+      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos/jovian"; # Replace with by-label.
+      fsType = "ext4";
+      neededForBoot = false;
+      options = ["x-systemd.automount"];
+    };
+
     "/boot/efi" = {
-      device = "/dev/disk/by-label/EFI_DPRIM"; # DISK PRIMARY.
+      device = "/dev/disk/by-label/EFI_DPRIM"; # DISK PRIMARY. Replace with `by-label`.
       fsType = "vfat";
       neededForBoot = true;
       options = [
