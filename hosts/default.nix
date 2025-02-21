@@ -115,7 +115,7 @@ in {
     hostname = "NEO-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["jovian" "gaming"];
+    hostRoles = ["jovian" "gaming" "personal"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -147,7 +147,7 @@ in {
     address = "MORPHEUS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-LINUX";
     hostPlatform = "x86_64-linux";
-    hostRoles = ["workstation" "gaming"];
+    hostRoles = ["workstation" "gaming" "personal"];
     embedHm = true;
     hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
@@ -165,7 +165,7 @@ in {
     hostname = "MORPHEUS-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["workstation" "gaming"];
+    hostRoles = ["jovian" "gaming" "personal"];
     hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
@@ -199,7 +199,7 @@ in {
     hostname = "TRINITY-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["gaming" "steam-deck"];
+    hostRoles = ["gaming" "steam-deck", "personal"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -218,6 +218,7 @@ in {
     address = "TWINS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "TWINS-LINUX";
     hostPlatform = "x86_64-linux";
+    hostRoles = ["workstation" "personal"];
     hardwareModules = [inputs.hardware.nixosModules.lenovo-thinkpad-x270];
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
