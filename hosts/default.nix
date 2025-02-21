@@ -202,6 +202,7 @@ in {
     embedHm = true;
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
+      inputs.hardware-shymega.nixosModules.gpd-duo
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
@@ -218,6 +219,7 @@ in {
     embedHm = true;
     extraModules = [
       inputs.lanzaboote.nixosModules.lanzaboote
+      inputs.hardware-shymega.nixosModules.gpd-duo
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
