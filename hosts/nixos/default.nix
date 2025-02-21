@@ -42,6 +42,7 @@ let
           ../../modules/nixos/generators.nix
           inputs.agenix.nixosModules.default
           inputs.auto-cpufreq.nixosModules.default
+          inputs.chaotic.nixosModules.default
         ]
         ++ extraModules
         ++ hardwareModules
