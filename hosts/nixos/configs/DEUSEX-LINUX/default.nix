@@ -72,6 +72,11 @@ in {
             preLVM = true;
             allowDiscards = true;
           };
+          DATA = {
+            device = "/dev/disk/by-label/DATA";
+            preLVM = true;
+            allowDiscards = true;
+          };
         };
         # Add FIDO2 support.
       };
