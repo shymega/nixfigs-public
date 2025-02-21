@@ -160,7 +160,6 @@ in {
   };
 
   hardware = {
-    gpd.ppt.enable = true;
     graphics = {
       enable = true;
       enable32Bit = true;
