@@ -1,30 +1,30 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   pkgs,
   inputs,
   config,
   lib,
   ...
-}:
-let
+}: let
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages = lib.filterAttrs (
-    name: kernelPackages:
-    (lib.hasInfix "_xanmod" name)
-    && (builtins.tryEval kernelPackages).success
-    && (
-      (
-        (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
-        || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-      )
-      && (!kernelPackages.nvidia_x11.meta.broken)
-      && (!kernelPackages.evdi.meta.broken)
-      && (!kernelPackages.vmware.meta.broken)
+  myCompatibleKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (lib.hasInfix "_xanmod" name)
+        && (builtins.tryEval kernelPackages).success
+        && (
+          (
+            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
+          )
+          && (!kernelPackages.nvidia_x11.meta.broken)
+          && (!kernelPackages.evdi.meta.broken)
+          && (!kernelPackages.vmware.meta.broken)
+        )
     )
-  ) pkgs.linuxKernel.packages;
+    pkgs.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -32,8 +32,7 @@ let
   );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     inputs.nur-xddxdd.nixosModules.setupOverlay
@@ -77,7 +76,7 @@ in
       }
     ];
 
-    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
+    extraModulePackages = with config.boot.kernelPackages; [zfs];
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
@@ -132,10 +131,10 @@ in
 
     initrd.systemd.services.rollback = {
       description = "Rollback ZFS datasets to a pristine state";
-      wantedBy = [ "initrd.target" ];
-      after = [ "zfs-import-tank.service" ];
-      before = [ "sysroot.mount" ];
-      path = with pkgs; [ zfs ];
+      wantedBy = ["initrd.target"];
+      after = ["zfs-import-tank.service"];
+      before = ["sysroot.mount"];
+      path = with pkgs; [zfs];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
@@ -210,7 +209,7 @@ in
     opengl = {
       enable = true;
       driSupport = true;
-      extraPackages32 = with pkgs.pkgsi686Linux; [ vaapiIntel ];
+      extraPackages32 = with pkgs.pkgsi686Linux; [vaapiIntel];
       extraPackages = with pkgs; [
         vaapiIntel
         vaapiVdpau
@@ -221,5 +220,4 @@ in
     };
   };
   system.stateVersion = "24.05";
-
 }

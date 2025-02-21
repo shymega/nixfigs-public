@@ -1,9 +1,11 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ lib, config, ... }:
 {
+  lib,
+  config,
+  ...
+}: {
   users = {
     users = {
       "root" = {
@@ -14,7 +16,6 @@
         openssh.authorizedKeys.keys = config.users.users."nixos".openssh.authorizedKeys.keys;
       };
       "nixos" = {
-
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrrpI4JTUIr0TC39r1K3nxyieCLi1aqH413+7ulSy5t"
         ];
@@ -30,7 +31,7 @@
 
   boot = {
     kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
+    extraModulePackages = with config.boot.kernelPackages; [zfs];
 
     supportedFilesystems = lib.mkForce [
       "btrfs"

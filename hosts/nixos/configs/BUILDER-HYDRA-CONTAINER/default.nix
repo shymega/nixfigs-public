@@ -1,12 +1,13 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ config, lib, ... }:
-let
-  fqdn = "${config.networking.hostName}.${config.networking.domain}";
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  fqdn = "${config.networking.hostName}.${config.networking.domain}";
+in {
   boot = {
     isContainer = true;
     loader = {
@@ -23,7 +24,7 @@ in
     enable = true;
     hydraURL = "https://${fqdn}";
     notificationSender = "hydra-no-reply@shymega.org.uk";
-    buildMachinesFiles = [ ];
+    buildMachinesFiles = [];
     useSubstitutes = true;
   };
 
@@ -38,7 +39,7 @@ in
     '';
     knownHosts = {
       nixbuild = {
-        hostNames = [ "eu.nixbuild.net" ];
+        hostNames = ["eu.nixbuild.net"];
         publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIQCZc54poJ8vqawd8TraNryQeJnvH1eLpIDgbiqymM";
       };
     };

@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ config, lib, ... }:
 {
-  imports = [ ./disks.nix ];
+  config,
+  lib,
+  ...
+}: {
+  imports = [./disks.nix];
   boot = {
     initrd = {
       availableKernelModules = [
@@ -15,14 +17,14 @@
         "sdhci_pci"
         "hid_apple"
       ];
-      kernelModules = [ "amdgpu" ];
+      kernelModules = ["amdgpu"];
     };
     kernelModules = [
       "kvm-amd"
       "amdgpu"
       "i2c_dev"
     ];
-    extraModulePackages = [ ];
+    extraModulePackages = [];
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

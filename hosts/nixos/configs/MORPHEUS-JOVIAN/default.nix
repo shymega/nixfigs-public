@@ -1,17 +1,15 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
-{ inputs
-, config
-, pkgs
-, lib
-, ...
-}:
-let
-  enableXanmod = true;
-in
 {
+  inputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  enableXanmod = true;
+in {
   imports = [
     ./hardware-configuration.nix
     inputs.jovian-nixos.nixosModules.default
@@ -26,7 +24,7 @@ in
       "ntfs"
       "zfs"
     ];
-    zfs.extraPools = [ "ztank" ];
+    zfs.extraPools = ["ztank"];
     zfs.devNodes = "/dev/disk/by-partuuid";
 
     initrd.supportedFilesystems = [
@@ -44,26 +42,25 @@ in
     };
 
     kernelPackages =
-      if enableXanmod then
-        pkgs.linuxPackagesFor
-          (
-            pkgs.unstable.linux_xanmod_latest.override {
-              argsOverride = rec {
-                modDirVersion = "${version}-${suffix}";
-                suffix = "xanmod1";
-                version = "6.11.2";
+      if enableXanmod
+      then
+        pkgs.linuxPackagesFor (
+          pkgs.unstable.linux_xanmod_latest.override {
+            argsOverride = rec {
+              modDirVersion = "${version}-${suffix}";
+              suffix = "xanmod1";
+              version = "6.11.2";
 
-                src = pkgs.fetchFromGitHub {
-                  owner = "xanmod";
-                  repo = "linux";
-                  rev = "${version}-${suffix}";
-                  hash = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
-                };
+              src = pkgs.fetchFromGitHub {
+                owner = "xanmod";
+                repo = "linux";
+                rev = "${version}-${suffix}";
+                hash = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
               };
-            }
-          )
-      else
-        config.boot.zfs.package.latestCompatibleLinuxPackages;
+            };
+          }
+        )
+      else config.boot.zfs.package.latestCompatibleLinuxPackages;
 
     loader.systemd-boot.enable = lib.mkForce false;
 
@@ -72,9 +69,9 @@ in
       pkiBundle = "/etc/secureboot";
     };
 
-    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
+    extraModulePackages = with config.boot.kernelPackages; [zfs];
 
-    kernelParams = [ "nohibernate" ];
+    kernelParams = ["nohibernate"];
     extraModprobeConfig = ''
       options zfs l2arc_noprefetch=0 l2arc_write_boost=33554432 l2arc_write_max=16777216 zfs_arc_max=2147483648
       options kvm_amd nested=1
@@ -85,7 +82,6 @@ in
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
     };
-
   };
 
   powerManagement = {
@@ -106,7 +102,7 @@ in
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
     amdgpu = {
       amdvlk = {
@@ -138,7 +134,7 @@ in
     };
     xserver = {
       enable = true;
-      videoDrivers = [ "amdgpu" ];
+      videoDrivers = ["amdgpu"];
     };
     fstrim.enable = true;
     smartd = {
@@ -149,7 +145,7 @@ in
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      packages = with pkgs; [gnome.gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
