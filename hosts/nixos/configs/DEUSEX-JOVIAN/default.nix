@@ -184,9 +184,6 @@ in {
       opencl.enable = true;
     };
     i2c.enable = true;
-    sensor.iio = {
-      enable = true;
-    };
     cpu.amd.ryzen-smu.enable = true;
   };
 
