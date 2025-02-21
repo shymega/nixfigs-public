@@ -7,9 +7,7 @@
   pkgs,
   lib,
   ...
-}: let
-  enableXanmod = true;
-in {
+}: {
   imports = [
     ./hardware-configuration.nix
     inputs.jovian-nixos.nixosModules.default
@@ -41,26 +39,7 @@ in {
       ];
     };
 
-    kernelPackages =
-      if enableXanmod
-      then
-        pkgs.linuxPackagesFor (
-          pkgs.unstable.linux_xanmod_latest.override {
-            argsOverride = rec {
-              modDirVersion = "${version}-${suffix}";
-              suffix = "xanmod1";
-              version = "6.11.2";
-
-              src = pkgs.fetchFromGitHub {
-                owner = "xanmod";
-                repo = "linux";
-                rev = "${version}-${suffix}";
-                hash = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
-              };
-            };
-          }
-        )
-      else config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
     loader.systemd-boot.enable = lib.mkForce false;
 
