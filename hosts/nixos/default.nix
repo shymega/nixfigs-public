@@ -27,7 +27,11 @@
     baseModules,
     ...
   }: let
-    libx = inputs.nixfigs-helpers.libx.${hostPlatform};
+    libx =
+      inputs.nixfigs-helpers.libx.${hostPlatform}
+      // {
+        roleUtils = inputs.nixfigs-roles.utils;
+      };
     inherit (inputs.nixpkgs) lib;
   in
     inputs.nixpkgs.lib.nixosSystem rec {

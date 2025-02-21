@@ -92,6 +92,7 @@ in {
     address = "NEO-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "NEO-LINUX";
     hostPlatform = "x86_64-linux";
+    hostRoles = ["workstation" "gaming" "personal"];
     hardwareModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
@@ -105,7 +106,7 @@ in {
     pubkey = "";
     embedHm = true;
     remoteBuild = true;
-    deployable = false;
+    deployable = true;
   };
 
   NEO-JOVIAN = mkHost {
@@ -114,13 +115,12 @@ in {
     hostname = "NEO-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["gaming"];
+    hostRoles = ["jovian" "gaming"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
     ];
     pubkey = null;
@@ -147,6 +147,7 @@ in {
     address = "MORPHEUS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-LINUX";
     hostPlatform = "x86_64-linux";
+    hostRoles = ["workstation" "gaming"];
     embedHm = true;
     hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
@@ -164,14 +165,13 @@ in {
     hostname = "MORPHEUS-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["gaming"];
+    hostRoles = ["workstation" "gaming"];
     hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
     ];
     pubkey = null;
@@ -199,13 +199,12 @@ in {
     hostname = "TRINITY-JOVIAN";
     hostPlatform = "x86_64-linux";
     monolithConfig = true;
-    hostRoles = ["gaming"];
+    hostRoles = ["gaming" "steam-deck"];
     extraModules = [
       inputs.hardware.nixosModules.common-cpu-amd
       inputs.hardware.nixosModules.common-gpu-amd
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      inputs.chaotic.nixosModules.default
       inputs.lanzaboote.nixosModules.lanzaboote
     ];
     pubkey = null;
@@ -243,82 +242,81 @@ in {
     embedHm = true;
   };
 
-  SMITH-LINUX = mkHost rec {
-    type = "nixos";
-    address = "SMITH-LINUX.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "SMITH-LINUX";
-    hostPlatform = "aarch64-linux";
-    monolithConfig = false;
-    hostRoles = ["minimal"];
-    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
-    extraModules = [
-      ../nix/24.11-compat.nix
-      {
-        environment.systemPackages = [
-          inputs.agenix.packages.${hostPlatform}.default
-          inputs.nix-alien.packages.${hostPlatform}.nix-alien
-        ];
-      }
-      "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-    ];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-  };
+  #   SMITH-LINUX = mkHost rec {
+  #     type = "nixos";
+  #     address = "SMITH-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+  #     hostname = "SMITH-LINUX";
+  #     hostPlatform = "aarch64-linux";
+  #     monolithConfig = false;
+  #     hostRoles = ["minimal"];
+  #     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
+  #     extraModules = [
+  #       {
+  #         environment.systemPackages = [
+  #           inputs.agenix.packages.${hostPlatform}.default
+  #           inputs.nix-alien.packages.${hostPlatform}.nix-alien
+  #         ];
+  #       }
+  #       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+  #     ];
+  #     pubkey = "";
+  #     remoteBuild = true;
+  #     deployable = false;
+  #   };
 
-  MATRIX-LXC = mkHost {
-    type = "nixos";
-    address = "matrix.rodriguez.org.uk";
-    hostname = "MATRIX-LXC";
-    username = "dzrodriguez";
-    monolithConfig = false;
-    hostRoles = ["server"];
-    hostPlatform = "x86_64-linux";
-    extraModules = [
-      inputs.srvos.nixosModules.server
-      inputs.srvos.nixosModules.hardware-hetzner-cloud-arm
-      inputs.srvos.nixosModules.mixins-terminfo
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-    ];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-  };
+  #   MATRIX-LXC = mkHost {
+  #     type = "nixos";
+  #     address = "matrix.rodriguez.org.uk";
+  #     hostname = "MATRIX-LXC";
+  #     username = "dzrodriguez";
+  #     monolithConfig = false;
+  #     hostRoles = ["server"];
+  #     hostPlatform = "x86_64-linux";
+  #     extraModules = [
+  #       inputs.srvos.nixosModules.server
+  #       inputs.srvos.nixosModules.hardware-hetzner-cloud-arm
+  #       inputs.srvos.nixosModules.mixins-terminfo
+  #       inputs.hardware.nixosModules.common-pc-ssd
+  #       inputs.hardware.nixosModules.common-pc
+  #     ];
+  #     pubkey = "";
+  #     remoteBuild = true;
+  #     deployable = false;
+  #   };
 
-  BUILDER-HYDRA-CONTAINER = mkHost {
-    type = "nixos";
-    address = "hydra.shymega.org.uk";
-    hostname = "BUILDER-HYDRA-CONTAINER";
-    username = "dzrodriguez";
-    baseModules = [
-      inputs.agenix.nixosModules.default
-      inputs.nixfigs-secrets.system
-    ];
-    monolithConfig = false;
-    hostPlatform = "x86_64-linux";
-    hostRoles = ["server"];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-  };
+  # BUILDER-HYDRA-CONTAINER = mkHost {
+  #  type = "nixos";
+  #  address = "hydra.shymega.org.uk";
+  #  hostname = "BUILDER-HYDRA-CONTAINER";
+  #  username = "dzrodriguez";
+  #  baseModules = [
+  #    inputs.agenix.nixosModules.default
+  #    inputs.nixfigs-secrets.system
+  #  ];
+  #  monolithConfig = false;
+  # hostPlatform = "x86_64-linux";
+  # hostRoles = ["server"];
+  # pubkey = "";
+  # remoteBuild = true;
+  # deployable = false;
+  # };
 
-  BUILDER-AGENT-CONTAINER = mkHost {
-    type = "nixos";
-    address = "builder.shymega.org.uk";
-    hostname = "BUILDER-CONTAINER";
-    username = "dzrodriguez";
-    baseModules = [
-      inputs.agenix.nixosModules.default
-      inputs.nixfigs-secrets.system
-    ];
-    monolithConfig = false;
-    hostPlatform = "x86_64-linux";
-    hostRoles = ["server"];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-  };
+  # BUILDER-AGENT-CONTAINER = mkHost {
+  #  type = "nixos";
+  #  address = "builder.shymega.org.uk";
+  #  hostname = "BUILDER-CONTAINER";
+  #  username = "dzrodriguez";
+  #  baseModules = [
+  #   inputs.agenix.nixosModules.default
+  #    inputs.nixfigs-secrets.system
+  #  ];
+  #  monolithConfig = false;
+  #  hostPlatform = "x86_64-linux";
+  #  hostRoles = ["server"];
+  #  pubkey = "";
+  #  remoteBuild = true;
+  #  deployable = false;
+  # };
 
   ### Experimental Device Ports ###
   ## ClockworkPi uConsole (CM4) ##
@@ -335,7 +333,6 @@ in {
     hostRoles = ["minimal"];
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      ../nix/24.11-compat.nix
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
@@ -361,7 +358,6 @@ in {
     monolithConfig = false;
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      ../nix/24.11-compat.nix
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
@@ -389,7 +385,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
@@ -410,7 +405,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
     ];
@@ -432,7 +426,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
@@ -453,7 +446,6 @@ in {
       inputs.srvos.nixosModules.mixins-terminfo
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
-      ../nix/24.11-compat.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ];
   }; # TODO: Add Headscale as domain?
