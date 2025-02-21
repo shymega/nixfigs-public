@@ -43,7 +43,6 @@ in {
   users."root".password = "passw0rd"; # Lock account.
   users."dzrodriguez".password = "passw0rd"; # Lock account.
 
-
   lantian.qemu-user-static-binfmt = {
     enable = true;
     package = pkgs.qemu;
