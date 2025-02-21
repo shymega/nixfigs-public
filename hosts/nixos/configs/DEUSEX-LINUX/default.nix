@@ -10,6 +10,41 @@
 }: let
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
+  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
+  myZfsCompatibleXanmodKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (lib.hasInfix "_xanmod" name)
+        && (builtins.tryEval kernelPackages).success
+        && (
+          (
+            (!zfsIsUnstable && !kernelPackages.${pkgs.unstable.zfs.kernelModuleAttribute}.meta.broken)
+            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
+          )
+          && (!kernelPackages.evdi.meta.broken)
+          && (!kernelPackages.vmware.meta.broken)
+        )
+    )
+    pkgs.linuxKernel.packages;
+  latestXanmodKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myZfsCompatibleXanmodKernelPackages
+    )
+  );
+  myZfsCompatibleStockKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (builtins.match "linux_[0-9]+_[0-9]+" name)
+        != null
+        && (builtins.tryEval kernelPackages).success
+        && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+    )
+    pkgs.linuxKernel.packages;
+  latestStockKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myZfsCompatibleStockKernelPackages
+    )
+  );
 in {
   imports = [
     ./hardware-configuration.nix
@@ -96,24 +131,15 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = let
-      zfsCompatibleKernelPackages0 =
-        lib.filterAttrs (
-          name: kernelPackages:
-            (builtins.match "linux_[0-9]+_[0-9]+" name)
-            != null
-            && (builtins.tryEval kernelPackages).success
-            && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
-        )
-        pkgs.linuxKernel.packages;
-    in
-      lib.last (
-        lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-          builtins.attrValues zfsCompatibleKernelPackages0
-        )
-      );
+    kernelPackages = latestXanmodKernelPackage;
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware ${config.boot.zfs.package.kernelModuleAttribute}];
 
-    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
+    specialisation = {
+      stock-kernel.configuration = {
+        system.nixos.tags = ["stock-kernel"];
+        kernelPackages = lib.mkForce latestStockKernelPackage;
+      };
+    };
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
