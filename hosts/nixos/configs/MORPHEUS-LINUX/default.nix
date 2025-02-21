@@ -33,10 +33,8 @@
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
 in {
-  disabledModules = ["hardware/video/displaylink.nix"];
   imports = [
     ./hardware-configuration.nix
-    ./displaylink.nix
     inputs.ucodenix.nixosModules.default
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
@@ -214,6 +212,7 @@ in {
   };
 
   services = {
+    power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
@@ -237,7 +236,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
@@ -250,11 +249,10 @@ in {
       enable = true;
       autodetect = true;
     };
-    power-profiles-daemon.enable = true;
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [gnome.gnome-settings-daemon];
+      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
@@ -291,13 +289,6 @@ in {
         SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
       '';
     };
-    ofono = {
-      enable = true;
-      plugins = [
-        pkgs.modem-manager-gui
-        pkgs.libsForQt5.modemmanager-qt
-      ];
-    };
     logind = {
       lidSwitchExternalPower = "ignore";
       lidSwitchDocked = "ignore";
@@ -322,22 +313,12 @@ in {
 
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = false;
+    gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
         with pkgs; [
-          protontricks
-          protonup-qt
-          python3Full
-          python3Packages.pip
-          python3Packages.virtualenv
-          steamcmd
           steamtinkerlaunch
-          # wemod-launcher
-          wineWowPackages.stable
-          winetricks
         ];
-      extraLibraries = p: with p; [(lib.getLib networkmanager)];
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
