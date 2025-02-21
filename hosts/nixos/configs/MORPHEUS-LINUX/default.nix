@@ -4,25 +4,66 @@
 
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
 }:
 let
-  enableXanmod = true;
+  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
+  myCompatibleKernelPackages = lib.filterAttrs (
+    name: kernelPackages:
+    (lib.hasInfix "_xanmod" name)
+    && (builtins.tryEval kernelPackages).success
+    && (
+      (
+        (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+        || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
+      )
+      && (!kernelPackages.nvidia_x11.meta.broken)
+      && (!kernelPackages.evdi.meta.broken)
+      && (!kernelPackages.vmware.meta.broken)
+    )
+  ) pkgs.linuxKernel.packages;
+  latestKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myCompatibleKernelPackages
+    )
+  );
+  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
+  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
 in
 {
   disabledModules = [ "hardware/video/displaylink.nix" ];
   imports = [
     ./hardware-configuration.nix
     ./displaylink.nix
+    inputs.ucodenix.nixosModules.default
+    inputs.nur-xddxdd.nixosModules.setupOverlay
+    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    inputs.nur-xddxdd.nixosModules.nix-cache-attic
+    inputs.nixfigs-virtual-private.virtual.all
   ];
+  lantian.qemu-user-static-binfmt = {
+    enable = true;
+    package = pkgs.qemu;
+  };
+  services.ucodenix = {
+    enable = true;
+    cpuModelId = "00A70F52";
+  };
 
   networking = {
     hostName = "MORPHEUS-LINUX";
-    hostId = "2355a46c";
+    hostId = "c4e0feaa";
   };
   boot = {
+    binfmt = {
+      emulatedSystems = [
+        "wasm32-wasi"
+        "wasm64-wasi"
+      ];
+    };
     supportedFilesystems = [
       "ntfs"
       "zfs"
@@ -42,35 +83,19 @@ in
       "amdgpu"
       "amd_pstate=guided"
       "nohibernate"
+      "zfs.zfs_arc_max=${zfs_arc_max}"
+      "zfs.zfs_arc_min=${zfs_arc_min}"
+      "zfs.l2arc_write_boost=33554432"
+      "zfs.l2arc_write_max=16777216"
     ];
     extraModprobeConfig = lib.mkAfter ''
-      options zfs l2arc_noprefetch=0 l2arc_write_boost=33554432 l2arc_write_max=16777216 zfs_arc_max=12884901888
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages =
-      if enableXanmod then
-        pkgs.unstable.linuxPackagesFor (
-          pkgs.unstable.linux_xanmod_latest.override {
-            argsOverride = rec {
-              modDirVersion = "${version}-${suffix}";
-              suffix = "xanmod1";
-              version = "6.11.2";
+    kernelPackages = latestKernelPackage;
 
-              src = pkgs.fetchFromGitHub {
-                owner = "xanmod";
-                repo = "linux";
-                rev = "${version}-${suffix}";
-                sha256 = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
-              };
-            };
-          }
-        )
-      else
-        config.boot.zfs.package.latestCompatibleLinuxPackages;
-
-    kernelPatches = lib.optionals (!enableXanmod) [
+    kernelPatches = [
       {
         name = "enable RT_FULL";
         patch = null;
@@ -188,11 +213,6 @@ in
     };
     cpu.amd.ryzen-smu.enable = true;
   };
-  boot.binfmt.emulatedSystems = [
-    "aarch64-linux"
-    "armv6l-linux"
-    "armv7l-linux"
-  ];
 
   services = {
     fwupd.enable = true;
@@ -247,12 +267,11 @@ in
         # 4g lte modem.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="2c7c", ATTR{idProduct}=="0125", ATTR{power/autosuspend}="-1"
 
-        # workstation - dock targets.
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="0b95", ATTR{idProduct}=="1790", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3060", SYMLINK+="docked", SYMLINK+="home-office-docked", TAG+="systemd"
+        # workstation - Thinkpad dock (40AC).
+        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
-        # kvm switch target.
-        SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005",  SYMLINK+="kvm-active", TAG+="systemd"
+        # KVM input - active.
+        SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
 
         # rename network interface.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
@@ -263,8 +282,11 @@ in
         # my personal op6t.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
-        # docking station ethernet - rename.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="1790", KERNEL=="eth*", NAME="docketh0"
+        # my personal Moto G.
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", NAME="android0"
+
+        # Thinkpad docking station ethernet.
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
 
         # wm2 i2c fixes.
         SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
@@ -305,7 +327,6 @@ in
     package = pkgs.steam.override {
       extraPkgs =
         pkgs: with pkgs; [
-          deckcheatz
           protontricks
           protonup-qt
           python3Full
@@ -313,22 +334,12 @@ in
           python3Packages.virtualenv
           steamcmd
           steamtinkerlaunch
-          wemod-launcher
+          # wemod-launcher
           wineWowPackages.stable
           winetricks
         ];
       extraLibraries = p: with p; [ (lib.getLib networkmanager) ];
     };
-    extraPackages = with pkgs; [
-      deckcheatz
-      protonup-qt
-      python3Full
-      python3Packages.pip
-      python3Packages.virtualenv
-      steamcmd
-      steamtinkerlaunch
-      wemod-launcher
-    ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;

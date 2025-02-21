@@ -32,7 +32,7 @@ let
     in
     darwin.lib.darwinSystem {
       system = hostPlatform;
-      pkgs = libx.genPkgs hostPlatform overlays;
+      pkgs = genPkgs hostPlatform overlays;
       modules = [ (../hosts/darwin + "/${hostname}") ];
       specialArgs = {
         hostAddress = address;
