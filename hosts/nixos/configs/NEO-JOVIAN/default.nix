@@ -6,9 +6,7 @@
   config,
   pkgs,
   ...
-}: let
-  enableXanmod = true;
-in {
+}: {
   imports = [
     ./hardware-configuration.nix
     inputs.jovian-nixos.nixosModules.default
@@ -48,26 +46,7 @@ in {
       options zfs l2arc_noprefetch=0 l2arc_write_boost=33554432 l2arc_write_max=16777216 zfs_arc_max=2147483648
     '';
 
-    kernelPackages =
-      if enableXanmod
-      then
-        pkgs.linuxPackagesFor (
-          pkgs.unstable.linux_xanmod_latest.override {
-            argsOverride = rec {
-              modDirVersion = "${version}-${suffix}";
-              suffix = "xanmod1";
-              version = "6.11.2";
-
-              src = pkgs.fetchFromGitHub {
-                owner = "xanmod";
-                repo = "linux";
-                rev = "${version}-${suffix}";
-                hash = "sha256-4BXPZs8lp/O/JGWFIO/J1HyOjByaqWQ9O6/jx76TIDs=";
-              };
-            };
-          }
-        )
-      else config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
     extraModulePackages = with config.boot.kernelPackages; [zfs];
 

@@ -17,7 +17,7 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
@@ -56,6 +56,7 @@ in {
   networking = {
     hostName = "NEO-LINUX";
     hostId = "84e3e75f";
+    usePredictableInterfaceNames = false;
   };
   boot = {
     binfmt = {
@@ -207,17 +208,11 @@ in {
         # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
 
-        # rename network interface.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
-
         # my personal iphone.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
 
         # my personal op6t.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
-
-        # my personal Moto G.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", NAME="android0"
       '';
     };
 
