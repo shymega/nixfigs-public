@@ -18674,11 +18674,11 @@
     },
     "hardware-shymega": {
       "locked": {
-        "lastModified": 1735404317,
-        "narHash": "sha256-2gQ16HkAGfvWtQu49paGhEOf97kGXmtWl2/jVt9MmrM=",
+        "lastModified": 1736253906,
+        "narHash": "sha256-jHDUauXsyv7ha3/BkCqIihTBEG+e79wmfz9I8cFBR3U=",
         "owner": "shymega",
         "repo": "nixos-hardware",
-        "rev": "d4e30e9c84e4dc14886f16f4a7f8bfe16e9e19c7",
+        "rev": "4c51192d67b9eea9cbce1ec49316cae19d98729d",
         "type": "github"
       },
       "original": {
@@ -20363,7 +20363,6 @@
       },
       "original": {
         "owner": "Jovian-Experiments",
-        "ref": "development",
         "repo": "Jovian-NixOS",
         "type": "github"
       }
