@@ -45,14 +45,10 @@ in {
     enable = true;
     package = pkgs.qemu;
   };
-  services.ucodenix = {
-    enable = false; # TODO: Find `cpuModelId` and re-enable.
-    cpuModelId = "00A70F52";
-  };
 
   networking = {
     hostName = "DEUSEX-JOVIAN";
-    hostId = "c45bcf1b"; # FIXME: Update with new hostId.
+    hostId = "8e47d5d7";
   };
   boot = {
     binfmt = {
@@ -70,13 +66,15 @@ in {
         "ntfs"
         "zfs"
       ];
-
-      luks.devices = {
-        nixos = {
-          device = "/dev/disk/by-label/NIXOS";
-          preLVM = true;
-          allowDiscards = true;
+      luks = {
+        devices = {
+          OS_CRYPTO = {
+            device = "/dev/disk/by-label/OS_CRYPTO";
+            preLVM = true;
+            allowDiscards = true;
+          };
         };
+        # Add FIDO2 support.
       };
       systemd.services = {
         rollback = {
@@ -88,7 +86,7 @@ in {
           unitConfig.DefaultDependencies = "no";
           serviceConfig.Type = "oneshot";
           script = ''
-            zfs rollback -r ztank/crypt/nixos-jovian/local/root@blank
+            zfs rollback -r ztank/crypt/nixos/jovian/local/root@blank
           '';
         };
         create-needed-for-boot-dirs = {
@@ -194,6 +192,11 @@ in {
   };
 
   services = {
+    ucodenix = {
+      enable = false; # TODO: Find `cpuModelId` and re-enable.
+      cpuModelId = "00A70F52";
+    };
+
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
@@ -226,39 +229,30 @@ in {
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
       extrarules = ''
-        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="0", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start battery.target"
-        SUBSYSTEM=="power_supply", KERNEL=="adp1", ATTR{online}=="1", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start ac.target"
+    SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start battery.target"
+        SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getexe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
 
-        # 4g lte modem.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="2c7c", ATTR{idProduct}=="0125", ATTR{power/autosuspend}="-1"
-
-        # workstation - thinkpad dock (40ac).
+        # workstation - Thinkpad Dock (40AC).
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
-        # kvm input - active.
+        # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
 
         # rename network interface.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", name="wlan0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{DEVTYPE}=="wlan", KERNEL=="wlan*", NAME="wlan0"
 
         # my personal iphone.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", name="iphone0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
 
         # my personal op6t.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", name="android0"
-
-        # my personal moto g.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="201c", KERNEL=="usb*", name="android0"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
         # thinkpad docking station ethernet.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", name="docketh0"
-
-        # wm2 i2c fixes.
-        SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
+        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
       '';
     };
     ollama = {
