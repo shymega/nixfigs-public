@@ -1,32 +1,31 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 #
-
 {
   config,
   inputs,
   pkgs,
   lib,
   ...
-}:
-let
+}: let
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages = lib.filterAttrs (
-    name: kernelPackages:
-    (lib.hasInfix "_xanmod" name)
-    && (builtins.tryEval kernelPackages).success
-    && (
-      (
-        (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
-        || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-      )
-      && (!kernelPackages.nvidia_x11.meta.broken)
-      && (!kernelPackages.evdi.meta.broken)
-      && (!kernelPackages.vmware.meta.broken)
+  myCompatibleKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (lib.hasInfix "_xanmod" name)
+        && (builtins.tryEval kernelPackages).success
+        && (
+          (
+            (!zfsIsUnstable && !kernelPackages.zfs.meta.broken)
+            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
+          )
+          && (!kernelPackages.nvidia_x11.meta.broken)
+          && (!kernelPackages.evdi.meta.broken)
+          && (!kernelPackages.vmware.meta.broken)
+        )
     )
-  ) pkgs.linuxKernel.packages;
+    pkgs.linuxKernel.packages;
   latestKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myCompatibleKernelPackages
@@ -34,8 +33,7 @@ let
   );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
-in
-{
+in {
   imports = [
     ./hardware-configuration.nix
     inputs.ucodenix.nixosModules.default
@@ -87,10 +85,10 @@ in
       systemd.services = {
         rollback = {
           description = "Rollback ZFS datasets to a pristine state";
-          wantedBy = [ "initrd.target" ];
-          after = [ "zfs-import-tank.service" ];
-          before = [ "sysroot.mount" ];
-          path = with pkgs; [ zfs ];
+          wantedBy = ["initrd.target"];
+          after = ["zfs-import-tank.service"];
+          before = ["sysroot.mount"];
+          path = with pkgs; [zfs];
           unitConfig.DefaultDependencies = "no";
           serviceConfig.Type = "oneshot";
           script = ''
@@ -98,8 +96,8 @@ in
           '';
         };
         create-needed-for-boot-dirs = {
-          after = pkgs.lib.mkForce [ "zfs-import-tank.service" ];
-          wants = pkgs.lib.mkForce [ "zfs-import-tank.service" ];
+          after = pkgs.lib.mkForce ["zfs-import-tank.service"];
+          wants = pkgs.lib.mkForce ["zfs-import-tank.service"];
         };
       };
     };
@@ -131,7 +129,7 @@ in
       }
     ];
 
-    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
+    extraModulePackages = with config.boot.kernelPackages; [zfs];
 
     zfs.devNodes = "/dev/NEO-LINUX/ROOT";
 
@@ -160,7 +158,6 @@ in
       generationsDir.copyKernels = true;
       timeout = lib.mkForce 6;
     };
-
   };
 
   hardware = {
@@ -176,7 +173,7 @@ in
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
     amdgpu = {
       initrd.enable = true;
@@ -202,7 +199,7 @@ in
 
   services = {
     udev = {
-      packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      packages = with pkgs; [gnome.gnome-settings-daemon];
       extraRules = ''
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -238,7 +235,7 @@ in
     };
     xserver = {
       enable = true;
-      videoDrivers = [ "amdgpu" ];
+      videoDrivers = ["amdgpu"];
     };
     auto-cpufreq.enable = false;
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
@@ -254,8 +251,8 @@ in
     enable = true;
     gamescopeSession.enable = false;
     package = pkgs.steam.override {
-      extraPkgs =
-        pkgs: with pkgs; [
+      extraPkgs = pkgs:
+        with pkgs; [
           protontricks
           protonup-qt
           python3Full
@@ -267,7 +264,7 @@ in
           wineWowPackages.stable
           winetricks
         ];
-      extraLibraries = p: with p; [ (lib.getLib networkmanager) ];
+      extraLibraries = p: with p; [(lib.getLib networkmanager)];
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
@@ -291,5 +288,4 @@ in
     ];
   };
   system.stateVersion = "24.05";
-
 }

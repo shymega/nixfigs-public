@@ -1,15 +1,13 @@
 # SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
-
 {
   config,
   pkgs,
   lib,
   ...
-}:
-{
-  imports = [ ./hardware-configuration.nix ];
+}: {
+  imports = [./hardware-configuration.nix];
   networking = {
     hostName = "SMITH-LINUX";
   };
@@ -96,5 +94,4 @@
   };
 
   system.stateVersion = "24.05";
-
 }
