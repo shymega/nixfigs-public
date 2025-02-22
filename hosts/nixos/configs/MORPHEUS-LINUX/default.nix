@@ -9,7 +9,7 @@
   ...
 }: let
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages =
+  myZfsCompatibleXanmodKernelPackages =
     lib.filterAttrs (
       name: kernelPackages:
         (lib.hasInfix "_xanmod" name)
@@ -24,9 +24,23 @@
         )
     )
     pkgs.linuxKernel.packages;
-  latestKernelPackage = lib.last (
+  latestXanmodKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myCompatibleKernelPackages
+      builtins.attrValues myZfsCompatibleXanmodKernelPackages
+    )
+  );
+  myZfsCompatibleStockKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (builtins.match "linux_[0-9]+_[0-9]+" name)
+        != null
+        && (builtins.tryEval kernelPackages).success
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
+    )
+    pkgs.linuxKernel.packages;
+  latestStockKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myZfsCompatibleStockKernelPackages
     )
   );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
@@ -90,23 +104,29 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = latestKernelPackage;
+    kernelPackages = let
+      useXanmodUpstream = true;
+      kernel = pkgs.unstable.linuxPackagesFor (
+        pkgs.unstable.linux_xanmod_latest.override {
+          argsOverride = rec {
+            modDirVersion = "${version}-${suffix}";
+            suffix = "xanmod1";
+            version = "6.12.15";
 
-    kernelPatches = [
-      {
-        name = "enable RT_FULL";
-        patch = null;
-        extraConfig = ''
-          PREEMPT y
-          PREEMPT_BUILD y
-          PREEMPT_VOLUNTARY n
-          PREEMPT_COUNT y
-          PREEMPTION y
-        '';
-      }
-    ];
-
-    extraModulePackages = with config.boot.kernelPackages; [zfs];
+            src = pkgs.fetchFromGitLab {
+              owner = "xanmod";
+              repo = "linux";
+              rev = "${version}-${suffix}";
+              sha256 = "sha256-ZYmb/zkYxbmV9oUeEu0jyd0zAzWI864X32SfaD9UWU0=";
+            };
+          };
+        }
+      );
+    in
+      if useXanmodUpstream
+      then kernel
+      else latestXanmodKernelPackage;
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -119,20 +139,32 @@ in {
     };
 
     lanzaboote = {
-      enable = true;
-      enrollKeys = true;
+      enable = false; # TODO: Reenable once `extraEntries` available upstream.
+      enrollKeys = false;
       configurationLimit = 3;
       pkiBundle = "/etc/secureboot";
     };
     loader = {
-      systemd-boot.enable = lib.mkForce false;
-      grub.enable = lib.mkForce false;
+      systemd-boot = {
+        enable = true;
+        memtest86.enable = true;
+        netbootxyz.enable = true;
+        extraFiles = {
+          "efi/shell/shellx64.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+        };
+        extraEntries = {
+          "shell.conf" = ''
+            title UEFI shell
+            efi /EFI/SHELL/SHELLX64.EFI
+          '';
+        };
+      };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
       };
       generationsDir.copyKernels = true;
-      timeout = lib.mkForce 6;
+      timeout = 6;
     };
 
     initrd.systemd.services = {
@@ -317,4 +349,15 @@ in {
   };
 
   system.stateVersion = "24.11";
+
+  specialisation = {
+    stock-kernel.configuration = {
+      system.nixos.tags = ["stock-kernel"];
+      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
+    };
+    xanmod-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["xanmod-nixpkgs-kernel"];
+      boot.kernelPackages = lib.mkForce latestXanmodKernelPackage;
+    };
+  };
 }
