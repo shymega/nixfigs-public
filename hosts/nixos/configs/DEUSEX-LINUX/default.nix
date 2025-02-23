@@ -18,7 +18,7 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.unstable.zfs.kernelModuleAttribute}.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
@@ -37,7 +37,7 @@
         (builtins.match "linux_[0-9]+_[0-9]+" name)
         != null
         && (builtins.tryEval kernelPackages).success
-        && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
     )
     pkgs.linuxKernel.packages;
   latestStockKernelPackage = lib.last (
@@ -131,15 +131,29 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = latestXanmodKernelPackage;
-    extraModulePackages = with config.boot.kernelPackages; [evdi vmware ${config.boot.zfs.package.kernelModuleAttribute}];
+    kernelPackages = let
+      useXanmodUpstream = true;
+      kernel = pkgs.unstable.linuxPackagesFor (
+        pkgs.unstable.linux_xanmod_latest.override {
+          argsOverride = rec {
+            modDirVersion = "${version}-${suffix}";
+            suffix = "xanmod1";
+            version = "6.13.4";
 
-    specialisation = {
-      stock-kernel.configuration = {
-        system.nixos.tags = ["stock-kernel"];
-        kernelPackages = lib.mkForce latestStockKernelPackage;
-      };
-    };
+            src = pkgs.fetchFromGitLab {
+              owner = "xanmod";
+              repo = "linux";
+              rev = "${version}-${suffix}";
+              hash = "sha256-ggOIjYPFShjEltrYz4p4y8KzBVcpQDSmTZwA/8Vb7pw=";
+            };
+          };
+        }
+      );
+    in
+      if useXanmodUpstream
+      then kernel
+      else latestXanmodKernelPackage;
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -186,6 +200,9 @@ in {
   };
 
   hardware = {
+    gpd.duo = {
+      audioEnhancement.enable = true;
+    };
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -264,6 +281,7 @@ in {
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="01e0", ATTR{power/autosuspend}="-1"
 
         # workstation - Thinkpad Dock (40AC).
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
@@ -308,4 +326,15 @@ in {
   };
 
   system.stateVersion = "24.11";
+
+  specialisation = {
+    stock-kernel.configuration = {
+      system.nixos.tags = ["stock-kernel"];
+      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
+    };
+    xanmod-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["xanmod-nixpkgs-kernel"];
+      boot.kernelPackages = lib.mkForce latestXanmodKernelPackage;
+    };
+  };
 }
