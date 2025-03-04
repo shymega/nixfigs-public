@@ -18,7 +18,7 @@
         && (builtins.tryEval kernelPackages).success
         && (
           (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.unstable.zfs.kernelModuleAttribute}.meta.broken)
+            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
             || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
           )
           && (!kernelPackages.evdi.meta.broken)
@@ -37,7 +37,7 @@
         (builtins.match "linux_[0-9]+_[0-9]+" name)
         != null
         && (builtins.tryEval kernelPackages).success
-        && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
     )
     pkgs.linuxKernel.packages;
   latestStockKernelPackage = lib.last (
@@ -130,20 +130,17 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
+    kernelPackages = latestStockKernelPackage;
+    crashDump.enable = true;
 
-    kernelPackages = latestXanmodKernelPackage;
-    extraModulePackages = with config.boot.kernelPackages; [evdi vmware ${config.boot.zfs.package.kernelModuleAttribute}];
-
-    specialisation = {
-      stock-kernel.configuration = {
-        system.nixos.tags = ["stock-kernel"];
-        kernelPackages = lib.mkForce latestStockKernelPackage;
-      };
-    };
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
+      "kernel.core_pattern" = "/var/crash/core.%t.%p";
+      "kernel.panic" = "10";
+      "kernel.unknown_nmi_panic" = "1";
     };
 
     plymouth = {
@@ -186,6 +183,9 @@ in {
   };
 
   hardware = {
+    gpd.duo = {
+      audioEnhancement.enable = true;
+    };
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -240,10 +240,10 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.ollama;
       acceleration = "rocm";
-      models = "/data/AI/LLMs/Ollama/Models/";
+      models = "/var/lib/ollama";
       environmentVariables = {
         HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
       };
@@ -264,8 +264,9 @@ in {
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="01e0", ATTR{power/autosuspend}="-1" # Keychron Q11.
 
-        # workstation - Thinkpad Dock (40AC).
+        # Workstation - Thinkpad Dock (40AC).
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
         # KVM input - active.
@@ -277,7 +278,7 @@ in {
         # my personal OP6T.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
-        # thinkpad docking station ethernet.
+        # Thinkpad docking station ethernet. FIXME.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="8153", KERNEL=="eth*", NAME="docketh0"
 
         # FIXME: experimental wm2 i2c fixes.
@@ -294,7 +295,7 @@ in {
   };
 
   programs.steam = {
-    enable = true;
+    enable = false;
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
@@ -308,4 +309,43 @@ in {
   };
 
   system.stateVersion = "24.11";
+
+  specialisation = {
+    xanmod-latest-kernel.configuration = {
+      system.nixos.tags = ["xanmod-latest-kernel"];
+      boot.kernelPackages = let
+        kernel = pkgs.linuxPackagesFor (
+          pkgs.linux_xanmod_latest.override {
+            argsOverride = rec {
+              modDirVersion = "${version}-${suffix}";
+              suffix = "xanmod1";
+              version = "6.13.4";
+
+              src = pkgs.fetchFromGitLab {
+                owner = "xanmod";
+                repo = "linux";
+                rev = "${version}-${suffix}";
+                hash = "sha256-ggOIjYPFShjEltrYz4p4y8KzBVcpQDSmTZwA/8Vb7pw=";
+              };
+            };
+          }
+        );
+      in
+        lib.mkForce kernel;
+    };
+    stock-kernel.configuration = {
+      system.nixos.tags = ["stock-kernel"];
+      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
+    };
+    xanmod-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["xanmod-nixpkgs-kernel"];
+      boot.kernelPackages = lib.mkForce latestXanmodKernelPackage;
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
+    (writeShellScriptBin "reset-gpu" ''
+      cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
+    '')
+  ];
 }

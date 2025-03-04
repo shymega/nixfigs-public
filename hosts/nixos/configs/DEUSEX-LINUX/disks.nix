@@ -49,6 +49,18 @@
       ];
     };
 
+    "/var/lib/ollama" = {
+      depends = ["/data/AI"];
+      device = "/data/AI/LLMs/Ollama/Models";
+      fsType = "none";
+      neededForBoot = false;
+      options = [
+        "bind"
+        "nofail"
+        "x-systemd.automount"
+      ];
+    };
+
     "/home/dzrodriguez/dev" = {
       depends = ["/data/Development"];
       device = "/data/Development";
