@@ -8,8 +8,8 @@
 }: {
   imports = [./disks.nix];
 
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usb_storage" "sd_mod" "sdhci_pci"];
-  boot.initrd.kernelModules = [];
+  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usbhid" "sdhci_pci" "amdgpu" "hid_apple"];
+  boot.initrd.kernelModules = ["amdgpu" "thunderbolt" "hid_apple"];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
