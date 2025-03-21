@@ -10,7 +10,7 @@
   ...
 }: let
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages =
+  myZfsCompatibleXanmodKernelPackages =
     lib.filterAttrs (
       name: kernelPackages:
         (lib.hasInfix "_xanmod" name)
@@ -24,11 +24,56 @@
           && (!kernelPackages.vmware.meta.broken)
         )
     )
-    pkgs.linuxKernel.packages;
-  latestKernelPackage = lib.last (
+    pkgs.unstable.linuxKernel.packages;
+  latestXanmodKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myCompatibleKernelPackages
+      builtins.attrValues myZfsCompatibleXanmodKernelPackages
     )
+  );
+  myZfsCompatibleStockKernelPackages =
+    lib.filterAttrs (
+      name: kernelPackages:
+        (builtins.match "linux_[0-9]+_[0-9]+" name)
+        != null
+        && (builtins.tryEval kernelPackages).success
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
+    )
+    pkgs.unstable.linuxKernel.packages;
+  latestStockKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myZfsCompatibleStockKernelPackages
+    )
+  );
+  lockedStockKernelPackage = pkgs.linuxPackagesFor (
+    pkgs.linux_latest.override {
+      argsOverride = rec {
+        modDirVersion = "${version}";
+        version = "6.12.17";
+
+        src = pkgs.fetchFromGitLab {
+          owner = "linux-kernel";
+          repo = "stable";
+          tag = "v${version}";
+          hash = "sha256-VJVb0yz8sj8RHoM9TMAuboOpwfZXP/V4XsUjZSiIo5A=";
+        };
+      };
+    }
+  );
+  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
+    pkgs.linux_xanmod_latest.override {
+      argsOverride = rec {
+        modDirVersion = "${version}-${suffix}";
+        suffix = "xanmod1";
+        version = "6.13.7";
+
+        src = pkgs.fetchFromGitLab {
+          owner = "xanmod";
+          repo = "linux";
+          rev = "${version}-${suffix}";
+          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
+        };
+      };
+    }
   );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
@@ -68,6 +113,7 @@ in {
     supportedFilesystems = [
       "ntfs"
       "zfs"
+      "hfsplus"
     ];
     initrd = {
       supportedFilesystems = [
@@ -113,23 +159,8 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestKernelPackage;
-
-    kernelPatches = [
-      {
-        name = "enable RT_FULL";
-        patch = null;
-        extraConfig = ''
-          PREEMPT y
-          PREEMPT_BUILD y
-          PREEMPT_VOLUNTARY n
-          PREEMPT_COUNT y
-          PREEMPTION y
-        '';
-      }
-    ];
-
-    extraModulePackages = with config.boot.kernelPackages; [zfs];
+    kernelPackages = lockedXanmodLatestGitKernelPackage;
+    extraModulePackages = with config.boot.kernelPackages; [evdi vmware] ++ [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     zfs.devNodes = "/dev/NEO-LINUX/ROOT";
 
@@ -143,20 +174,32 @@ in {
     };
 
     lanzaboote = {
-      enable = true;
-      enrollKeys = true;
+      enable = false; # TODO: Reenable once `extraEntries` available upstream.
+      enrollKeys = false;
       configurationLimit = 3;
       pkiBundle = "/etc/secureboot";
     };
     loader = {
-      systemd-boot.enable = lib.mkForce false;
-      grub.enable = lib.mkForce false;
+      systemd-boot = {
+        enable = true;
+        memtest86.enable = true;
+        netbootxyz.enable = true;
+        extraFiles = {
+          "efi/shell/shellx64.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+        };
+        extraEntries = {
+          "shell.conf" = ''
+            title UEFI shell
+            efi /EFI/SHELL/SHELLX64.EFI
+          '';
+        };
+      };
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot";
       };
       generationsDir.copyKernels = true;
-      timeout = lib.mkForce 6;
+      timeout = 6;
     };
   };
 
@@ -202,8 +245,10 @@ in {
       packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         # workstation - keyboard & mouse suspension.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}:="-1" # Keychron C2.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}:="-1" # Optical mouse (generic)
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}:="-1" # Keychron Q11.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}:="-1" # Ploopy.
 
         # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
@@ -270,4 +315,19 @@ in {
     ];
   };
   system.stateVersion = "24.11";
+
+  specialisation = {
+    stock-latest-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["stock-kernel"];
+      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
+    };
+    xanmod-latest-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["xanmod-nixpkgs-kernel"];
+      boot.kernelPackages = lib.mkForce latestXanmodKernelPackage;
+    };
+    locked-stock-kernel.configuration = {
+      system.nixos.tags = ["locked-stock-kernel"];
+      boot.kernelPackages = lib.mkForce lockedStockKernelPackage;
+    };
+  };
 }

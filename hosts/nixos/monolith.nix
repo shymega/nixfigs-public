@@ -89,6 +89,8 @@
         gutenprintBin
         samsung-unified-linux-driver
         brlaser
+        brgenml1lpr
+        brgenml1cupswrapper
       ];
     };
     clight = {
