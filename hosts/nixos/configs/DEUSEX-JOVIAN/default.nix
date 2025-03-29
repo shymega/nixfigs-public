@@ -14,12 +14,8 @@
         (lib.hasInfix "_xanmod" name)
         && (builtins.tryEval kernelPackages).success
         && (
-          (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-          )
-          && (!kernelPackages.evdi.meta.broken)
-          && (!kernelPackages.vmware.meta.broken)
+          (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
+          || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
         )
     )
     pkgs.linuxKernel.packages;
@@ -115,7 +111,7 @@ in {
 
     kernelPackages = latestKernelPackage;
 
-    extraModulePackages = with config.boot.kernelPackages; [zfs evdi vmware];
+    extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";

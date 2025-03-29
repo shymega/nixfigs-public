@@ -9,7 +9,7 @@
 
   fileSystems = {
     "/" = {
-      device = "zroot/crypt/nixos/linux/local/root";
+      device = "ztank/crypt/nixos/linux/local/root";
       fsType = "zfs";
     };
 
@@ -58,31 +58,31 @@
     };
 
     "/etc/nixos" = {
-      device = "zroot/crypt/nixos/linux/safe/nixos-config";
+      device = "ztank/crypt/nixos/linux/safe/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/nix" = {
-      device = "zroot/crypt/nixos/linux/local/nix-store";
+      device = "ztank/crypt/nixos/linux/local/nix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/gnu" = {
-      device = "zroot/crypt/nixos/linux/local/guix-store";
+      device = "ztank/crypt/nixos/linux/local/guix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/persist" = {
-      device = "zroot/crypt/nixos/linux/safe/persist";
+      device = "ztank/crypt/nixos/linux/safe/persist";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/var" = {
-      device = "zroot/crypt/nixos/linux/safe/var-store";
+      device = "ztank/crypt/nixos/linux/safe/var-store";
       fsType = "zfs";
       neededForBoot = true;
     };
