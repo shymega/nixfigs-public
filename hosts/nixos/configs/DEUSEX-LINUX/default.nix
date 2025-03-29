@@ -17,15 +17,11 @@
         (lib.hasInfix "_xanmod" name)
         && (builtins.tryEval kernelPackages).success
         && (
-          (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.unstable.zfs.kernelModuleAttribute}.meta.broken)
-            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-          )
-          && (!kernelPackages.evdi.meta.broken)
-          && (!kernelPackages.vmware.meta.broken)
+          (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
+          || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
         )
     )
-    pkgs.linuxKernel.packages;
+    pkgs.unstable.linuxKernel.packages;
   latestXanmodKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myZfsCompatibleXanmodKernelPackages
@@ -37,27 +33,56 @@
         (builtins.match "linux_[0-9]+_[0-9]+" name)
         != null
         && (builtins.tryEval kernelPackages).success
-        && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
     )
-    pkgs.linuxKernel.packages;
+    pkgs.unstable.linuxKernel.packages;
   latestStockKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myZfsCompatibleStockKernelPackages
     )
+  );
+  lockedStockKernelPackage = pkgs.linuxPackagesFor (
+    pkgs.linux_latest.override {
+      argsOverride = rec {
+        modDirVersion = "${version}";
+        version = "6.12.17";
+
+        src = pkgs.fetchFromGitLab {
+          owner = "linux-kernel";
+          repo = "stable";
+          tag = "v${version}";
+          hash = "sha256-VJVb0yz8sj8RHoM9TMAuboOpwfZXP/V4XsUjZSiIo5A=";
+        };
+      };
+    }
+  );
+  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
+    pkgs.linux_xanmod_latest.override {
+      argsOverride = rec {
+        modDirVersion = "${version}-${suffix}";
+        suffix = "xanmod1";
+        version = "6.13.7";
+
+        src = pkgs.fetchFromGitLab {
+          owner = "xanmod";
+          repo = "linux";
+          rev = "${version}-${suffix}";
+          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
+        };
+      };
+    }
   );
 in {
   imports = [
     ./hardware-configuration.nix
     inputs.ucodenix.nixosModules.default
     inputs.nur-xddxdd.nixosModules.setupOverlay
-    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
+    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
   ];
-  lantian.qemu-user-static-binfmt = {
-    enable = true;
-    package = pkgs.qemu;
-  };
+
+  lantian.qemu-user-static-binfmt.enable = true;
 
   networking = {
     hostName = "DEUSEX-LINUX";
@@ -130,20 +155,16 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-
     kernelPackages = latestXanmodKernelPackage;
-    extraModulePackages = with config.boot.kernelPackages; [evdi vmware ${config.boot.zfs.package.kernelModuleAttribute}];
-
-    specialisation = {
-      stock-kernel.configuration = {
-        system.nixos.tags = ["stock-kernel"];
-        kernelPackages = lib.mkForce latestStockKernelPackage;
-      };
-    };
+    crashDump.enable = true;
+    extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
+      "kernel.core_pattern" = "/var/crash/core.%t.%p";
+      "kernel.panic" = "10";
+      "kernel.unknown_nmi_panic" = "1";
     };
 
     plymouth = {
@@ -186,6 +207,9 @@ in {
   };
 
   hardware = {
+    gpd.duo = {
+      audioEnhancement.enable = true;
+    };
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -208,7 +232,10 @@ in {
       };
       opencl.enable = true;
     };
-    i2c.enable = true;
+    i2c.enable = false;
+    sensor.iio = {
+      enable = false;
+    };
     cpu.amd.ryzen-smu.enable = true;
   };
 
@@ -220,7 +247,7 @@ in {
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
-      enable = true;
+      enable = false;
       package = pkgs.handheld-daemon;
       user = "dzrodriguez";
     };
@@ -240,10 +267,10 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.ollama;
       acceleration = "rocm";
-      models = "/data/AI/LLMs/Ollama/Models/";
+      models = "/var/lib/ollama";
       environmentVariables = {
         HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
       };
@@ -253,7 +280,7 @@ in {
       enable = true;
       autodetect = true;
     };
-    input-remapper.enable = true;
+    input-remapper.enable = false;
     thermald.enable = true;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
@@ -262,10 +289,12 @@ in {
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="05ac", ATTR{idProduct}=="024f", ATTR{power/autosuspend}="-1"
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}:="-1" # Keychron C2.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}:="-1" # Optical mouse (generic)
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}:="-1" # Keychron Q11.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}:="-1" # Ploopy.
 
-        # workstation - Thinkpad Dock (40AC).
+        # Workstation - Thinkpad Dock.
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
 
         # KVM input - active.
@@ -277,7 +306,7 @@ in {
         # my personal OP6T.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
 
-        # thinkpad docking station ethernet.
+        # Thinkpad docking station ethernet. FIXME.
         SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="8153", KERNEL=="eth*", NAME="docketh0"
 
         # FIXME: experimental wm2 i2c fixes.
@@ -294,7 +323,7 @@ in {
   };
 
   programs.steam = {
-    enable = true;
+    enable = false;
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
@@ -308,4 +337,25 @@ in {
   };
 
   system.stateVersion = "24.11";
+
+  specialisation = {
+    stock-latest-nixpkgs-kernel.configuration = {
+      system.nixos.tags = ["stock-kernel"];
+      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
+    };
+    locked-xanmod-kernel.configuration = {
+      system.nixos.tags = ["locked-xanmod-kernel"];
+      boot.kernelPackages = lib.mkForce lockedXanmodLatestGitKernelPackage;
+    };
+    locked-stock-kernel.configuration = {
+      system.nixos.tags = ["locked-stock-kernel"];
+      boot.kernelPackages = lib.mkForce lockedStockKernelPackage;
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
+    (writeShellScriptBin "reset-gpu" ''
+      cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
+    '')
+  ];
 }

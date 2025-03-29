@@ -89,6 +89,8 @@
         gutenprintBin
         samsung-unified-linux-driver
         brlaser
+        brgenml1lpr
+        brgenml1cupswrapper
       ];
     };
     clight = {
@@ -199,7 +201,6 @@
     docker.enable = true;
     lxc.enable = true;
     lxd.enable = true;
-    vmware.host.enable = true;
 
     libvirtd = lib.optionalAttrs pkgs.stdenv.isx86_64 {
       enable = true;

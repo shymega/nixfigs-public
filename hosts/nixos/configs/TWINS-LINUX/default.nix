@@ -8,26 +8,21 @@
   lib,
   ...
 }: let
-  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myCompatibleKernelPackages =
-    lib.filterAttrs (
-      name: kernelPackages:
-        (lib.hasInfix "_xanmod" name)
-        && (builtins.tryEval kernelPackages).success
-        && (
-          (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-          )
-          && (!kernelPackages.evdi.meta.broken)
-          && (!kernelPackages.vmware.meta.broken)
-        )
-    )
-    pkgs.linuxKernel.packages;
-  latestKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myCompatibleKernelPackages
-    )
+  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
+    pkgs.linux_xanmod_latest.override {
+      argsOverride = rec {
+        modDirVersion = "${version}-${suffix}";
+        suffix = "xanmod1";
+        version = "6.13.7";
+
+        src = pkgs.fetchFromGitLab {
+          owner = "xanmod";
+          repo = "linux";
+          rev = "${version}-${suffix}";
+          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
+        };
+      };
+    }
   );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
@@ -60,7 +55,7 @@ in {
       "ntfs"
       "zfs"
     ];
-    kernelPackages = latestKernelPackage;
+    kernelPackages = lockedXanmodLatestGitKernelPackage;
 
     kernelPatches = [
       {
