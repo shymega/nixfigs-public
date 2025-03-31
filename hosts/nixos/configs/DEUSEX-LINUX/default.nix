@@ -45,13 +45,13 @@
     pkgs.linux_latest.override {
       argsOverride = rec {
         modDirVersion = "${version}";
-        version = "6.12.17";
+        version = "6.12.21";
 
         src = pkgs.fetchFromGitLab {
           owner = "linux-kernel";
           repo = "stable";
           tag = "v${version}";
-          hash = "sha256-VJVb0yz8sj8RHoM9TMAuboOpwfZXP/V4XsUjZSiIo5A=";
+          hash = "sha256-CItjO1ZoQKzkleD5O4k7cTn9YGWGQ2rNoLHZBfZ3ufI=";
         };
       };
     }
@@ -61,13 +61,13 @@
       argsOverride = rec {
         modDirVersion = "${version}-${suffix}";
         suffix = "xanmod1";
-        version = "6.13.7";
+        version = "6.14.0";
 
         src = pkgs.fetchFromGitLab {
           owner = "xanmod";
           repo = "linux";
           rev = "${version}-${suffix}";
-          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
+          hash = "sha256-Kw6jD88Q598FOZhZTJx6r9hpWSFaSy3y+aPbwk2O/Eo=";
         };
       };
     }
@@ -150,6 +150,8 @@ in {
       "zfs.zfs_arc_min=${zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
+      "microcode.amd_sha_check=off"
+      "amdgpu.dcdebugmask=0x210"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
