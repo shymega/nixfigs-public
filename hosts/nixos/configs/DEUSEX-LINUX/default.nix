@@ -8,78 +8,49 @@
   lib,
   ...
 }: let
+  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
-  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myZfsCompatibleXanmodKernelPackages =
-    lib.filterAttrs (
-      name: kernelPackages:
-        (lib.hasInfix "_xanmod" name)
-        && (builtins.tryEval kernelPackages).success
-        && (
-          (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-          || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-        )
-    )
-    pkgs.unstable.linuxKernel.packages;
-  latestXanmodKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myZfsCompatibleXanmodKernelPackages
-    )
-  );
   myZfsCompatibleStockKernelPackages =
-    lib.filterAttrs (
+    lib.filterAttrs
+    (
       name: kernelPackages:
         (builtins.match "linux_[0-9]+_[0-9]+" name)
         != null
         && (builtins.tryEval kernelPackages).success
         && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
     )
-    pkgs.unstable.linuxKernel.packages;
+    pkgs.linuxKernel.packages;
   latestStockKernelPackage = lib.last (
     lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
       builtins.attrValues myZfsCompatibleStockKernelPackages
     )
   );
-  lockedStockKernelPackage = pkgs.linuxPackagesFor (
-    pkgs.linux_latest.override {
-      argsOverride = rec {
-        modDirVersion = "${version}";
-        version = "6.12.21";
-
-        src = pkgs.fetchFromGitLab {
-          owner = "linux-kernel";
-          repo = "stable";
-          tag = "v${version}";
-          hash = "sha256-CItjO1ZoQKzkleD5O4k7cTn9YGWGQ2rNoLHZBfZ3ufI=";
-        };
-      };
-    }
-  );
-  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
-    pkgs.linux_xanmod_latest.override {
-      argsOverride = rec {
-        modDirVersion = "${version}-${suffix}";
-        suffix = "xanmod1";
-        version = "6.14.0";
-
-        src = pkgs.fetchFromGitLab {
-          owner = "xanmod";
-          repo = "linux";
-          rev = "${version}-${suffix}";
-          hash = "sha256-Kw6jD88Q598FOZhZTJx6r9hpWSFaSy3y+aPbwk2O/Eo=";
-        };
-      };
-    }
+  myZfsCompatibleXanmodKernelPackages =
+    lib.filterAttrs
+    (
+      name: kernelPackages:
+        (lib.hasInfix "_xanmod" name)
+        && (builtins.tryEval kernelPackages).success
+        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
+    )
+    pkgs.linuxKernel.packages;
+  latestXanmodKernelPackage = lib.last (
+    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+      builtins.attrValues myZfsCompatibleXanmodKernelPackages
+    )
   );
 in {
-  imports = [
+  imports = with inputs; [
     ./hardware-configuration.nix
-    inputs.ucodenix.nixosModules.default
-    inputs.nur-xddxdd.nixosModules.setupOverlay
-    inputs.nur-xddxdd.nixosModules.nix-cache-attic
-    inputs.nixfigs-virtual-private.virtual.all
-    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    ucodenix.nixosModules.default
+    nur-xddxdd.nixosModules.setupOverlay
+    nur-xddxdd.nixosModules.nix-cache-attic
+    nixfigs-virtual-private.virtual.all
+    nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    chaotic.nixosModules.nyx-cache
+    chaotic.nixosModules.nyx-overlay
+    chaotic.nixosModules.nyx-registry
   ];
 
   lantian.qemu-user-static-binfmt.enable = true;
@@ -130,7 +101,7 @@ in {
           unitConfig.DefaultDependencies = "no";
           serviceConfig.Type = "oneshot";
           script = ''
-            zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
+            zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
           '';
         };
         create-needed-for-boot-dirs = {
@@ -146,12 +117,12 @@ in {
 
     kernelParams = [
       "nohibernate"
-      "zfs.zfs_arc_max=${zfs_arc_max}"
-      "zfs.zfs_arc_min=${zfs_arc_min}"
+      "zfs.zfs_arc_max=${toString zfs_arc_max}"
+      "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
       "microcode.amd_sha_check=off"
-      "amdgpu.dcdebugmask=0x210"
+      "iomem=relaxed"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
@@ -215,6 +186,8 @@ in {
     graphics = {
       enable = true;
       enable32Bit = true;
+      package = pkgs-unstable.mesa;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
       extraPackages = with pkgs; [
         amdvlk
         # VA-API and VDPAU
@@ -238,13 +211,25 @@ in {
     sensor.iio = {
       enable = false;
     };
-    cpu.amd.ryzen-smu.enable = true;
   };
 
   services = {
     ucodenix = {
       enable = true;
       cpuModelId = "00B20F40";
+    };
+    auto-cpufreq = {
+      enable = true;
+      settings = {
+        battery = {
+          governor = "powersave";
+          turbo = "never";
+        };
+        charger = {
+          governor = "performance";
+          turbo = "auto";
+        };
+      };
     };
     fwupd.enable = true;
     hardware.bolt.enable = true;
@@ -274,7 +259,7 @@ in {
       acceleration = "rocm";
       models = "/var/lib/ollama";
       environmentVariables = {
-        HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # 890M-like.
+        HSA_OVERRIDE_GFX_VERSION = "11.0.2"; # 890M-like.
       };
     };
     fstrim.enable = true;
@@ -282,8 +267,24 @@ in {
       enable = true;
       autodetect = true;
     };
+    tlp = {
+      enable = true;
+      settings = {
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+        CPU_MIN_PERF_ON_AC = 0;
+        CPU_MAX_PERF_ON_AC = 100;
+        CPU_MIN_PERF_ON_BAT = 0;
+        CPU_MAX_PERF_ON_BAT = 20;
+      };
+    };
     input-remapper.enable = false;
     thermald.enable = true;
+    power-profiles-daemon.enable = lib.mkForce false;
     udev = {
       packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
@@ -291,28 +292,16 @@ in {
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}:="-1" # Keychron C2.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}:="-1" # Optical mouse (generic)
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}:="-1" # Keychron Q11.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}:="-1" # Ploopy.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}="-1"
 
         # Workstation - Thinkpad Dock.
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
+        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", TAG+="systemd"
 
         # KVM input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
-
-        # My personal iPhone 13.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
-
-        # my personal OP6T.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
-
-        # Thinkpad docking station ethernet. FIXME.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="8153", KERNEL=="eth*", NAME="docketh0"
-
-        # FIXME: experimental wm2 i2c fixes.
-        SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
       '';
     };
     logind = {
@@ -325,7 +314,7 @@ in {
   };
 
   programs.steam = {
-    enable = false;
+    enable = true;
     gamescopeSession.enable = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs:
@@ -338,20 +327,12 @@ in {
     localNetworkGameTransfers.openFirewall = true;
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   specialisation = {
     stock-latest-nixpkgs-kernel.configuration = {
       system.nixos.tags = ["stock-kernel"];
       boot.kernelPackages = lib.mkForce latestStockKernelPackage;
-    };
-    locked-xanmod-kernel.configuration = {
-      system.nixos.tags = ["locked-xanmod-kernel"];
-      boot.kernelPackages = lib.mkForce lockedXanmodLatestGitKernelPackage;
-    };
-    locked-stock-kernel.configuration = {
-      system.nixos.tags = ["locked-stock-kernel"];
-      boot.kernelPackages = lib.mkForce lockedStockKernelPackage;
     };
   };
 
