@@ -84,7 +84,6 @@
       opencl.enable = true;
     };
     i2c.enable = true;
-    cpu.amd.ryzen-smu.enable = true;
   };
 
   services = {
@@ -157,6 +156,22 @@
     };
   };
 
-  system.stateVersion = "24.11";
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+    package = pkgs.steam.override {
+      extraPkgs = pkgs:
+        with pkgs; [
+          steamtinkerlaunch
+          python3Full
+          flatpak-xdg-utils
+        ];
+    };
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+
+  system.stateVersion = "25.05";
   services.xserver.desktopManager.plasma5.enable = true;
 }

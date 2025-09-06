@@ -4,31 +4,6 @@
 {
   description = "Private configs for my NixOS Flakes";
 
-  nixConfig = {
-    extra-trusted-substituters = [
-      "https://cache.dataaturservice.se/spectrum/"
-      "https://cache.nixos.org/"
-      "https://deploy-rs.cachix.org/"
-      "https://devenv.cachix.org"
-      "https://nix-community.cachix.org"
-      "https://nix-gaming.cachix.org"
-      "https://nix-on-droid.cachix.org"
-      "https://numtide.cachix.org"
-      "https://pre-commit-hooks.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "deploy-rs.cachix.org-1:xfNobmiwF/vzvK1gpfediPwpdIP0rpDV2rYqx40zdSI="
-      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
-      "nix-on-droid.cachix.org-1:56snoMJTXmDRC1Ei24CmKoUqvHJ9XCp+nidK7qkMQrU="
-      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
-      "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc="
-      "spectrum-os.org-2:foQk3r7t2VpRx92CaXb5ROyy/NBdRJQG2uX2XJMYZfU="
-    ];
-  };
-
   outputs = inputs: let
     inherit (inputs) self;
 
@@ -81,7 +56,7 @@
     generators = import ./nix/generators.nix {inherit self;};
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
@@ -99,7 +74,7 @@
       flake = false;
     };
     auto-cpufreq = {
-      url = "github:AdnanHodzic/auto-cpufreq/a1ac308be7b558f85c91a6a3e86cbc0cebdadbbc";
+      url = "github:AdnanHodzic/auto-cpufreq?rev=a1ac308be7b558f85c91a6a3e86cbc0cebdadbbc";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
@@ -143,21 +118,19 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager?ref=release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+      url = "github:nix-community/lanzaboote?ref=v0.4.1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
     stylix = {
-      url = "github:danth/stylix/release-24.11";
+      url = "github:danth/stylix?ref=release-25.05";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        flake-compat.follows = "flake-compat";
       };
     };
     nixos-generators = {
@@ -174,11 +147,14 @@
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
-    flatpaks.url = "github:GermanBread/declarative-flatpak/stable-v3";
+    jovian-nixos = {
+      url = "github:Jovian-Experiments/Jovian-NixOS";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    flatpaks.url = "github:GermanBread/declarative-flatpak?ref=stable-v3";
     shypkgs-private.url = "github:shymega/shypkgs-private";
     shypkgs-public.url = "github:shymega/shypkgs-public";
-    _1password-shell-plugins.url = "github:1Password/shell-plugins";
+    onepassword-shell-plugins.url = "github:1Password/shell-plugins";
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
     nur-xddxdd = {
       url = "github:xddxdd/nur-packages";
@@ -189,5 +165,8 @@
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    himmelblau.url = "github:himmelblau-idm/himmelblau?ref=main";
+    hyprland.url = "github:hyprwm/Hyprland?ref=v0.50.1";
+    nixfigs-devenvs.url = "github:shymega/nixfigs-devenvs";
   };
 }

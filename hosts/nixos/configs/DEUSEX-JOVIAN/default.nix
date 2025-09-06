@@ -9,7 +9,8 @@
 }: let
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
   myCompatibleKernelPackages =
-    lib.filterAttrs (
+    lib.filterAttrs
+    (
       name: kernelPackages:
         (lib.hasInfix "_xanmod" name)
         && (builtins.tryEval kernelPackages).success
@@ -93,7 +94,10 @@ in {
       };
     };
     zfs = {
-      extraPools = ["ztank" "zdata"];
+      extraPools = [
+        "ztank"
+        "zdata"
+      ];
       devNodes = "/dev/disk/by-uuid";
     };
 
@@ -111,7 +115,9 @@ in {
 
     kernelPackages = latestKernelPackage;
 
-    extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
+    extraModulePackages = [
+      config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}
+    ];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -181,7 +187,6 @@ in {
       opencl.enable = true;
     };
     i2c.enable = true;
-    cpu.amd.ryzen-smu.enable = true;
   };
 
   services = {
@@ -230,19 +235,10 @@ in {
            ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005", ATTR{power/autosuspend}="-1"
 
            # workstation - Thinkpad Dock (40AC).
-           SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
+           SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", TAG+="systemd"
 
            # KVM input - active.
            SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
-
-           # my personal iphone.
-           SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", NAME="iphone0"
-
-           # my personal op6t.
-           SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", NAME="android0"
-
-           # thinkpad docking station ethernet.
-           SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="3069", KERNEL=="eth*", NAME="docketh0"
       '';
     };
     ollama = {
@@ -285,5 +281,19 @@ in {
     };
   };
 
-  system.stateVersion = "24.11";
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+    package = pkgs.steam.override {
+      extraPkgs = pkgs:
+        with pkgs; [
+          steamtinkerlaunch
+        ];
+    };
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+
+  system.stateVersion = "25.05";
 }
