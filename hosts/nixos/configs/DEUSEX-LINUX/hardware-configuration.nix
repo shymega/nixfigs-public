@@ -8,9 +8,24 @@
 }: {
   imports = [./disks.nix];
 
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "thunderbolt" "usbhid" "sdhci_pci" "amdgpu" "hid_apple"];
-  boot.initrd.kernelModules = ["amdgpu" "thunderbolt" "hid_apple"];
-  boot.kernelModules = ["kvm-amd"];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "xhci_pci"
+    "thunderbolt"
+    "usbhid"
+    "sdhci_pci"
+    "amdgpu"
+    "hid_apple"
+  ];
+  boot.initrd.kernelModules = [
+    "amdgpu"
+    "thunderbolt"
+    "hid_apple"
+  ];
+  boot.kernelModules = [
+    "kvm-amd"
+    "amdgpu"
+  ];
   boot.extraModulePackages = [];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

@@ -20,17 +20,12 @@
   boot = {
     supportedFilesystems = [
       "ntfs"
-      "zfs"
     ];
-    zfs.extraPools = ["ztank"];
-    zfs.devNodes = "/dev/disk/by-partuuid";
 
     initrd.supportedFilesystems = [
       "ntfs"
       "zfs"
     ];
-
-    kernelParams = ["nohibernate"];
 
     initrd = {
       availableKernelModules = [
@@ -42,13 +37,11 @@
     };
 
     extraModprobeConfig = ''
-      options zfs l2arc_noprefetch=0 l2arc_write_boost=33554432 l2arc_write_max=16777216 zfs_arc_max=2147483648
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages =
-      config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
     extraModulePackages = with config.boot.kernelPackages; [zfs];
 
@@ -84,7 +77,6 @@
       opencl.enable = true;
     };
     i2c.enable = true;
-    cpu.amd.ryzen-smu.enable = true;
   };
   boot.binfmt.emulatedSystems = [
     "aarch64-linux"
@@ -162,12 +154,12 @@
       user = "dzrodriguez";
     };
     devices.steamdeck = {
-      autoUpdate = true;
-      enable = true;
-      enableGyroDsuService = true;
+      autoUpdate = false;
+      enable = false;
+      enableGyroDsuService = false;
     };
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
   services.xserver.desktopManager.plasma5.enable = true;
 }

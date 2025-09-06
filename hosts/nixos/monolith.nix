@@ -93,17 +93,7 @@
         brgenml1cupswrapper
       ];
     };
-    clight = {
-      enable = false;
-      settings = {
-        gamma = {
-          disabled = true;
-        };
-      };
-    };
-    guix = {
-      enable = true;
-    };
+    guix.enable = true;
     zerotierone = {
       enable = true;
       joinNetworks = ["@secret@"];
@@ -113,12 +103,17 @@
       enableDemoAgent = lib.mkForce true;
       submissionUrl = "@secret@";
       geoProviderUrl = config.services.geoclue2.submissionUrl;
+      enableWifi = true;
       appConfig = {
         redshift = {
           isAllowed = true;
           isSystem = false;
         };
         gammastep = {
+          isAllowed = true;
+          isSystem = false;
+        };
+        darkman = {
           isAllowed = true;
           isSystem = false;
         };
@@ -135,10 +130,6 @@
       extraConfig = ''
         DNS=1.1.1.1#1dot1dot1dot1.cloudflare-dns.com 1.0.0.1#1dot1dot1dot1.cloudflare-dns.com 2606:4700:4700::1111#1dot1dot1dot1.cloudflare-dns.com 2606:4700:4700::1001#1dot1dot1dot1.cloudflare-dns.com
       '';
-    };
-    usbmuxd = {
-      enable = true;
-      package = pkgs.usbmuxd2;
     };
   };
 
@@ -200,9 +191,9 @@
     waydroid.enable = true;
     docker.enable = true;
     lxc.enable = true;
-    lxd.enable = true;
+    lxd.enable = false;
 
-    libvirtd = lib.optionalAttrs pkgs.stdenv.isx86_64 {
+    libvirtd = lib.optionalAttrs libx.isPC {
       enable = true;
       qemu = {
         package = pkgs.qemu_full;
@@ -214,8 +205,7 @@
             (OVMFFull.override {
               secureBoot = true;
               tpmSupport = true;
-            })
-            .fd
+            }).fd
             pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
@@ -226,7 +216,7 @@
     };
   };
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 
   fonts.enableDefaultPackages = true;
   nixfigs = {

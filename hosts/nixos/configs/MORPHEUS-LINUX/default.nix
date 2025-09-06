@@ -8,6 +8,7 @@
   lib,
   ...
 }: let
+  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
   myZfsCompatibleXanmodKernelPackages =
     lib.filterAttrs (
@@ -25,51 +26,6 @@
       builtins.attrValues myZfsCompatibleXanmodKernelPackages
     )
   );
-  myZfsCompatibleStockKernelPackages =
-    lib.filterAttrs (
-      name: kernelPackages:
-        (builtins.match "linux_[0-9]+_[0-9]+" name)
-        != null
-        && (builtins.tryEval kernelPackages).success
-        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-    )
-    pkgs.unstable.linuxKernel.packages;
-  latestStockKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myZfsCompatibleStockKernelPackages
-    )
-  );
-  lockedStockKernelPackage = pkgs.linuxPackagesFor (
-    pkgs.linux_latest.override {
-      argsOverride = rec {
-        modDirVersion = "${version}";
-        version = "6.12.17";
-
-        src = pkgs.fetchFromGitLab {
-          owner = "linux-kernel";
-          repo = "stable";
-          tag = "v${version}";
-          hash = "sha256-VJVb0yz8sj8RHoM9TMAuboOpwfZXP/V4XsUjZSiIo5A=";
-        };
-      };
-    }
-  );
-  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
-    pkgs.linux_xanmod_latest.override {
-      argsOverride = rec {
-        modDirVersion = "${version}-${suffix}";
-        suffix = "xanmod1";
-        version = "6.13.7";
-
-        src = pkgs.fetchFromGitLab {
-          owner = "xanmod";
-          repo = "linux";
-          rev = "${version}-${suffix}";
-          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
-        };
-      };
-    }
-  );
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
 in {
@@ -79,6 +35,7 @@ in {
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
+    # inputs.himmelblau.nixosModules.himmelblau
   ];
   services.ucodenix = {
     enable = true;
@@ -92,7 +49,10 @@ in {
   };
   boot = {
     zfs = {
-      extraPools = ["ztank" "zdata"];
+      extraPools = [
+        "ztank"
+        "zdata"
+      ];
       devNodes = "/dev/disk/by-uuid";
     };
     binfmt = {
@@ -150,8 +110,10 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = lockedXanmodLatestGitKernelPackage;
-    extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
+    kernelPackages = latestXanmodKernelPackage;
+    extraModulePackages = [
+      config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}
+    ];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -241,6 +203,8 @@ in {
     graphics = {
       enable = true;
       enable32Bit = true;
+      package = pkgs-unstable.mesa;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
       extraPackages = with pkgs; [
         amdvlk
         # VA-API and VDPAU
@@ -265,7 +229,6 @@ in {
       enable = true;
       bmi260.enable = true;
     };
-    cpu.amd.ryzen-smu.enable = true;
   };
 
   services = {
@@ -315,25 +278,19 @@ in {
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
 
         # workstation - keyboard & mouse suspension.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}:="-1" # Keychron C2.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}:="-1" # Optical mouse (generic)
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}:="-1" # Keychron Q11.
-        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}:="-1" # Ploopy.
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="1bcf", ATTRS{idProduct}=="0005", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="3434", ATTRS{idProduct}=="01e0", ATTR{power/autosuspend}="-1"
+        ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="5043", ATTRS{idProduct}=="5c46", ATTR{power/autosuspend}="-1"
 
         # 4g lte modem.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="2c7c", ATTR{idProduct}=="0125", ATTR{power/autosuspend}="-1"
 
         # workstation - thinkpad dock (40ac).
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", SYMLINK+="docked", TAG+="systemd"
+        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", TAG+="systemd"
 
         # kvm input - active.
         SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="13ba", ATTR{idProduct}=="0018",  SYMLINK+="currkvm", TAG+="systemd"
-
-        # my personal iphone.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="12a8", KERNEL=="eth*", name="iphone0"
-
-        # my personal op6t.
-        SUBSYSTEM=="net", ACTION=="add|change", DRIVERS=="?*", ENV{ID_MODEL_ID}=="9024", KERNEL=="usb*", name="android0"
 
         # wm2 i2c fixes.
         SUBSYSTEM=="i2c", KERNEL=="i2c-gxtp7385:00", ATTR{power/wakeup}="disabled"
@@ -368,6 +325,8 @@ in {
       extraPkgs = pkgs:
         with pkgs; [
           steamtinkerlaunch
+          python3Full
+          flatpak-xdg-utils
         ];
     };
     remotePlay.openFirewall = true;
@@ -375,20 +334,5 @@ in {
     localNetworkGameTransfers.openFirewall = true;
   };
 
-  system.stateVersion = "24.11";
-
-  specialisation = {
-    stock-latest-nixpkgs-kernel.configuration = {
-      system.nixos.tags = ["stock-kernel"];
-      boot.kernelPackages = lib.mkForce latestStockKernelPackage;
-    };
-    xanmod-latest-nixpkgs-kernel.configuration = {
-      system.nixos.tags = ["xanmod-nixpkgs-kernel"];
-      boot.kernelPackages = lib.mkForce latestXanmodKernelPackage;
-    };
-    locked-stock-kernel.configuration = {
-      system.nixos.tags = ["locked-stock-kernel"];
-      boot.kernelPackages = lib.mkForce lockedStockKernelPackage;
-    };
-  };
+  system.stateVersion = "25.05";
 }
