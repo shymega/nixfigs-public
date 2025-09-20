@@ -168,12 +168,5 @@
     himmelblau.url = "github:himmelblau-idm/himmelblau?ref=main";
     hyprland.url = "github:hyprwm/Hyprland?ref=v0.50.1";
     nixfigs-devenvs.url = "github:shymega/nixfigs-devenvs";
-    hyprland-config = {
-      url = "github:ktechmidas/nixos-cachy-hyprland";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-      };
-    };
   };
 }

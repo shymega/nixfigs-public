@@ -36,15 +36,6 @@ in {
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
-    inputs.hyprland-config.nixosModules.default
-    {
-      modules.hyprland-desktop = {
-        enable = true;
-        user = "dzrodriguez";
-        terminal = "alacritty";
-        fileManager = "ranger";
-      };
-    }
   ];
 
   environment.etc."crypttab".text = ''
