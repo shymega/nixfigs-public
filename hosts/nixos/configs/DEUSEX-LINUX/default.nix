@@ -51,6 +51,15 @@ in {
     chaotic.nixosModules.nyx-cache
     chaotic.nixosModules.nyx-overlay
     chaotic.nixosModules.nyx-registry
+    hyprland-config.nixosModules.default
+    {
+      modules.hyprland-desktop = {
+        enable = true;
+        user = "dzrodriguez";
+        terminal = "alacritty";
+        fileManager = "ranger";
+      };
+    }
   ];
 
   lantian.qemu-user-static-binfmt.enable = true;
