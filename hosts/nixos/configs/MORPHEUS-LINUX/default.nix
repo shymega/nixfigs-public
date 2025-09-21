@@ -8,7 +8,6 @@
   lib,
   ...
 }: let
-  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
   myZfsCompatibleXanmodKernelPackages =
     lib.filterAttrs (
@@ -31,16 +30,16 @@
 in {
   imports = [
     ./hardware-configuration.nix
-    inputs.ucodenix.nixosModules.default
+    # inputs.ucodenix.nixosModules.default
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
     # inputs.himmelblau.nixosModules.himmelblau
   ];
-  services.ucodenix = {
-    enable = true;
-    cpuModelId = "00A70F52";
-  };
+  #services.ucodenix = {
+  #  enable = true;
+  #  cpuModelId = "00A70F52";
+  #};
 
   networking = {
     hostName = "MORPHEUS-LINUX";
@@ -129,7 +128,7 @@ in {
       enable = false; # TODO: Reenable once `extraEntries` available upstream.
       enrollKeys = false;
       configurationLimit = 3;
-      pkiBundle = "/etc/secureboot";
+      pkiBundle = "/var/lib/sbctl";
     };
     loader = {
       systemd-boot = {
@@ -198,15 +197,18 @@ in {
     cpuFreqGovernor = "powersave";
   };
 
+  environment.variables.AMD_VULKAN_ICD = "RADV";
+
   hardware = {
-    gpd.ppt.enable = lib.mkForce false;
-    graphics = {
+    graphics = let
+      pkgs-unstable = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+      # inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in {
       enable = true;
       enable32Bit = true;
       package = pkgs-unstable.mesa;
       package32 = pkgs-unstable.pkgsi686Linux.mesa;
-      extraPackages = with pkgs; [
-        amdvlk
+      extraPackages = with pkgs.unstable; [
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -214,16 +216,12 @@ in {
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
     amdgpu = {
       initrd.enable = true;
-      amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
-      opencl.enable = true;
     };
+    i2c.enable = true;
+    gpd.ppt.enable = lib.mkForce false;
     i2c.enable = true;
     sensor.iio = {
       enable = true;

@@ -166,7 +166,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     himmelblau.url = "github:himmelblau-idm/himmelblau?ref=main";
-    hyprland.url = "github:hyprwm/Hyprland?ref=v0.50.1";
+    hyprland = {
+      url = "github:hyprwm/Hyprland?ref=v0.51.1";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland"; # Prevents version mismatch.
+    };
     nixfigs-devenvs.url = "github:shymega/nixfigs-devenvs";
   };
 }

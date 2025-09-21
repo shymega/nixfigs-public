@@ -9,7 +9,6 @@
   lib,
   ...
 }: let
-  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
   myZfsCompatibleXanmodKernelPackages =
     lib.filterAttrs (
@@ -32,7 +31,7 @@
 in {
   imports = [
     ./hardware-configuration.nix
-    inputs.ucodenix.nixosModules.default
+    #inputs.ucodenix.nixosModules.default
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
     inputs.nixfigs-virtual-private.virtual.all
@@ -148,14 +147,13 @@ in {
     };
   };
 
+  environment.variables.AMD_VULKAN_ICD = "RADV";
+
   hardware = {
     graphics = {
       enable = true;
       enable32Bit = true;
-      package = pkgs-unstable.mesa;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa;
       extraPackages = with pkgs; [
-        amdvlk
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -163,16 +161,8 @@ in {
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
-    amdgpu = {
-      initrd.enable = true;
-      amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
-      opencl.enable = true;
-    };
+    i2c.enable = true;
   };
 
   services = {
@@ -204,7 +194,6 @@ in {
     };
     xserver = {
       enable = true;
-      videoDrivers = ["amdgpu"];
     };
     thermald.enable = true;
   };
