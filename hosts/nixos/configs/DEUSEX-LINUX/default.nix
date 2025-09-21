@@ -8,7 +8,6 @@
   lib,
   ...
 }: let
-  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
   zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
   myZfsCompatibleStockKernelPackages =
@@ -26,24 +25,10 @@
       builtins.attrValues myZfsCompatibleStockKernelPackages
     )
   );
-  myZfsCompatibleXanmodKernelPackages =
-    lib.filterAttrs
-    (
-      name: kernelPackages:
-        (lib.hasInfix "_xanmod" name)
-        && (builtins.tryEval kernelPackages).success
-        && (!kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-    )
-    pkgs.linuxKernel.packages;
-  latestXanmodKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myZfsCompatibleXanmodKernelPackages
-    )
-  );
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
-    ucodenix.nixosModules.default
+    # ucodenix.nixosModules.default
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
     nixfigs-virtual-private.virtual.all
@@ -59,6 +44,7 @@ in {
     hostName = "DEUSEX-LINUX";
     hostId = "aa1cf1f3";
     usePredictableInterfaceNames = false;
+    firewall.trustedInterfaces = ["ztrfyirq6a"];
   };
   boot = {
     binfmt = {
@@ -128,7 +114,7 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestXanmodKernelPackage;
+    kernelPackages = latestStockKernelPackage;
     crashDump.enable = true;
     extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
@@ -148,7 +134,7 @@ in {
       enable = false; # TODO: Reenable once `extraEntries` available upstream.
       enrollKeys = false;
       configurationLimit = 3;
-      pkiBundle = "/etc/secureboot";
+      pkiBundle = "/var/lib/sbctl";
     };
     loader = {
       systemd-boot = {
@@ -186,10 +172,7 @@ in {
     graphics = {
       enable = true;
       enable32Bit = true;
-      package = pkgs-unstable.mesa;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa;
       extraPackages = with pkgs; [
-        amdvlk
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -197,15 +180,6 @@ in {
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
-    };
-    amdgpu = {
-      initrd.enable = true;
-      amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
-      opencl.enable = true;
     };
     i2c.enable = false;
     sensor.iio = {
@@ -214,10 +188,10 @@ in {
   };
 
   services = {
-    ucodenix = {
-      enable = true;
-      cpuModelId = "00B20F40";
-    };
+    # ucodenix = {
+    #   enable = true;
+    #   cpuModelId = "00B20F40";
+    # };
     auto-cpufreq = {
       enable = true;
       settings = {
@@ -251,7 +225,7 @@ in {
     };
     xserver = {
       enable = true;
-      videoDrivers = ["amdgpu"];
+      videoDrivers = ["modesetting "];
     };
     ollama = {
       enable = true;

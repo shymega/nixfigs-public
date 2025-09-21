@@ -31,7 +31,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     inputs.jovian-nixos.nixosModules.default
-    inputs.ucodenix.nixosModules.default
+    #inputs.ucodenix.nixosModules.default
     inputs.nur-xddxdd.nixosModules.setupOverlay
     inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
     inputs.nur-xddxdd.nixosModules.nix-cache-attic
@@ -132,7 +132,7 @@ in {
       enable = false; # TODO: Reenable once `extraEntries` available upstream.
       enrollKeys = false;
       configurationLimit = 3;
-      pkiBundle = "/etc/secureboot";
+      pkiBundle = "/var/lib/sbctl";
     };
     loader = {
       systemd-boot = {
@@ -163,12 +163,18 @@ in {
     cpuFreqGovernor = "powersave";
   };
 
+  environment.variables.AMD_VULKAN_ICD = "RADV";
+
   hardware = {
-    graphics = {
+    graphics = let
+      pkgs-unstable = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+      # inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [
-        amdvlk
+      package = pkgs-unstable.mesa;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
+      extraPackages = with pkgs.unstable; [
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -176,24 +182,18 @@ in {
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
     amdgpu = {
       initrd.enable = true;
-      amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
-      opencl.enable = true;
     };
     i2c.enable = true;
   };
 
   services = {
-    ucodenix = {
-      enable = false; # TODO: Find `cpuModelId` and re-enable.
-      cpuModelId = "00A70F52";
-    };
+    #ucodenix = {
+    #  enable = false; # TODO: Find `cpuModelId` and re-enable.
+    #  cpuModelId = "00A70F52";
+    #};
 
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;

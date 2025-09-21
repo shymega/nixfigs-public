@@ -61,12 +61,18 @@
     cpuFreqGovernor = "powersave";
   };
 
+  environment.variables.AMD_VULKAN_ICD = "RADV";
+
   hardware = {
-    graphics = {
+    graphics = let
+      pkgs-unstable = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+      # inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [
-        amdvlk
+      package = pkgs-unstable.mesa;
+      package32 = pkgs-unstable.pkgsi686Linux.mesa;
+      extraPackages = with pkgs.unstable; [
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -74,14 +80,9 @@
         rocmPackages.clr
         rocmPackages.clr.icd
       ];
-      extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
     };
     amdgpu = {
-      amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
-      opencl.enable = true;
+      initrd.enable = true;
     };
     i2c.enable = true;
   };
