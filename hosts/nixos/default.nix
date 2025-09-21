@@ -45,6 +45,7 @@
           inputs.agenix.nixosModules.default
           inputs.auto-cpufreq.nixosModules.default
           inputs.lix-module.nixosModules.default
+          inputs.hyprland.nixosModules.default
         ]
         ++ extraModules
         ++ hardwareModules
