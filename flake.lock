@@ -6024,6 +6024,20 @@
         "type": "github"
       }
     },
+    "flake-compat_154": {
+      "locked": {
+        "lastModified": 1733328505,
+        "narHash": "sha256-NeCCThCEP3eCl2l/+27kNNK7QrwZB1IJCrXfrbv5oqU=",
+        "rev": "ff81ac966bb2cae68946d5ed5fc4994f96d0ffec",
+        "revCount": 69,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/edolstra/flake-compat/1.1.0/01948eb7-9cba-704f-bbf3-3fa956735b52/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz"
+      }
+    },
     "flake-compat_16": {
       "flake": false,
       "locked": {
@@ -23577,7 +23591,8 @@
         "shypkgs-public": "shypkgs-public_8",
         "srvos": "srvos",
         "stylix": "stylix_2",
-        "ucodenix": "ucodenix"
+        "ucodenix": "ucodenix",
+        "win2k-plymouth": "win2k-plymouth"
       }
     },
     "rust-analyzer-src": {
@@ -28490,6 +28505,27 @@
         "owner": "DeckCheatz",
         "ref": "refactor-shymega",
         "repo": "wemod-launcher",
+        "type": "github"
+      }
+    },
+    "win2k-plymouth": {
+      "inputs": {
+        "flake-compat": "flake-compat_154",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1759786956,
+        "narHash": "sha256-b5AkpBxn0y89q7FvaiIg3V25iAc6R0oeSRVzMq+1rQ0=",
+        "owner": "shymega",
+        "repo": "Win2K-Plymouth",
+        "rev": "0c62ea358d2ba79f19a1895e59811f952a2b326a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "shymega",
+        "repo": "Win2K-Plymouth",
         "type": "github"
       }
     },

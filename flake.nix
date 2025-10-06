@@ -175,5 +175,9 @@
       inputs.hyprland.follows = "hyprland"; # Prevents version mismatch.
     };
     nixfigs-devenvs.url = "github:shymega/nixfigs-devenvs";
+    win2k-plymouth = {
+      url = "github:shymega/Win2K-Plymouth";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
