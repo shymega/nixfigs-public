@@ -151,11 +151,9 @@
       url = "github:Jovian-Experiments/Jovian-NixOS";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    flatpaks.url = "github:GermanBread/declarative-flatpak?ref=stable-v3";
     shypkgs-private.url = "github:shymega/shypkgs-private";
     shypkgs-public.url = "github:shymega/shypkgs-public";
     onepassword-shell-plugins.url = "github:1Password/shell-plugins";
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
     nur-xddxdd = {
       url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
