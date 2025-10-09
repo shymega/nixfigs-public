@@ -130,7 +130,7 @@ in {
       enable = true;
       theme = "Win2K";
       themePackages = [
-        (inputs.win2k-plymouth.packages.${pkgs.system}.default)
+        inputs.win2k-plymouth.packages.${pkgs.system}.default
       ];
     };
 
