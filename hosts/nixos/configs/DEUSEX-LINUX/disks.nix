@@ -76,7 +76,7 @@
     };
 
     "/etc/nixos" = {
-      device = "zdata/crypt/shared/nixos-config";
+      device = "ztank/crypt/shared/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
@@ -113,7 +113,7 @@
     };
 
     "/boot/efi" = {
-      device = "/dev/disk/by-label/EFI_DPRIM"; # DISK PRIMARY. Repalce with by-label.
+      device = "/dev/disk/by-label/ESP";
       fsType = "vfat";
       neededForBoot = true;
       options = [
