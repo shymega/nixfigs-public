@@ -113,39 +113,6 @@ in {
     deployable = true;
   };
 
-  #  NEO-JOVIAN = mkHost {
-  #    type = "nixos";
-  #    address = "NEO-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-  #    hostname = "NEO-JOVIAN";
-  #    hostPlatform = "x86_64-linux";
-  #    monolithConfig = true;
-  #    hostRoles = ["jovian" "gaming" "personal"];
-  #    extraModules = [
-  #      inputs.hardware.nixosModules.common-cpu-amd
-  #      inputs.hardware.nixosModules.common-gpu-amd
-  #      inputs.hardware.nixosModules.common-pc-ssd
-  #      inputs.hardware.nixosModules.common-pc
-  #      inputs.lanzaboote.nixosModules.lanzaboote
-  #    ];
-  #    pubkey = null;
-  #    remoteBuild = true;
-  #    deployable = false;
-  #    embedHm = true;
-  #  };
-
-  NEO-WSL = mkHost {
-    type = "nixos";
-    address = "NEO-WSL.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "NEO-WSL";
-    hostRoles = ["minimal"];
-    hostPlatform = "x86_64-linux";
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-    monolithConfig = false;
-    embedHm = true;
-  };
-
   MORPHEUS-LINUX = mkHost rec {
     type = "nixos";
     address = "MORPHEUS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
@@ -165,40 +132,6 @@ in {
     pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
     remoteBuild = true;
     deployable = true;
-  };
-
-  #  MORPHEUS-JOVIAN = mkHost {
-  #    type = "nixos";
-  #    address = "MORPHEUS-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-  #    hostname = "MORPHEUS-JOVIAN";
-  #    hostPlatform = "x86_64-linux";
-  #    monolithConfig = true;
-  #    hostRoles = ["jovian" "gaming" "personal"];
-  #    hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
-  #    extraModules = [
-  #      inputs.hardware.nixosModules.common-cpu-amd
-  #      inputs.hardware.nixosModules.common-gpu-amd
-  #      inputs.hardware.nixosModules.common-pc-ssd
-  #      inputs.hardware.nixosModules.common-pc
-  #      inputs.lanzaboote.nixosModules.lanzaboote
-  #    ];
-  #    pubkey = null;
-  #    remoteBuild = true;
-  #    deployable = false;
-  #    embedHm = true;
-  #  };
-
-  MORPHEUS-WSL = mkHost {
-    type = "nixos";
-    address = "MORPHEUS-WSL.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "MORPHEUS-WSL";
-    hostRoles = ["minimal"];
-    hostPlatform = "x86_64-linux";
-    pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
-    remoteBuild = true;
-    deployable = false;
-    monolithConfig = false;
-    embedHm = true;
   };
 
   DEUSEX-LINUX = mkHost rec {
@@ -222,43 +155,6 @@ in {
     deployable = true;
   };
 
-  #  DEUSEX-JOVIAN = mkHost rec {
-  #    type = "nixos";
-  #    address = "DEUSEX-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-  #    hostname = "DEUSEX-JOVIAN";
-  #    hostPlatform = "x86_64-linux";
-  #    hostRoles = ["workstation" "gaming" "personal"];
-  #    embedHm = true;
-  #    extraModules = [
-  #      inputs.lanzaboote.nixosModules.lanzaboote
-  #      inputs.hardware-shymega.nixosModules.gpd-duo
-  #      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-  #    ];
-  #    pubkey = "";
-  #    remoteBuild = true;
-  #    deployable = true;
-  #  };
-
-  # TRINITY-JOVIAN = mkHost {
-  #  type = "nixos";
-  #  address = "TRINITY-JOVIAN.dzr.devices.rnet.rodriguez.org.uk";
-  #  hostname = "TRINITY-JOVIAN";
-  #  hostPlatform = "x86_64-linux";
-  #  monolithConfig = true;
-  #  hostRoles = ["gaming" "steam-deck" "personal"];
-  #  extraModules = [
-  #    inputs.hardware.nixosModules.common-cpu-amd
-  #    inputs.hardware.nixosModules.common-gpu-amd
-  #    inputs.hardware.nixosModules.common-pc-ssd
-  #    inputs.hardware.nixosModules.common-pc
-  #    inputs.lanzaboote.nixosModules.lanzaboote
-  #  ];
-  #  pubkey = null;
-  #  remoteBuild = true;
-  #  deployable = false;
-  #  embedHm = true;
-  # };
-
   TWINS-LINUX = mkHost rec {
     type = "nixos";
     address = "TWINS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
@@ -276,19 +172,6 @@ in {
     pubkey = "";
     remoteBuild = true;
     deployable = false;
-    embedHm = true;
-  };
-
-  TWINS-WSL = mkHost {
-    type = "nixos";
-    address = "TWINS-WSL.dzr.devices.rnet.rodriguez.org.uk";
-    hostname = "TWINS-WSL";
-    hostRoles = ["minimal"];
-    hostPlatform = "x86_64-linux";
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-    monolithConfig = false;
     embedHm = true;
   };
 
@@ -312,60 +195,6 @@ in {
   #     remoteBuild = true;
   #     deployable = false;
   #   };
-
-  #   MATRIX-LXC = mkHost {
-  #     type = "nixos";
-  #     address = "matrix.rodriguez.org.uk";
-  #     hostname = "MATRIX-LXC";
-  #     username = "dzrodriguez";
-  #     monolithConfig = false;
-  #     hostRoles = ["server"];
-  #     hostPlatform = "x86_64-linux";
-  #     extraModules = [
-  #       inputs.srvos.nixosModules.server
-  #       inputs.srvos.nixosModules.hardware-hetzner-cloud-arm
-  #       inputs.srvos.nixosModules.mixins-terminfo
-  #       inputs.hardware.nixosModules.common-pc-ssd
-  #       inputs.hardware.nixosModules.common-pc
-  #     ];
-  #     pubkey = "";
-  #     remoteBuild = true;
-  #     deployable = false;
-  #   };
-
-  # BUILDER-HYDRA-CONTAINER = mkHost {
-  #  type = "nixos";
-  #  address = "hydra.shymega.org.uk";
-  #  hostname = "BUILDER-HYDRA-CONTAINER";
-  #  username = "dzrodriguez";
-  #  baseModules = [
-  #    inputs.agenix.nixosModules.default
-  #    inputs.nixfigs-secrets.system
-  #  ];
-  #  monolithConfig = false;
-  # hostPlatform = "x86_64-linux";
-  # hostRoles = ["server"];
-  # pubkey = "";
-  # remoteBuild = true;
-  # deployable = false;
-  # };
-
-  # BUILDER-AGENT-CONTAINER = mkHost {
-  #  type = "nixos";
-  #  address = "builder.shymega.org.uk";
-  #  hostname = "BUILDER-CONTAINER";
-  #  username = "dzrodriguez";
-  #  baseModules = [
-  #   inputs.agenix.nixosModules.default
-  #    inputs.nixfigs-secrets.system
-  #  ];
-  #  monolithConfig = false;
-  #  hostPlatform = "x86_64-linux";
-  #  hostRoles = ["server"];
-  #  pubkey = "";
-  #  remoteBuild = true;
-  #  deployable = false;
-  # };
 
   ### Experimental Device Ports ###
   ## ClockworkPi uConsole (CM4) ##
@@ -417,85 +246,4 @@ in {
     ];
   };
   ## End ClockworkPi DevTerm (CM4) ##
-
-  INSTALLER-SERVER-ISO-X86-64 = mkHost {
-    type = "nixos";
-    address = "install-server.shymega.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "x86_64-linux";
-    hostname = "INSTALLER-SERVER-ISO-X86-64";
-    hostRoles = ["minimal"];
-    remoteBuild = false;
-    deployable = false;
-    monolithConfig = false;
-    baseModules = [];
-    extraModules = [
-      inputs.srvos.nixosModules.server
-      inputs.srvos.nixosModules.mixins-terminfo
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    ];
-  }; # TODO: Add Headscale as domain?
-
-  INSTALLER-WORKSTATION-ISO-X86-64 = mkHost {
-    type = "nixos";
-    address = "install-workstation.shymega.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "x86_64-linux";
-    hostname = "INSTALLER-WORKSTATION-ISO-X86-64";
-    hostRoles = ["minimal"];
-    remoteBuild = false;
-    deployable = false;
-    monolithConfig = false;
-    baseModules = [];
-    extraModules = [
-      inputs.srvos.nixosModules.server
-      inputs.srvos.nixosModules.mixins-terminfo
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-    ];
-  }; # TODO: Add Headscale as domain?
-
-  INSTALLER-SERVER-ISO-ARM = mkHost {
-    type = "nixos";
-    address = "install-server.shymega.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "aarch64-linux";
-    hostname = "INSTALLER-SERVER-ISO-ARM";
-    hostRoles = ["minimal"];
-    remoteBuild = false;
-    deployable = false;
-    monolithConfig = false;
-    baseModules = [];
-    extraModules = [
-      inputs.srvos.nixosModules.server
-      inputs.srvos.nixosModules.mixins-terminfo
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    ];
-  }; # TODO: Add Headscale as domain?
-
-  INSTALLER-WORKSTATION-ISO-ARM = mkHost {
-    type = "nixos";
-    address = "install-workstation.shymega.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "aarch64-linux";
-    hostname = "INSTALLER-WORKSTATION-ISO-ARM";
-    hostRoles = ["minimal"];
-    remoteBuild = false;
-    deployable = false;
-    monolithConfig = false;
-    baseModules = [];
-    extraModules = [
-      inputs.srvos.nixosModules.server
-      inputs.srvos.nixosModules.mixins-terminfo
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    ];
-  }; # TODO: Add Headscale as domain?
 }
