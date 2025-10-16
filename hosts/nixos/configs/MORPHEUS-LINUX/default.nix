@@ -25,21 +25,14 @@
       builtins.attrValues myZfsCompatibleXanmodKernelPackages
     )
   );
-  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
-  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
+  zfs_arc_max = 8 * 1024 * 1024 * 1024;
+  zfs_arc_min = zfs_arc_max - 1;
 in {
-  imports = [
+  imports = with inputs; [
     ./hardware-configuration.nix
-    # inputs.ucodenix.nixosModules.default
-    inputs.nur-xddxdd.nixosModules.setupOverlay
-    inputs.nur-xddxdd.nixosModules.nix-cache-attic
-    inputs.nixfigs-virtual-private.virtual.all
-    # inputs.himmelblau.nixosModules.himmelblau
+    nur-xddxdd.nixosModules.setupOverlay
+    nur-xddxdd.nixosModules.nix-cache-attic
   ];
-  #services.ucodenix = {
-  #  enable = true;
-  #  cpuModelId = "00A70F52";
-  #};
 
   networking = {
     hostName = "MORPHEUS-LINUX";
@@ -96,11 +89,9 @@ in {
     ];
 
     kernelParams = pkgs.lib.mkAfter [
-      "amdgpu"
-      "amd_pstate=guided"
       "nohibernate"
-      "zfs.zfs_arc_max=${zfs_arc_max}"
-      "zfs.zfs_arc_min=${zfs_arc_min}"
+      "zfs.zfs_arc_max=${toString zfs_arc_max}"
+      "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
     ];
@@ -124,12 +115,6 @@ in {
       theme = "spinner";
     };
 
-    lanzaboote = {
-      enable = false; # TODO: Reenable once `extraEntries` available upstream.
-      enrollKeys = false;
-      configurationLimit = 3;
-      pkiBundle = "/var/lib/sbctl";
-    };
     loader = {
       systemd-boot = {
         enable = true;
@@ -160,21 +145,10 @@ in {
         after = ["zfs-import-ztank.service"];
         before = ["sysroot.mount"];
         path = with pkgs; [zfs];
-        unitConfig.DefaultDependencies = "no";
         serviceConfig.Type = "oneshot";
         script = ''
           zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
         '';
-      };
-      create-needed-for-boot-dirs = {
-        after = pkgs.lib.mkForce [
-          "zfs-import-zdata.service"
-          "zfs-import-ztank.service"
-        ];
-        wants = pkgs.lib.mkForce [
-          "zfs-import-zdata.service"
-          "zfs-import-ztank.service"
-        ];
       };
     };
   };
@@ -200,15 +174,10 @@ in {
   environment.variables.AMD_VULKAN_ICD = "RADV";
 
   hardware = {
-    graphics = let
-      pkgs-unstable = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-      # inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    in {
+    graphics = {
       enable = true;
       enable32Bit = true;
-      package = pkgs-unstable.mesa;
-      package32 = pkgs-unstable.pkgsi686Linux.mesa;
-      extraPackages = with pkgs.unstable; [
+      extraPackages = with pkgs; [
         # VA-API and VDPAU
         vaapiVdpau
 
@@ -220,8 +189,6 @@ in {
     amdgpu = {
       initrd.enable = true;
     };
-    i2c.enable = true;
-    gpd.ppt.enable = lib.mkForce false;
     i2c.enable = true;
     sensor.iio = {
       enable = true;
@@ -270,7 +237,6 @@ in {
     input-remapper.enable = true;
     thermald.enable = true;
     udev = {
-      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
@@ -301,35 +267,6 @@ in {
         LidSwitchIgnoreInhibited=no
       '';
     };
-    auto-cpufreq = {
-      enable = true;
-      settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
-      };
-    };
-  };
-
-  programs.steam = {
-    enable = true;
-    gamescopeSession.enable = true;
-    package = pkgs.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
-          steamtinkerlaunch
-          python3Full
-          flatpak-xdg-utils
-        ];
-    };
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
   };
 
   system.stateVersion = "25.05";
