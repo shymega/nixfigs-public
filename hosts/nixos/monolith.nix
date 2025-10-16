@@ -140,18 +140,6 @@
     firewall = {
       enable = true;
       interfaces."podman+".allowedUDPPorts = [53];
-      allowedTCPPortRanges = [
-        {
-          from = 1714;
-          to = 1764;
-        }
-      ];
-      allowedUDPPortRanges = [
-        {
-          from = 1714;
-          to = 1764;
-        }
-      ];
       checkReversePath = false;
     };
   };

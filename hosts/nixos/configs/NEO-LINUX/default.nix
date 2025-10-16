@@ -26,15 +26,13 @@
       builtins.attrValues myZfsCompatibleXanmodKernelPackages
     )
   );
-  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
-  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
+  zfs_arc_max = 8 * 1024 * 1024 * 1024;
+  zfs_arc_min = zfs_arc_max - 1;
 in {
-  imports = [
+  imports = with inputs; [
     ./hardware-configuration.nix
-    #inputs.ucodenix.nixosModules.default
-    inputs.nur-xddxdd.nixosModules.setupOverlay
-    inputs.nur-xddxdd.nixosModules.nix-cache-attic
-    inputs.nixfigs-virtual-private.virtual.all
+    nur-xddxdd.nixosModules.setupOverlay
+    nur-xddxdd.nixosModules.nix-cache-attic
   ];
 
   environment.etc."crypttab".text = ''
@@ -100,7 +98,6 @@ in {
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
-      "microcode.amd_sha_check=off"
       "iomem=relaxed"
     ];
     extraModprobeConfig = ''
@@ -168,7 +165,6 @@ in {
   services = {
     power-profiles-daemon.enable = true;
     udev = {
-      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         # workstation - keyboard & mouse suspension.
         ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="024f", ATTR{power/autosuspend}="-1"
@@ -203,37 +199,5 @@ in {
     cpuFreqGovernor = "performance";
   };
 
-  programs.steam = {
-    enable = true;
-    gamescopeSession.enable = true;
-    package = pkgs.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
-          steamtinkerlaunch
-          python3Full
-          flatpak-xdg-utils
-        ];
-    };
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
-  };
-
-  security = {
-    pam.loginLimits = [
-      {
-        domain = "*";
-        item = "nofile";
-        type = "-";
-        value = "524288";
-      }
-      {
-        domain = "*";
-        item = "memlock";
-        type = "-";
-        value = "524288";
-      }
-    ];
-  };
   system.stateVersion = "25.05";
 }

@@ -8,8 +8,8 @@
   lib,
   ...
 }: let
-  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
-  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
+  zfs_arc_max = 8 * 1024 * 1024 * 1024;
+  zfs_arc_min = zfs_arc_max - 1;
   myZfsCompatibleStockKernelPackages =
     lib.filterAttrs
     (
@@ -28,10 +28,8 @@
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
-    # ucodenix.nixosModules.default
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
-    nixfigs-virtual-private.virtual.all
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     chaotic.nixosModules.nyx-cache
     chaotic.nixosModules.nyx-overlay
@@ -75,7 +73,6 @@ in {
             allowDiscards = true;
           };
         };
-        # Add FIDO2 support.
       };
       systemd.services = {
         rollback = {
@@ -84,15 +81,10 @@ in {
           after = ["zfs-import-ztank.service"];
           before = ["sysroot.mount"];
           path = with pkgs; [zfs];
-          unitConfig.DefaultDependencies = "no";
           serviceConfig.Type = "oneshot";
           script = ''
             zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
           '';
-        };
-        create-needed-for-boot-dirs = {
-          after = pkgs.lib.mkForce ["zfs-import-ztank.service"];
-          wants = pkgs.lib.mkForce ["zfs-import-ztank.service"];
         };
       };
     };
@@ -115,31 +107,22 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
     kernelPackages = latestStockKernelPackage;
-    crashDump.enable = true;
     extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
-      "kernel.core_pattern" = "/var/crash/core.%t.%p";
-      "kernel.panic" = "10";
-      "kernel.unknown_nmi_panic" = "1";
     };
 
     plymouth = {
       enable = true;
       theme = "Win2K";
-      themePackages = [
-        inputs.win2k-plymouth.packages.${pkgs.system}.default
+      themePackages = with inputs;
+      with pkgs; [
+        win2k-plymouth.packages.${pkgs.system}.default
       ];
     };
 
-    lanzaboote = {
-      enable = false; # TODO: Reenable once `extraEntries` available upstream.
-      enrollKeys = false;
-      configurationLimit = 3;
-      pkiBundle = "/var/lib/sbctl";
-    };
     loader = {
       systemd-boot = {
         enable = true;
@@ -192,34 +175,12 @@ in {
   };
 
   services = {
-    # ucodenix = {
-    #   enable = true;
-    #   cpuModelId = "00B20F40";
-    # };
-    auto-cpufreq = {
-      enable = true;
-      settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
-      };
-    };
     fwupd.enable = true;
     hardware.bolt.enable = true;
-    handheld-daemon = {
-      enable = false;
-      package = pkgs.handheld-daemon;
-      user = "dzrodriguez";
-    };
     zfs = {
       trim = {
         enable = true;
-        interval = "Sun *-*-* 03:00:00";
+        interval = "Sun *-*-* 02:00:00";
       };
       autoScrub = {
         enable = true;
@@ -245,26 +206,10 @@ in {
       enable = true;
       autodetect = true;
     };
-    tlp = {
-      enable = true;
-      settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-        CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-        CPU_MIN_PERF_ON_AC = 0;
-        CPU_MAX_PERF_ON_AC = 100;
-        CPU_MIN_PERF_ON_BAT = 0;
-        CPU_MAX_PERF_ON_BAT = 20;
-      };
-    };
     input-remapper.enable = false;
     thermald.enable = true;
     power-profiles-daemon.enable = lib.mkForce false;
     udev = {
-      packages = with pkgs; [gnome-settings-daemon];
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="1", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start ac.target"
@@ -289,20 +234,6 @@ in {
         LidSwitchIgnoreInhibited=no
       '';
     };
-  };
-
-  programs.steam = {
-    enable = true;
-    gamescopeSession.enable = true;
-    package = pkgs.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
-          steamtinkerlaunch
-        ];
-    };
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
   };
 
   system.stateVersion = "25.05";

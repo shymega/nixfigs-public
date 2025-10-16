@@ -24,19 +24,15 @@
       };
     }
   );
-  zfs_arc_max = toString (8 * 1024 * 1024 * 1024);
-  zfs_arc_min = toString (8 * 1024 * 1024 * 1024 - 1);
+  zfs_arc_max = 8 * 1024 * 1024 * 1024;
+  zfs_arc_min = zfs_arc_max - 1;
 in {
-  imports = [
+  imports = with inputs; [
     ./hardware-configuration.nix
-    inputs.nur-xddxdd.nixosModules.setupOverlay
-    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
-    inputs.nur-xddxdd.nixosModules.nix-cache-attic
+    nur-xddxdd.nixosModules.setupOverlay
+    nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    nur-xddxdd.nixosModules.nix-cache-attic
   ];
-  lantian.qemu-user-static-binfmt = {
-    enable = true;
-    package = pkgs.qemu;
-  };
 
   networking = {
     hostName = "TWINS-LINUX";
@@ -82,14 +78,13 @@ in {
     '';
     kernelParams = [
       "nohibernate"
-      "zfs.zfs_arc_max=${zfs_arc_max}"
-      "zfs.zfs_arc_min=${zfs_arc_min}"
+      "zfs.zfs_arc_max=${toString zfs_arc_max}"
+      "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
     ];
 
     kernel.sysctl = {
-      "dev.i915.perf_stream_paranoid" = "0";
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
     };
@@ -130,7 +125,6 @@ in {
       after = ["zfs-import-tank.service"];
       before = ["sysroot.mount"];
       path = with pkgs; [zfs];
-      unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
         zfs rollback -r tank/local/root@blank
@@ -164,7 +158,6 @@ in {
       # kvm switch target.
       SUBSYSTEM=="usb", ACTION=="add|change|remove", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="0005",  SYMLINK+="kvm-active", TAG+="systemd"
     '';
-    auto-cpufreq.enable = false;
     thermald.enable = true;
     logind = {
       extraConfig = ''
@@ -175,11 +168,11 @@ in {
     zfs = {
       trim = {
         enable = true;
-        interval = "Sat *-*-* 04:00:00";
+        interval = "Sun *-*-* 02:00:00";
       };
       autoScrub = {
         enable = true;
-        interval = "Sat *-*-* 05:00:00";
+        interval = "Sun *-*-* 02:00:00";
       };
     };
   };
@@ -190,9 +183,9 @@ in {
   };
 
   hardware = {
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
+      enable32Bit = true;
       extraPackages32 = with pkgs.pkgsi686Linux; [vaapiIntel];
       extraPackages = with pkgs; [
         vaapiIntel
