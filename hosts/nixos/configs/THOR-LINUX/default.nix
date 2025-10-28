@@ -243,4 +243,9 @@ in {
       cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
     '')
   ];
+
+  users.users."dzrodriguez" = {
+      password = "changeme";
+      hashedPasswordFile = lib.mkForce null;
+  };
 }
