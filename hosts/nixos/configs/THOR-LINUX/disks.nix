@@ -76,7 +76,7 @@
     };
 
     "/etc/nixos" = {
-      device = "ztank/crypt/shared/nixos-config";
+      device = "zdata/crypt/shared/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
