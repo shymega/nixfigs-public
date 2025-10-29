@@ -22,7 +22,6 @@
     baseModules ? [
       {
         environment.systemPackages = [
-          inputs.agenix.packages.${hostPlatform}.default
           # inputs.nix-alien.packages.${hostPlatform}.nix-alien
         ];
       }
