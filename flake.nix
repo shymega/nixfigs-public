@@ -165,7 +165,7 @@
     };
     himmelblau.url = "github:himmelblau-idm/himmelblau?ref=main";
     hyprland = {
-      url = "github:hyprwm/Hyprland?ref=v0.51.1";
+      url = "github:hyprwm/Hyprland?ref=v0.52.1";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hyprland-plugins = {
