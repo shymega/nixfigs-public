@@ -8,24 +8,21 @@
   lib,
   ...
 }: let
-  latestXanmodKernelPackage = let
-    myZfsCompatibleXanmodKernelPackages = let
-      zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-    in
+
+  latestKernelPackage = let
+    zfsCompatibleKernelPackages =
       lib.filterAttrs (
         name: kernelPackages:
-          (lib.hasInfix "_xanmod" name)
+          (builtins.match "linux_[0-9]+_[0-9]+" name)
+          != null
           && (builtins.tryEval kernelPackages).success
-          && (
-            (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-            || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-          )
+          && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
       )
-      pkgs.linuxKernel.packages;
+      pkgs.unstable.linuxKernel.packages;
   in
     lib.last (
       lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-        builtins.attrValues myZfsCompatibleXanmodKernelPackages
+        builtins.attrValues zfsCompatibleKernelPackages
       )
     );
 in {
@@ -112,7 +109,7 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestXanmodKernelPackage;
+    kernelPackages = latestKernelPackage;
     extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
@@ -243,9 +240,4 @@ in {
       cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
     '')
   ];
-
-  users.users."dzrodriguez" = {
-      password = "changeme";
-      hashedPasswordFile = lib.mkForce null;
-  };
 }

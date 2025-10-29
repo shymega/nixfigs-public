@@ -36,7 +36,8 @@
   in
     inputs.nixpkgs.lib.nixosSystem rec {
       system = hostPlatform;
-      pkgs = genPkgs hostPlatform overlays;
+      pkgs =
+        genPkgs hostPlatform overlays;
       modules =
         baseModules
         ++ [
