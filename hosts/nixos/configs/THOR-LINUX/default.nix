@@ -8,7 +8,21 @@
   lib,
   ...
 }: let
-
+  latestXanmodKernelPackage = let
+    myZfsCompatibleXanmodKernelPackages =
+      lib.filterAttrs (
+        name: kernelPackages:
+          (lib.hasInfix "_xanmod" name)
+          && (builtins.tryEval kernelPackages).success
+          && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken
+      )
+      pkgs.linuxKernel.packages;
+  in
+    lib.last (
+      lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
+        builtins.attrValues myZfsCompatibleXanmodKernelPackages
+      )
+    );
   latestKernelPackage = let
     zfsCompatibleKernelPackages =
       lib.filterAttrs (
@@ -18,7 +32,7 @@
           && (builtins.tryEval kernelPackages).success
           && (!kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}.meta.broken)
       )
-      pkgs.unstable.linuxKernel.packages;
+      pkgs.linuxKernel.packages;
   in
     lib.last (
       lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
@@ -109,7 +123,7 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestKernelPackage;
+    kernelPackages = latestXanmodKernelPackage;
     extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
