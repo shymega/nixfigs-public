@@ -82,6 +82,9 @@
     upower.enable = lib.mkForce true;
     printing = lib.optionalAttrs libx.isPC {
       enable = true;
+      clientConf = ''
+        ServerName 192.168.1.6
+      '';
       browsed.enable = false;
       drivers = with pkgs; [
         hplipWithPlugin
