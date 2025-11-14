@@ -4,26 +4,9 @@
 {
   pkgs,
   inputs,
-  config,
   lib,
   ...
 }: let
-  lockedXanmodLatestGitKernelPackage = pkgs.linuxPackagesFor (
-    pkgs.linux_xanmod_latest.override {
-      argsOverride = rec {
-        modDirVersion = "${version}-${suffix}";
-        suffix = "xanmod1";
-        version = "6.13.7";
-
-        src = pkgs.fetchFromGitLab {
-          owner = "xanmod";
-          repo = "linux";
-          rev = "${version}-${suffix}";
-          hash = "sha256-gcoDH11U8lz8h1wXsdDiWF3NbTyRiEuf3+YV6Mlkov0=";
-        };
-      };
-    }
-  );
   zfs_arc_max = 8 * 1024 * 1024 * 1024;
   zfs_arc_min = zfs_arc_max - 1;
 in {
@@ -33,6 +16,8 @@ in {
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
+
+  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos.kernel)];
 
   networking = {
     hostName = "TWINS-LINUX";
@@ -51,23 +36,8 @@ in {
       "ntfs"
       "zfs"
     ];
-    kernelPackages = lockedXanmodLatestGitKernelPackage;
-
-    kernelPatches = [
-      {
-        name = "enable RT_FULL";
-        patch = null;
-        extraConfig = ''
-          PREEMPT y
-          PREEMPT_BUILD y
-          PREEMPT_VOLUNTARY n
-          PREEMPT_COUNT y
-          PREEMPTION y
-        '';
-      }
-    ];
-
-    extraModulePackages = with config.boot.kernelPackages; [zfs];
+    zfs.package = pkgs.zfs_cachyos;
+    kernelPackages = pkgs.linuxPackages_cachyos;
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 

@@ -2,37 +2,19 @@
 #
 # SPDX-License-Identifier: GPL-3.0-only
 {
-  config,
   inputs,
   pkgs,
   lib,
   ...
-}: let
-  latestXanmodKernelPackage = let
-    myZfsCompatibleXanmodKernelPackages =
-      lib.filterAttrs (
-        name: kernelPackages:
-          (lib.hasInfix "_xanmod" name)
-          && (builtins.tryEval kernelPackages).success
-          && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken
-      )
-      pkgs.linuxKernel.packages;
-  in
-    lib.last (
-      lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-        builtins.attrValues myZfsCompatibleXanmodKernelPackages
-      )
-    );
-in {
+}: {
   imports = with inputs; [
     ./hardware-configuration.nix
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
-    chaotic.nixosModules.nyx-cache
-    chaotic.nixosModules.nyx-overlay
-    chaotic.nixosModules.nyx-registry
   ];
+
+  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos.kernel)];
 
   lantian.qemu-user-static-binfmt.enable = true;
 
@@ -107,12 +89,8 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages =
-  assert lib.assertMsg (pkgs.zfs.version == "2.3.4") "zfs should support newer kernel now";
-    (import (fetchTree "github:NixOS/nixpkgs/544961dfcce86422ba200ed9a0b00dd4b1486ec5") {
-      inherit (pkgs.stdenv.hostPlatform) system;
-    }).linuxPackages_6_16;
-    extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
+    zfs.package = pkgs.zfs_cachyos;
+    kernelPackages = pkgs.linuxPackages_cachyos;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -177,6 +155,7 @@ in {
   };
 
   services = {
+    fprintd.enable = true;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     zfs = {
