@@ -3,29 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-only
 #
 {
-  config,
   inputs,
   pkgs,
   lib,
   ...
 }: let
-  zfsIsUnstable = config.boot.zfs.package == pkgs.zfsUnstable;
-  myZfsCompatibleXanmodKernelPackages =
-    lib.filterAttrs (
-      name: kernelPackages:
-        (lib.hasInfix "_xanmod" name)
-        && (builtins.tryEval kernelPackages).success
-        && (
-          (!zfsIsUnstable && !kernelPackages.${pkgs.zfs.kernelModuleAttribute}.meta.broken)
-          || (zfsIsUnstable && !kernelPackages.zfs_unstable.meta.broken)
-        )
-    )
-    pkgs.linuxKernel.packages;
-  latestXanmodKernelPackage = lib.last (
-    lib.sort (a: b: (lib.versionOlder a.kernel.version b.kernel.version)) (
-      builtins.attrValues myZfsCompatibleXanmodKernelPackages
-    )
-  );
   zfs_arc_max = 8 * 1024 * 1024 * 1024;
   zfs_arc_min = zfs_arc_max - 1;
 in {
@@ -34,6 +16,8 @@ in {
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
+
+  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos.kernel)];
 
   environment.etc."crypttab".text = ''
     homecrypt /dev/disk/by-label/HOMECRYPT /persist/etc/.homecrypt.bin
@@ -104,10 +88,8 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestXanmodKernelPackage;
-    extraModulePackages = [
-      config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}
-    ];
+    zfs.package = pkgs.zfs_cachyos;
+    kernelPackages = pkgs.linuxPackages_cachyos;
 
     zfs.devNodes = "/dev/NEO-LINUX/ROOT";
 
