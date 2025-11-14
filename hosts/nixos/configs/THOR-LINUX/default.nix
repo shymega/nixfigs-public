@@ -107,7 +107,11 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = latestXanmodKernelPackage;
+    kernelPackages =
+  assert lib.assertMsg (pkgs.zfs.version == "2.3.4") "zfs should support newer kernel now";
+    (import (fetchTree "github:NixOS/nixpkgs/544961dfcce86422ba200ed9a0b00dd4b1486ec5") {
+      inherit (pkgs.stdenv.hostPlatform) system;
+    }).linuxPackages_6_16;
     extraModulePackages = [config.boot.kernelPackages.${config.boot.zfs.package.kernelModuleAttribute}];
 
     kernel.sysctl = {
