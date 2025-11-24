@@ -17,7 +17,7 @@ in {
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
 
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos.kernel)];
+  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
 
   networking = {
     hostName = "TWINS-LINUX";
@@ -37,7 +37,7 @@ in {
       "zfs"
     ];
     zfs.package = pkgs.zfs_cachyos;
-    kernelPackages = pkgs.linuxPackages_cachyos;
+    kernelPackages = pkgs.linuxPackages_cachyos-lto;
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
