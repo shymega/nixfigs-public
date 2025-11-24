@@ -17,7 +17,7 @@ in {
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
 
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos.kernel)];
+  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
 
   environment.etc."crypttab".text = ''
     homecrypt /dev/disk/by-label/HOMECRYPT /persist/etc/.homecrypt.bin
@@ -89,7 +89,7 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
     zfs.package = pkgs.zfs_cachyos;
-    kernelPackages = pkgs.linuxPackages_cachyos;
+    kernelPackages = pkgs.linuxPackages_cachyos-lto;
 
     zfs.devNodes = "/dev/NEO-LINUX/ROOT";
 
