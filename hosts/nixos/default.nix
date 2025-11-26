@@ -40,14 +40,16 @@
         genPkgs hostPlatform overlays;
       modules =
         baseModules
-        ++ [
+        ++ (with inputs; [
           (./configs + "/${hostname}")
           ../../modules/nixos/generators.nix
-          inputs.agenix.nixosModules.default
-          inputs.auto-cpufreq.nixosModules.default
-          inputs.lix-module.nixosModules.default
-          inputs.hyprland.nixosModules.default
-        ]
+          agenix.nixosModules.default
+          auto-cpufreq.nixosModules.default
+          hyprland.nixosModules.default
+          chaotic.nixosModules.nyx-overlay
+          chaotic.nixosModules.nyx-cache
+          chaotic.nixosModules.nyx-registry
+        ])
         ++ extraModules
         ++ hardwareModules
         ++ (lib.optional embedHm inputs.home-manager.nixosModules.home-manager)
