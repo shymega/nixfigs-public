@@ -90,8 +90,7 @@
     hardware-shymega.url = "github:shymega/nixos-hardware?ref=shymega";
     impermanence.url = "github:nix-community/impermanence";
     chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-      inputs.nixpkgs.follows = "nixpkgs-shymega-zfs-bash-fix";
+      url = "github:shymega/nyx?ref=shymega/zfs-user--add-bash-completion-fix";
     };
     agenix = {
       url = "github:ryantm/agenix";
