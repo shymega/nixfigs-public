@@ -102,7 +102,7 @@
       theme = "Win2K";
       themePackages = with inputs;
       with pkgs; [
-        win2k-plymouth.packages.${pkgs.system}.default
+        win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
     };
 
@@ -141,7 +141,7 @@
       enable32Bit = true;
       extraPackages = with pkgs; [
         # VA-API and VDPAU
-        vaapiVdpau
+        libva-vdpau-driver
 
         # AMD ROCm OpenCL runtime
         rocmPackages.clr
@@ -206,11 +206,11 @@
       '';
     };
     logind = {
-      lidSwitchExternalPower = "ignore";
-      lidSwitchDocked = "ignore";
-      extraConfig = ''
-        LidSwitchIgnoreInhibited=no
-      '';
+      settings.Login = {
+        LidSwitchExternalPower = "ignore";
+        LidSwitchDocked = "ignore";
+        LidSwitchIgnoreInhibited = "no";
+      };
     };
   };
 

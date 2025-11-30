@@ -30,7 +30,7 @@
     inherit (inputs.nixfigs-pkgs) overlays packages nixpkgs-config;
     inherit (inputs.nixfigs-roles) roles utils;
     # for `nix fmt`
-    formatter = treeFmtEachSystem (pkgs: treeFmtEval.${pkgs.system}.config.build.wrapper);
+    formatter = treeFmtEachSystem (pkgs: treeFmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
     # for `nix flake check`
     checks =
       treeFmtEachSystem (pkgs: {
@@ -56,7 +56,7 @@
     generators = import ./nix/generators.nix {inherit self;};
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-shymega-zfs-bash-fix.url = "github:shymega/nixpkgs?ref=shymega/nixpkgs-unstable-zfs-bash-fix";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
@@ -119,22 +119,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-compat = {
-      url = "github:edolstra/flake-compat";
+      url = "github:edolstra/flake-compat?ref=v1.1.0";
       flake = false;
     };
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
-      url = "github:nix-community/home-manager?ref=release-25.05";
+      url = "github:nix-community/home-manager?ref=release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lanzaboote = {
-      url = "github:nix-community/lanzaboote?ref=v0.4.1";
+      url = "github:nix-community/lanzaboote?ref=v0.4.3";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
     stylix = {
-      url = "github:danth/stylix?ref=release-25.05";
+      url = "github:danth/stylix?ref=release-25.11";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
@@ -165,11 +165,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ucodenix.url = "github:e-tho/ucodenix";
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    himmelblau.url = "github:himmelblau-idm/himmelblau?ref=main";
+    himmelblau.url = "github:himmelblau-idm/himmelblau?ref=2.0.4";
     hyprland = {
       url = "github:hyprwm/Hyprland?ref=v0.52.1";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
