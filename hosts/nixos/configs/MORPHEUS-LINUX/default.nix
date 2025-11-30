@@ -161,7 +161,7 @@ in {
       enable32Bit = true;
       extraPackages = with pkgs; [
         # VA-API and VDPAU
-        vaapiVdpau
+        libva-vdpau-driver
 
         # AMD ROCm OpenCL runtime
         rocmPackages.clr
@@ -244,11 +244,11 @@ in {
       '';
     };
     logind = {
-      lidSwitchExternalPower = "ignore";
-      lidSwitchDocked = "ignore";
-      extraConfig = ''
-        LidSwitchIgnoreInhibited=no
-      '';
+      settings.Login = {
+        LidSwitchExternalPower = "ignore";
+        LidSwitchDocked = "ignore";
+        LidSwitchIgnoreInhibited = "no";
+      };
     };
   };
 
