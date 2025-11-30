@@ -130,10 +130,11 @@ in {
     '';
     thermald.enable = true;
     logind = {
-      extraConfig = ''
-        HandleLidSwitchExternalPower=ignore
-        LidSwitchIgnoredInhibited=no
-      '';
+      settings.Login = {
+        LidSwitchExternalPower = "ignore";
+        LidSwitchDocked = "ignore";
+        LidSwitchIgnoreInhibited = "no";
+      };
     };
     zfs = {
       trim = {
@@ -159,7 +160,7 @@ in {
       extraPackages32 = with pkgs.pkgsi686Linux; [vaapiIntel];
       extraPackages = with pkgs; [
         vaapiIntel
-        vaapiVdpau
+        libva-vdpau-driver
         libvdpau-va-gl
         intel-media-driver
         intel-compute-runtime

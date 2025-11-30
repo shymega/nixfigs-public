@@ -182,7 +182,6 @@
     waydroid.enable = true;
     docker.enable = true;
     lxc.enable = true;
-    lxd.enable = false;
 
     libvirtd = lib.optionalAttrs libx.isPC {
       enable = true;
@@ -190,16 +189,6 @@
         package = pkgs.qemu_full;
         runAsRoot = true;
         swtpm.enable = true;
-        ovmf = {
-          enable = true;
-          packages = with pkgs; [
-            (OVMFFull.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-            pkgsCross.aarch64-multiplatform.OVMF.fd
-          ];
-        };
       };
       onBoot = "ignore";
       parallelShutdown = 5;
