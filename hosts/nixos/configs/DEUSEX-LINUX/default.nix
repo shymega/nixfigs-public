@@ -22,11 +22,14 @@
     hostName = "DEUSEX-LINUX";
     hostId = "aa1cf1f3";
     usePredictableInterfaceNames = false;
-    firewall.trustedInterfaces = ["ztrfyirq6a"];
   };
   boot = {
     binfmt = {
       emulatedSystems = [
+        "aarch64-linux"
+        "armv6l-linux"
+        "armv7l-linux"
+        "riscv64-linux"
         "wasm32-wasi"
         "wasm64-wasi"
       ];
@@ -70,7 +73,6 @@
     };
     zfs = {
       extraPools = ["ztank" "zdata"];
-      devNodes = "/dev/disk/by-uuid";
     };
 
     kernelParams = let
@@ -176,7 +178,7 @@
       videoDrivers = ["modesetting "];
     };
     ollama = {
-      enable = true;
+      enable = false;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/var/lib/ollama";
@@ -212,8 +214,10 @@
     };
     logind = {
       settings.Login = {
-        LidSwitchExternalPower = "ignore";
+        HandleLidSwitchDocked = "ignore";
+        HandleLidSwitchExternalPower = "ignore";
         LidSwitchDocked = "ignore";
+        LidSwitchExternalPower = "ignore";
         LidSwitchIgnoreInhibited = "no";
       };
     };
