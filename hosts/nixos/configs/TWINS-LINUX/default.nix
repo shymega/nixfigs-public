@@ -36,8 +36,8 @@ in {
       "ntfs"
       "zfs"
     ];
-    zfs.package = pkgs.zfs_cachyos;
-    kernelPackages = pkgs.linuxPackages_cachyos-lto;
+    zfs.package = config.boot.kernelPackages.zfs_cachyos;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
