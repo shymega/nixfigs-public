@@ -5,7 +5,6 @@
   inputs,
   pkgs,
   lib,
-  config,
   ...
 }: {
   imports = with inputs; [
@@ -90,8 +89,7 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.linuxPackages_6_17;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";

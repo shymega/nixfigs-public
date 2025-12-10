@@ -14,8 +14,6 @@
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
   ];
 
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
-
   lantian.qemu-user-static-binfmt.enable = true;
 
   networking = {
@@ -91,8 +89,7 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.linuxPackages_6_17;
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";

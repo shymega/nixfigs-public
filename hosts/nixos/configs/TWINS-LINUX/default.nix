@@ -4,7 +4,6 @@
 {
   pkgs,
   inputs,
-  lib,
   ...
 }: let
   zfs_arc_max = 8 * 1024 * 1024 * 1024;
@@ -16,8 +15,6 @@ in {
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
-
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
 
   networking = {
     hostName = "TWINS-LINUX";
@@ -36,8 +33,7 @@ in {
       "ntfs"
       "zfs"
     ];
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.linuxPackages_6_17;
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 

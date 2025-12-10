@@ -16,8 +16,6 @@ in {
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
 
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
-
   networking = {
     hostName = "MORPHEUS-LINUX";
     hostId = "c4e0feaa";
@@ -84,8 +82,7 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.linuxPackages_6_17;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
