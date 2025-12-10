@@ -5,6 +5,7 @@
   inputs,
   pkgs,
   lib,
+  config,
   ...
 }: {
   imports = with inputs; [
@@ -13,8 +14,6 @@
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
   ];
-
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
 
   lantian.qemu-user-static-binfmt.enable = true;
 
@@ -91,8 +90,8 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    zfs.package = pkgs.zfs_cachyos;
-    kernelPackages = pkgs.linuxPackages_cachyos-lto;
+    zfs.package = config.boot.kernelPackages.zfs_cachyos;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
