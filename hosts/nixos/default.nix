@@ -35,9 +35,6 @@
     inherit (inputs.nixpkgs) lib;
   in
     inputs.nixpkgs.lib.nixosSystem rec {
-      system = hostPlatform;
-      pkgs =
-        genPkgs hostPlatform overlays;
       modules =
         baseModules
         ++ (with inputs; [
@@ -46,9 +43,7 @@
           agenix.nixosModules.default
           auto-cpufreq.nixosModules.default
           hyprland.nixosModules.default
-          chaotic.nixosModules.nyx-overlay
-          chaotic.nixosModules.nyx-cache
-          chaotic.nixosModules.nyx-registry
+          {nixpkgs.pkgs = genPkgs hostPlatform overlays;}
         ])
         ++ extraModules
         ++ hardwareModules
@@ -71,7 +66,6 @@
                 libx
                 hostPlatform
                 ;
-              system = hostPlatform;
               inherit (inputs.nixfigs-homes.self) inputs;
             };
           };
@@ -80,8 +74,6 @@
       specialArgs = {
         hostAddress = address;
         hostType = type;
-        pkgs = genPkgs hostPlatform overlays;
-        system = hostPlatform;
         inherit
           self
           inputs

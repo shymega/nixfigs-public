@@ -29,14 +29,12 @@
     inherit (inputs.nixpkgs) lib;
   in
     darwin.lib.darwinSystem {
-      system = hostPlatform;
       pkgs = genPkgs hostPlatform overlays;
       modules = [(../hosts/darwin + "/${hostname}")];
       specialArgs = {
         hostAddress = address;
         hostType = type;
         pkgs = genPkgs hostPlatform overlays;
-        system = hostPlatform;
         inherit
           self
           inputs

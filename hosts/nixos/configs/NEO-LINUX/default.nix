@@ -5,7 +5,6 @@
 {
   inputs,
   pkgs,
-  lib,
   ...
 }: let
   zfs_arc_max = 8 * 1024 * 1024 * 1024;
@@ -16,8 +15,6 @@ in {
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
-
-  system.modulesTree = [(lib.getOutput "modules" pkgs.linuxPackages_cachyos-lto.kernel)];
 
   environment.etc."crypttab".text = ''
     homecrypt /dev/disk/by-label/HOMECRYPT /persist/etc/.homecrypt.bin
@@ -88,8 +85,7 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.linuxPackages_6_17;
 
     zfs.devNodes = "/dev/NEO-LINUX/ROOT";
 

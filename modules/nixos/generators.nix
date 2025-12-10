@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
 {
   inputs,
-  system,
+  hostPlatform,
   ...
 }: let
-  pkgs = import inputs.nixpkgs {inherit system;};
+  pkgs = import inputs.nixpkgs {inherit hostPlatform;};
   inherit (pkgs) lib;
 in {
   imports = [inputs.nixos-generators.nixosModules.all-formats];
@@ -21,5 +21,5 @@ in {
     services.openssh.startWhenNeeded = lib.mkForce false;
   };
 
-  nixpkgs.hostPlatform = system;
+  nixpkgs.hostPlatform = hostPlatform;
 }
