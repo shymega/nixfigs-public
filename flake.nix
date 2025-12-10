@@ -58,16 +58,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-shymega-zfs-bash-fix.url = "github:shymega/nixpkgs?ref=shymega/nixpkgs-unstable-zfs-bash-fix";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
     nixfigs-secrets.url = "github:shymega/nixfigs-secrets";
     nixfigs-networks.url = "github:shymega/nixfigs-networks";
     nixfigs-homes.url = "github:shymega/nixfigs-homes";
-    nixfigs-pkgs = {
-      url = "github:shymega/nixfigs-pkgs";
-      inputs.chaotic.follows = "chaotic";
-    };
+    nixfigs-pkgs.url = "github:shymega/nixfigs-pkgs";
     nixfigs-helpers.url = "github:shymega/nixfigs-helpers";
     nixfigs-common.url = "github:shymega/nixfigs-common";
     nixfigs-virtual-private.url = "github:shymega/nixfigs-virtual-private";
@@ -89,9 +85,6 @@
     hardware.url = "github:NixOS/nixos-hardware";
     hardware-shymega.url = "github:shymega/nixos-hardware?ref=shymega";
     impermanence.url = "github:nix-community/impermanence";
-    chaotic = {
-      url = "github:shymega/nyx?ref=shymega/zfs-user--add-bash-completion-fix";
-    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs = {
