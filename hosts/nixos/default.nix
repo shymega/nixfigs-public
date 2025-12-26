@@ -44,7 +44,6 @@
           auto-cpufreq.nixosModules.default
           hyprland.nixosModules.default
           {nixpkgs.pkgs = genPkgs hostPlatform overlays;}
-          determinate.nixosModules.default
         ])
         ++ extraModules
         ++ hardwareModules
