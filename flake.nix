@@ -172,6 +172,5 @@
       url = "github:shymega/Win2K-Plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
   };
 }
