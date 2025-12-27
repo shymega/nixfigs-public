@@ -231,9 +231,18 @@
   ];
 
   programs.steam = {
-    enable = true; # Master switch, already covered in installation
-    remotePlay.openFirewall = true;  # For Steam Remote Play
-    dedicatedServer.openFirewall = true; # For Source Dedicated Server hosting
+    enable = true;
+    package = pkgs.steam.override {
+      extraPkgs = pkgs':
+        with pkgs'.python3Packages; [
+          tkinter
+          virtualenv
+        ] ++ (with pkgs'; [
+          python3
+        ]);
+    };
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
   };
   programs.gamemode.enable = true;
 }
