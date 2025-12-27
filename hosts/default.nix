@@ -88,7 +88,7 @@
 in {
   NEO-LINUX = mkHost rec {
     type = "nixos";
-    address = "NEO-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    address = "NEO-LINUX.rnet.rodriguez.org.uk";
     hostname = "NEO-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
@@ -114,8 +114,34 @@ in {
 
   THOR-LINUX = mkHost rec {
     type = "nixos";
-    address = "THOR-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    address = "THOR-LINUX.rnet.rodriguez.org.uk";
     hostname = "THOR-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "gaming"
+      "personal"
+    ];
+    hardwareModules = [
+      inputs.hardware.nixosModules.common-cpu-amd
+      inputs.hardware.nixosModules.common-gpu-amd
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc
+    ];
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "";
+    embedHm = true;
+    remoteBuild = true;
+    deployable = true;
+  };
+
+  MJOLNIR-LINUX = mkHost rec {
+    type = "nixos";
+    address = "MJOLNIR-LINUX.rnet.rodriguez.org.uk";
+    hostname = "MJOLNIR-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
       "workstation"
@@ -140,7 +166,7 @@ in {
 
   MORPHEUS-LINUX = mkHost rec {
     type = "nixos";
-    address = "MORPHEUS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    address = "MORPHEUS-LINUX.rnet.rodriguez.org.uk";
     hostname = "MORPHEUS-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
@@ -159,9 +185,48 @@ in {
     deployable = true;
   };
 
+  KRATOS-LINUX = mkHost rec {
+    type = "nixos";
+    address = "KRATOS-LINUX.rnet.rodriguez.org.uk";
+    hostname = "KRATOS-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "gaming"
+      "personal"
+    ];
+    embedHm = true;
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
+    remoteBuild = true;
+    deployable = true;
+  };
+
+  LOKI-LINUX = mkHost rec {
+    type = "nixos";
+    address = "LOKI-LINUX.rnet.rodriguez.org.uk";
+    hostname = "LOKI-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "personal"
+    ];
+    embedHm = true;
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
+    remoteBuild = true;
+    deployable = true;
+  };
+
   DEUSEX-LINUX = mkHost rec {
     type = "nixos";
-    address = "DEUSEX-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    address = "DEUSEX-LINUX.rnet.rodriguez.org.uk";
     hostname = "DEUSEX-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
@@ -182,7 +247,7 @@ in {
 
   TWINS-LINUX = mkHost rec {
     type = "nixos";
-    address = "TWINS-LINUX.dzr.devices.rnet.rodriguez.org.uk";
+    address = "TWINS-LINUX.rnet.rodriguez.org.uk";
     hostname = "TWINS-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
@@ -200,26 +265,26 @@ in {
     embedHm = true;
   };
 
-  #   SMITH-LINUX = mkHost rec {
-  #     type = "nixos";
-  #     address = "SMITH-LINUX.dzr.devices.rnet.rodriguez.org.uk";
-  #     hostname = "SMITH-LINUX";
-  #     hostPlatform = "aarch64-linux";
-  #     monolithConfig = false;
-  #     hostRoles = ["minimal"];
-  #     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
-  #     extraModules = [
-  #       {
-  #         environment.systemPackages = [
-  #           inputs.agenix.packages.${hostPlatform}.default
-  #         ];
-  #       }
-  #       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-  #     ];
-  #     pubkey = "";
-  #     remoteBuild = true;
-  #     deployable = false;
-  #   };
+  SMITH-LINUX = mkHost rec {
+    type = "nixos";
+    address = "SMITH-LINUX.rnet.rodriguez.org.uk";
+    hostname = "SMITH-LINUX";
+    hostPlatform = "aarch64-linux";
+    monolithConfig = false;
+    hostRoles = ["minimal"];
+    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
+    extraModules = [
+      {
+        environment.systemPackages = [
+          inputs.agenix.packages.${hostPlatform}.default
+        ];
+      }
+      "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+    ];
+    pubkey = "";
+    remoteBuild = true;
+    deployable = false;
+  };
 
   ### Experimental Device Ports ###
   ## ClockworkPi uConsole (CM4) ##
@@ -239,7 +304,6 @@ in {
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
-          # inputs.nix-alien.packages.${hostPlatform}.nix-alien
         ];
       }
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
@@ -264,7 +328,6 @@ in {
       {
         environment.systemPackages = [
           inputs.agenix.packages.${hostPlatform}.default
-          # inputs.nix-alien.packages.${hostPlatform}.nix-alien
         ];
       }
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
