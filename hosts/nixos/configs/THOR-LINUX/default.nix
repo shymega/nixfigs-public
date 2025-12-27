@@ -229,4 +229,11 @@
       cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
     '')
   ];
+
+  programs.steam = {
+    enable = true; # Master switch, already covered in installation
+    remotePlay.openFirewall = true;  # For Steam Remote Play
+    dedicatedServer.openFirewall = true; # For Source Dedicated Server hosting
+  };
+  programs.gamemode.enable = true;
 }
