@@ -28,7 +28,7 @@
     };
 
     "/home" = {
-      device = "ztank/crypt/shared/homes/nixos";
+      device = "ztank/crypt/shared/home";
       fsType = "zfs";
       neededForBoot = true;
     };
