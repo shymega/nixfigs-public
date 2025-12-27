@@ -48,7 +48,7 @@
       luks = {
         devices = {
           CRYPTO = {
-            device = "/dev/disk/by-label/OS_CRYPTO";
+            device = "/dev/disk/by-label/CRYPTO";
             preLVM = true;
             allowDiscards = true;
           };
