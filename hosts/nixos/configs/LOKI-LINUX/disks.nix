@@ -14,7 +14,7 @@
     };
 
     "/data/Development" = {
-      device = "zdata/crypt/shared/dev";
+      device = "ztank/crypt/shared/dev";
       fsType = "zfs";
       neededForBoot = true;
     };
@@ -28,13 +28,13 @@
     };
 
     "/home" = {
-      device = "zdata/crypt/shared/homes/nixos";
+      device = "ztank/crypt/shared/homes/nixos";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/etc/nixos" = {
-      device = "zdata/crypt/shared/nixos-config";
+      device = "ztank/crypt/shared/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
@@ -64,7 +64,7 @@
     };
 
     "/home/dzrodriguez/.local/share/atuin" = {
-      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos/linux"; # Replace with by-label.
+      device = "/dev/zvol/ztank/crypt/shared/homes/atuin/nixos/linux"; # Replace with by-label.
       fsType = "ext4";
       neededForBoot = false;
       options = ["x-systemd.automount"];
