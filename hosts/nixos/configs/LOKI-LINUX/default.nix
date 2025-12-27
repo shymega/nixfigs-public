@@ -16,7 +16,7 @@
 
   lantian.qemu-user-static-binfmt.enable = true;
   users.users."dzrodriguez" = {
-    hashedPasswordFile = null;
+    hashedPasswordFile = lib.mkForce null;
     password = "changeme";
   };
 
