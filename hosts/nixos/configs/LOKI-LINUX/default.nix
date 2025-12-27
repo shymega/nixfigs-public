@@ -15,6 +15,10 @@
   ];
 
   lantian.qemu-user-static-binfmt.enable = true;
+  users.users."dzrodriguez" = {
+    hashedPasswordFile = null;
+    password = "changeme";
+  };
 
   networking = {
     hostName = "LOKI-LINUX";
