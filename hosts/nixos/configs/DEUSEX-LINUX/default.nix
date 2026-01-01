@@ -71,6 +71,7 @@
     };
     zfs = {
       extraPools = ["ztank" "zdata"];
+      package = pkgs.zfs_2_4;
     };
 
     kernelParams = let
