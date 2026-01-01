@@ -70,6 +70,7 @@
       };
     };
     zfs = {
+      package = pkgs.zfs_2_4;
       extraPools = ["ztank" "zdata"];
     };
 
