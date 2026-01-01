@@ -33,7 +33,7 @@ in {
       "ntfs"
       "zfs"
     ];
-    kernelPackages = pkgs.linuxPackages_6_17;
+    kernelPackages = pkgs.linuxPackages_6_18;
 
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
