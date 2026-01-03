@@ -235,4 +235,22 @@
       cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
     '')
   ];
+
+  programs.steam = {
+    enable = true;
+    package = pkgs.steam.override {
+      extraPkgs = pkgs':
+        with pkgs'.python3Packages;
+          [
+            tkinter
+            virtualenv
+          ]
+          ++ (with pkgs'; [
+            python3
+          ]);
+    };
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+  };
+  programs.gamemode.enable = true;
 }
