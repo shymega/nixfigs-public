@@ -176,7 +176,7 @@
       videoDrivers = ["modesetting "];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/var/lib/ollama";
