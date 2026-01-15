@@ -182,6 +182,7 @@
       home = "/data/AI/LLMs/Ollama/home";
       models = "/data/AI/LLMs/Ollama/models";
       rocmOverrideGfx = "11.0.2"; # 890M-like.
+      user = "ollamad-ai";
     };
     fstrim.enable = true;
     smartd = {
