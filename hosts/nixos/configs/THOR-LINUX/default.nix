@@ -234,12 +234,13 @@
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
-      extraPkgs = pkgs':
+      extraPkgs = _pkgs':
         with pkgs; [
-          (python3.withPackages (ps: with ps; [
-            tkinter
-            virtualenv
-          ]))
+          (python3.withPackages (ps:
+            with ps; [
+              tkinter
+              virtualenv
+            ]))
         ];
     };
     remotePlay.openFirewall = true;
