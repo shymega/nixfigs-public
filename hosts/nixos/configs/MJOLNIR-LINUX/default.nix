@@ -23,7 +23,7 @@
 
   networking = {
     hostName = "MJOLNIR-LINUX";
-    hostId = "";
+    hostId = "588f3eab";
     usePredictableInterfaceNames = false;
   };
   boot = {
@@ -69,7 +69,7 @@
           path = with pkgs; [zfs];
           serviceConfig.Type = "oneshot";
           script = ''
-            zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+            zfs rollback -r ztank/crypt/nixos/local/root@blank || true
           '';
         };
       };
@@ -88,7 +88,6 @@
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
-      "microcode.amd_sha_check=off"
       "iomem=relaxed"
     ];
     extraModprobeConfig = ''
@@ -147,10 +146,6 @@
       extraPackages = with pkgs; [
         # VA-API and VDPAU
         libva-vdpau-driver
-
-        # AMD ROCm OpenCL runtime
-        rocmPackages.clr
-        rocmPackages.clr.icd
       ];
     };
     i2c.enable = false;
@@ -230,12 +225,6 @@
 
   system.stateVersion = "25.11";
 
-  environment.systemPackages = with pkgs; [
-    (writeShellScriptBin "reset-gpu" ''
-      cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
-    '')
-  ];
-
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
@@ -253,4 +242,6 @@
     dedicatedServer.openFirewall = true;
   };
   programs.gamemode.enable = true;
+
+  hardware.cpu.intel.updateMicrocode = true;
 }
