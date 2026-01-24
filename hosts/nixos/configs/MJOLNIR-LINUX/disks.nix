@@ -114,12 +114,19 @@
 
     "/boot/efi" = {
       device = "/dev/disk/by-label/ESP";
+      depends = ["/boot"];
       fsType = "vfat";
       neededForBoot = true;
       options = [
         "fmask=0022"
         "dmask=0022"
       ];
+    };
+
+    "/booti" = {
+      device = "/dev/disk/by-label/BOOT";
+      fsType = "ext4";
+      neededForBoot = true;
     };
 
     "/etc/ssh" = {
