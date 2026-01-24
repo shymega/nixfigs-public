@@ -16,11 +16,6 @@
 
   lantian.qemu-user-static-binfmt.enable = true;
 
-  users.users."dzrodriguez" = {
-    hashedPasswordFile = lib.mkForce null;
-    password = "changeme";
-  };
-
   networking = {
     hostName = "MJOLNIR-LINUX";
     hostId = "588f3eab";
