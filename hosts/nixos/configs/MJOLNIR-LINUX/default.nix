@@ -88,12 +88,8 @@
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
-      "iomem=relaxed"
+      "i915.enable_guc=3"
     ];
-    extraModprobeConfig = ''
-      options kvm_amd nested=1
-      options kvm ignore_msrs=1 report_ignored_msrs=0
-    '';
     kernelPackages = pkgs.linuxPackages_6_18;
 
     kernel.sysctl = {
@@ -144,8 +140,9 @@
       enable = true;
       enable32Bit = true;
       extraPackages = with pkgs; [
-        # VA-API and VDPAU
-        libva-vdpau-driver
+        intel-media-driver
+        vpl-gpu-rt
+        intel-compute-runtime
       ];
     };
     i2c.enable = false;
@@ -185,11 +182,7 @@
     ollama = {
       enable = false;
       package = pkgs.ollama;
-      acceleration = "rocm";
       models = "/var/lib/ollama";
-      environmentVariables = {
-        HSA_OVERRIDE_GFX_VERSION = "11.0.2"; # 890M-like.
-      };
     };
     fstrim.enable = true;
     smartd = {
@@ -244,4 +237,7 @@
   programs.gamemode.enable = true;
 
   hardware.cpu.intel.updateMicrocode = true;
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  };
 }
