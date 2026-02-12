@@ -187,9 +187,7 @@
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/var/lib/ollama";
-      environmentVariables = {
-        HSA_OVERRIDE_GFX_VERSION = "11.0.2"; # 890M-like.
-      };
+      rocmOverrideGfx = "11.0.2"; # 890M-like.
     };
     fstrim.enable = true;
     smartd = {

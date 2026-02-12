@@ -206,9 +206,7 @@ in {
       package = pkgs.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/Models/";
-      environmentVariables = {
-        HSA_OVERRIDE_GFX_VERSION = "11.0.0"; # 780M.
-      };
+      rocmOverrideGfx = "11.0.0"; # 780M.
     };
     fstrim.enable = false;
     smartd = {
