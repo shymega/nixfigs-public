@@ -183,9 +183,9 @@
       videoDrivers = ["modesetting "];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.ollama;
-      acceleration = "rocm";
+      acceleration = "vulkan";
       models = "/var/lib/ollama";
       rocmOverrideGfx = "11.0.2"; # 890M-like.
     };

@@ -178,7 +178,7 @@
     ollama = {
       enable = true;
       package = pkgs.ollama;
-      acceleration = "rocm";
+      acceleration = "vulkan";
       home = "/data/AI/LLMs/Ollama/home";
       models = "/data/AI/LLMs/Ollama/models";
       rocmOverrideGfx = "11.0.2"; # 890M-like.

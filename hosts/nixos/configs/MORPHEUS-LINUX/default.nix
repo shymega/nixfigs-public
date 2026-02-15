@@ -204,7 +204,7 @@ in {
     ollama = {
       enable = false;
       package = pkgs.ollama;
-      acceleration = "rocm";
+      acceleration = "vulkan";
       models = "/data/AI/LLMs/Ollama/Models/";
       rocmOverrideGfx = "11.0.0"; # 780M.
     };
