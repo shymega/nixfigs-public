@@ -185,9 +185,10 @@
     ollama = {
       enable = true;
       package = pkgs.ollama;
-      acceleration = "vulkan";
-      models = "/data/AI/LLMs/Ollama/Models";
-      rocmOverrideGfx = "11.0.2"; # 890M-like.
+      acceleration = "rocm";
+      models = "/data/AI/LLMs/Ollama/models";
+      rocmOverrideGfx = "11.5.1";
+      user = "ollamad-ai";
     };
     fstrim.enable = true;
     smartd = {
