@@ -172,7 +172,7 @@
       enable = true;
       videoDrivers = ["modesetting "];
     };
-ollama = {
+    ollama = {
       enable = true;
       package = pkgs.ollama;
       acceleration = "vulkan";
