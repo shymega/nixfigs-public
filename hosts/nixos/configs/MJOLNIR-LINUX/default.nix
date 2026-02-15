@@ -176,7 +176,7 @@
     };
     ollama = {
       enable = false;
-      package = pkgs.ollama;
+      package = pkgs.unstable.ollama;
       models = "/var/lib/ollama";
     };
     fstrim.enable = true;
