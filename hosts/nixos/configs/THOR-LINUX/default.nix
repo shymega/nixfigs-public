@@ -186,7 +186,7 @@
       enable = true;
       package = pkgs.ollama;
       acceleration = "vulkan";
-      models = "/var/lib/ollama";
+      models = "/data/AI/LLMs/Ollama/Models";
       rocmOverrideGfx = "11.0.2"; # 890M-like.
     };
     fstrim.enable = true;
