@@ -173,6 +173,12 @@
       enable = true;
       autodetect = true;
     };
+    ollama = {
+      enable = true;
+      package = pkgs.ollama;
+      acceleration = "vulkan";
+      rocmOverrideGfx = "11.0.2"; # 890M-like.
+    };
     thermald.enable = true;
     input-remapper.enable = false;
     power-profiles-daemon.enable = lib.mkForce false;

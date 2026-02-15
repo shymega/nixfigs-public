@@ -172,6 +172,12 @@
       enable = true;
       videoDrivers = ["modesetting "];
     };
+ollama = {
+      enable = true;
+      package = pkgs.ollama;
+      acceleration = "vulkan";
+      rocmOverrideGfx = "11.0.2"; # 890M-like.
+    };
     fstrim.enable = true;
     smartd = {
       enable = true;
