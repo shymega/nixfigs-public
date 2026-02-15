@@ -174,7 +174,7 @@
     };
     ollama = {
       enable = true;
-      package = pkgs.ollama;
+      package = pkgs.unstable.ollama;
       acceleration = "vulkan";
       rocmOverrideGfx = "11.0.2"; # 890M-like.
     };
