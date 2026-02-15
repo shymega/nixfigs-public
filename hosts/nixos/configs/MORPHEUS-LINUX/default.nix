@@ -203,7 +203,7 @@ in {
     };
     ollama = {
       enable = false;
-      package = pkgs.ollama;
+      package = pkgs.unstable.ollama;
       acceleration = "vulkan";
       models = "/data/AI/LLMs/Ollama/Models/";
       rocmOverrideGfx = "11.0.0"; # 780M.
