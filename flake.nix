@@ -172,6 +172,5 @@
       url = "github:shymega/Win2K-Plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 }
