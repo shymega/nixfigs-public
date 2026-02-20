@@ -5,6 +5,7 @@
   inputs,
   pkgs,
   lib,
+  config,
   ...
 }: let
   zfs_arc_max = 8 * 1024 * 1024 * 1024;
@@ -27,7 +28,7 @@ in {
         "ztank"
         "zdata"
       ];
-      package = pkgs.zfs_2_4;
+      package = config.boot.kernelPackages.zfs_cachyos;
       devNodes = "/dev/disk/by-uuid";
     };
     binfmt = {
@@ -83,7 +84,7 @@ in {
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
 
-    kernelPackages = pkgs.linuxPackages_6_18;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";

@@ -5,6 +5,7 @@
   inputs,
   pkgs,
   lib,
+  config,
   ...
 }: {
   imports = with inputs; [
@@ -71,7 +72,7 @@
     };
     zfs = {
       extraPools = ["ztank" "zdata"];
-      package = pkgs.zfs_2_4;
+      package = config.boot.kernelPackages.zfs_cachyos;
     };
 
     kernelParams = let
@@ -90,7 +91,7 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = pkgs.linuxPackages_6_18;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
