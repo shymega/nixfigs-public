@@ -207,7 +207,7 @@
   };
 
   programs.hyprland = let
-    patchedHyprland = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland.overrideAttrs (_oldAttrs: {
+    patchedHyprland = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland.overrideAttrs (oldAttrs: {
       patches =
         (oldAttrs.patches or [])
         ++ [
