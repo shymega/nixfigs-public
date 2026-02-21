@@ -66,7 +66,7 @@
     "/boot" = {
       device = "/dev/disk/by-label/ESP";
       fsType = "vfat";
-      neededForBoot = true; # required
+      neededForBoot = false; # required
     };
 
     "/home" = {

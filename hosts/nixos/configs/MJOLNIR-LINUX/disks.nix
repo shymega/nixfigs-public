@@ -116,14 +116,14 @@
       device = "/dev/disk/by-label/ESP";
       depends = ["/boot"];
       fsType = "vfat";
-      neededForBoot = true;
+      neededForBoot = false;
       options = [
         "fmask=0022"
         "dmask=0022"
       ];
     };
 
-    "/booti" = {
+    "/boot" = {
       device = "/dev/disk/by-label/BOOT";
       fsType = "ext4";
       neededForBoot = true;
