@@ -97,27 +97,7 @@
     "/boot/efi" = {
       device = "/dev/disk/by-label/ESP";
       fsType = "vfat";
-      neededForBoot = true;
-      options = [
-        "fmask=0022"
-        "dmask=0022"
-      ];
-    };
-
-    "/boot/efi_alt" = {
-      device = "/dev/disk/by-label/ESP_ALT";
-      fsType = "vfat";
-      neededForBoot = true;
-      options = [
-        "fmask=0022"
-        "dmask=0022"
-      ];
-    };
-
-    "/boot/efi_bsd" = {
-      device = "/dev/disk/by-label/ESP_BSD";
-      fsType = "vfat";
-      neededForBoot = true;
+      neededForBoot = false;
       options = [
         "fmask=0022"
         "dmask=0022"

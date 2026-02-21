@@ -77,7 +77,7 @@
     "/boot/efi" = {
       device = "/dev/disk/by-label/ESP";
       fsType = "vfat";
-      neededForBoot = true;
+      neededForBoot = false;
       options = [
         "fmask=0022"
         "dmask=0022"
