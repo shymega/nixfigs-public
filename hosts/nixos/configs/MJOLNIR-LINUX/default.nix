@@ -10,8 +10,6 @@
 }: {
   imports = with inputs; [
     ./hardware-configuration.nix
-    nur-xddxdd.nixosModules.setupOverlay
-    nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
   ];
 
@@ -22,6 +20,10 @@
     hostId = "588f3eab";
     usePredictableInterfaceNames = false;
   };
+  users.users."dzrodriguez" = {
+    hashedPasswordFile = lib.mkForce null;
+    password = lib.mkForce "changeme";
+  }
   boot = {
     binfmt = {
       emulatedSystems = [
@@ -141,6 +143,32 @@
         intel-compute-runtime
       ];
     };
+    intelgpu.driver = lib.mkForce "i915";
+nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
+      open = false;
+      nvidiaSettings = true;
+      # Use nixpkgs with kernel 6.19 fix (PR #490123) for NVIDIA driver build
+      package = let
+        nvidia-fixed-pkgs = import inputs.nixpkgs-nvidia {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
+        fixedKernelPackages = nvidia-fixed-pkgs.linuxKernel.packagesFor config.boot.kernelPackages.kernel;
+      in
+        fixedKernelPackages.nvidiaPackages.beta;
+      prime = {
+        sync.enable = true;
+        offload = {
+          enable = false;
+          enableOffloadCmd = false;
+        };
+        intelBusId = lib.mkForce "PCI:0@0:2:0";
+        nvidiaBusId = lib.mkForce "PCI:2@0:0:0";
+      };
+    };
     i2c.enable = false;
     sensor.iio = {
       enable = false;
@@ -149,7 +177,7 @@
 
   services = {
     apcupsd = {
-      enable = true;
+      enable = false;
       configText = ''
         UPSTYPE usb
         NISIP 127.0.0.1
@@ -173,12 +201,18 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["modesetting "];
+      videoDrivers = [
+        "i915"
+        "modesetting"
+        "nvidia"
+      ];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.unstable.ollama;
-      models = "/var/lib/ollama";
+      acceleration = "cuda";
+      models = "/data/AI/LLMs/Ollama/models";
+      user = "ollamad-ai";
     };
     fstrim.enable = true;
     smartd = {
