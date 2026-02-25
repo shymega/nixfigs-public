@@ -20,10 +20,6 @@
     hostId = "588f3eab";
     usePredictableInterfaceNames = false;
   };
-  users.users."dzrodriguez" = {
-    hashedPasswordFile = lib.mkForce null;
-    password = lib.mkForce "changeme";
-  };
   boot = {
     binfmt = {
       emulatedSystems = [
