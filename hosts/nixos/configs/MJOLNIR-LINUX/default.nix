@@ -158,10 +158,10 @@
         persistencedSha256 = lib.fakeSha256;
       };
       prime = {
-        sync.enable = true;
+        sync.enable = false;
         offload = {
-          enable = false;
-          enableOffloadCmd = false;
+          enable = true;
+          enableOffloadCmd = true;
         };
         intelBusId = lib.mkForce "PCI:0@0:2:0";
         nvidiaBusId = lib.mkForce "PCI:2@0:0:0";
