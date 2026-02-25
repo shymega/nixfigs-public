@@ -140,8 +140,8 @@
       ];
     };
     nvidia = {
-      powerManagement.enable = true;
-      powerManagement.finegrained = true;
+      powerManagement.enable = false;
+      powerManagement.finegrained = false;
       open = true;
       dynamicBoost.enable = true;
       nvidiaSettings = true;
@@ -160,7 +160,7 @@
           enableOffloadCmd = false;
         };
         intelBusId = lib.mkForce "PCI:0@0:2:0";
-        nvidiaBusId = lib.mkForce "PCI:2@0:0:0";
+        nvidiaBusId = lib.mkForce "PCI:0@0:0:0";
       };
     };
     i2c.enable = false;
@@ -193,8 +193,8 @@
     xserver = {
       enable = true;
       videoDrivers = [
+        "modesetting"
         "nvidia"
-        "i915"
       ];
     };
     ollama = {
