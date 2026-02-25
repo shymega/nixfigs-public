@@ -23,7 +23,7 @@
   users.users."dzrodriguez" = {
     hashedPasswordFile = lib.mkForce null;
     password = lib.mkForce "changeme";
-  }
+  };
   boot = {
     binfmt = {
       emulatedSystems = [
@@ -144,7 +144,7 @@
       ];
     };
     intelgpu.driver = lib.mkForce "i915";
-nvidia = {
+    nvidia = {
       modesetting.enable = true;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
