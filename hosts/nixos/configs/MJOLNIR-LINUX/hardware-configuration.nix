@@ -16,6 +16,7 @@
     option i915 fastboot=1
     option nvidia_drm modeset=1
   '';
+  boot.blacklistedKernelModules = [ "nouveau" "nvidiafb" ];
 
   swapDevices = [];
 
