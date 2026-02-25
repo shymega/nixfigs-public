@@ -15533,6 +15533,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-nvidia": {
+      "locked": {
+        "lastModified": 1771170098,
+        "narHash": "sha256-xWU7EFeR+OQk4UcykJD5pOjhHle6/VPAHQqsNUWj4Rc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ab9ad415916a0fb89d1f539a9291d9737e95148e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ab9ad415916a0fb89d1f539a9291d9737e95148e",
+        "type": "github"
+      }
+    },
     "nixpkgs-shymega": {
       "locked": {
         "lastModified": 1771977409,
@@ -18729,6 +18745,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_134",
         "nixpkgs-master": "nixpkgs-master_11",
+        "nixpkgs-nvidia": "nixpkgs-nvidia",
         "nixpkgs-shymega": "nixpkgs-shymega_10",
         "nixpkgs-unstable": "nixpkgs-unstable_10",
         "nur-xddxdd": "nur-xddxdd",
