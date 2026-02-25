@@ -140,10 +140,10 @@
       ];
     };
     nvidia = {
-      modesetting.enable = true;
-      powerManagement.enable = false;
-      powerManagement.finegrained = false;
-      open = false;
+      powerManagement.enable = true;
+      powerManagement.finegrained = true;
+      open = true;
+      dynamicBoost.enable = true;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
         version = "580.126.18";
@@ -154,19 +154,16 @@
         persistencedSha256 = lib.fakeSha256;
       };
       prime = {
-        sync.enable = false;
+        sync.enable = true;
         offload = {
-          enable = true;
-          enableOffloadCmd = true;
+          enable = false;
+          enableOffloadCmd = false;
         };
         intelBusId = lib.mkForce "PCI:0@0:2:0";
         nvidiaBusId = lib.mkForce "PCI:2@0:0:0";
       };
     };
     i2c.enable = false;
-    sensor.iio = {
-      enable = false;
-    };
   };
 
   services = {
@@ -196,9 +193,8 @@
     xserver = {
       enable = true;
       videoDrivers = [
-        "i915"
-        "modesetting"
         "nvidia"
+        "i915"
       ];
     };
     ollama = {
