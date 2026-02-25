@@ -60,6 +60,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
+    nixpkgs-nvidia.url = "github:NixOS/nixpkgs?rev=ab9ad415916a0fb89d1f539a9291d9737e95148e";
     nixfigs-secrets.url = "github:shymega/nixfigs-secrets";
     nixfigs-networks.url = "github:shymega/nixfigs-networks";
     nixfigs-homes.url = "github:shymega/nixfigs-homes";

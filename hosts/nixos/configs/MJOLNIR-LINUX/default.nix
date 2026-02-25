@@ -143,7 +143,6 @@
         intel-compute-runtime
       ];
     };
-    intelgpu.driver = lib.mkForce "i915";
     nvidia = {
       modesetting.enable = true;
       powerManagement.enable = false;
