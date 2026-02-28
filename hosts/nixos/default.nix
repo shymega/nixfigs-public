@@ -42,7 +42,7 @@
           ../../modules/nixos/generators.nix
           agenix.nixosModules.default
           auto-cpufreq.nixosModules.default
-          hyprland.inputs.hyprland.nixosModules.default
+          hyprland.nixosModules.default
           {nixpkgs.pkgs = genPkgs hostPlatform overlays;}
         ])
         ++ extraModules
