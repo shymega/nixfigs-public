@@ -161,8 +161,7 @@
     ucodenix.url = "github:e-tho/ucodenix";
     himmelblau.url = "github:himmelblau-idm/himmelblau?ref=2.0.4";
     hyprland = {
-      url = "github:hyprwm/Hyprland?ref=v0.54.0";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:hyprwm/Hyprland?ref=v0.54.1";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins?ref=v0.53.0";
