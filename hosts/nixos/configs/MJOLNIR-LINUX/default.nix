@@ -168,7 +168,7 @@
 
   services = {
     apcupsd = {
-      enable = false;
+      enable = true;
       configText = ''
         UPSTYPE usb
         NISIP 127.0.0.1
@@ -201,6 +201,8 @@
       enable = true;
       package = pkgs.unstable.ollama;
       acceleration = "cuda";
+      host = "100.105.111.121";
+      port = 11434;
       models = "/data/AI/LLMs/Ollama/models";
       user = "ollamad-ai";
     };
