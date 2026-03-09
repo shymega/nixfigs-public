@@ -7,7 +7,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   imports = with inputs; [
     ./hardware-configuration.nix
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
@@ -57,10 +58,10 @@
       systemd.services = {
         rollback = {
           description = "Rollback ZFS datasets to a pristine state";
-          wantedBy = ["initrd.target"];
-          after = ["zfs-import-ztank.service"];
-          before = ["sysroot.mount"];
-          path = with pkgs; [zfs];
+          wantedBy = [ "initrd.target" ];
+          after = [ "zfs-import-ztank.service" ];
+          before = [ "sysroot.mount" ];
+          path = with pkgs; [ zfs ];
           serviceConfig.Type = "oneshot";
           script = ''
             zfs rollback -r ztank/crypt/nixos/local/root@blank || true
@@ -70,21 +71,26 @@
     };
     zfs = {
       package = config.boot.kernelPackages.zfs_cachyos;
-      extraPools = ["ztank" "zdata"];
+      extraPools = [
+        "ztank"
+        "zdata"
+      ];
     };
 
-    kernelParams = let
-      zfs_arc_max = 8 * 1024 * 1024 * 1024;
-      zfs_arc_min = zfs_arc_max - 1;
-    in [
-      "nohibernate"
-      "zfs.zfs_arc_max=${toString zfs_arc_max}"
-      "zfs.zfs_arc_min=${toString zfs_arc_min}"
-      "zfs.l2arc_write_boost=33554432"
-      "zfs.l2arc_write_max=16777216"
-      "i915.enable_guc=3"
-    ];
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelParams =
+      let
+        zfs_arc_max = 8 * 1024 * 1024 * 1024;
+        zfs_arc_min = zfs_arc_max - 1;
+      in
+      [
+        "nohibernate"
+        "zfs.zfs_arc_max=${toString zfs_arc_max}"
+        "zfs.zfs_arc_min=${toString zfs_arc_min}"
+        "zfs.l2arc_write_boost=33554432"
+        "zfs.l2arc_write_max=16777216"
+        "i915.enable_guc=3"
+      ];
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -94,10 +100,10 @@
     plymouth = {
       enable = true;
       theme = "Win2K";
-      themePackages = with inputs;
-      with pkgs; [
-        win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default
-      ];
+      themePackages =
+        with inputs;
+        with pkgs;
+        [ win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default ];
     };
 
     loader = {
@@ -142,17 +148,10 @@
     nvidia = {
       powerManagement.enable = false;
       powerManagement.finegrained = false;
-      open = true;
-      dynamicBoost.enable = true;
+      open = false;
+      dynamicBoost.enable = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-        version = "580.126.18";
-        sha256_64bit = "sha256-p3gbLhwtZcZYCRTHbnntRU0ClF34RxHAMwcKCSqatJ0=";
-        sha256_aarch64 = "sha256-pruxWQlLurymRL7PbR24NA6dNowwwX35p6j9mBIDcNs=";
-        openSha256 = "sha256-1Q2wuDdZ6KiA/2L3IDN4WXF8t63V/4+JfrFeADI1Cjg=";
-        settingsSha256 = "sha256-QMx4rUPEGp/8Mc+Bd8UmIet/Qr0GY8bnT/oDN8GAoEI=";
-        persistencedSha256 = lib.fakeSha256;
-      };
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       prime = {
         sync.enable = true;
         offload = {
@@ -199,7 +198,7 @@
     };
     ollama = {
       enable = true;
-      package = pkgs.unstable.ollama;
+      package = pkgs.ollama-cuda;
       acceleration = "cuda";
       host = "100.105.111.121";
       port = 11434;
@@ -243,15 +242,14 @@
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
-      extraPkgs = pkgs':
+      extraPkgs =
+        pkgs':
         with pkgs'.python3Packages;
-          [
-            tkinter
-            virtualenv
-          ]
-          ++ (with pkgs'; [
-            python3
-          ]);
+        [
+          tkinter
+          virtualenv
+        ]
+        ++ (with pkgs'; [ python3 ]);
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;

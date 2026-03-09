@@ -149,8 +149,9 @@ in {
       "personal"
     ];
     hardwareModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
+      inputs.hardware.nixosModules.common-cpu-intel
+      inputs.hardware.nixosModules.common-gpu-intel
+      inputs.hardware.nixosModules.common-gpu-nvidia
       inputs.hardware.nixosModules.common-pc-ssd
       inputs.hardware.nixosModules.common-pc
     ];
@@ -274,11 +275,7 @@ in {
     hostRoles = ["minimal"];
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      {
-        environment.systemPackages = [
-          inputs.agenix.packages.${hostPlatform}.default
-        ];
-      }
+      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
     ];
     pubkey = "";
@@ -301,11 +298,7 @@ in {
     hostRoles = ["minimal"];
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      {
-        environment.systemPackages = [
-          inputs.agenix.packages.${hostPlatform}.default
-        ];
-      }
+      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
     ];
   };
@@ -325,11 +318,7 @@ in {
     monolithConfig = false;
     hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
     extraModules = [
-      {
-        environment.systemPackages = [
-          inputs.agenix.packages.${hostPlatform}.default
-        ];
-      }
+      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
     ];
   };

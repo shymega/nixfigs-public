@@ -71,7 +71,10 @@
       };
     };
     zfs = {
-      extraPools = ["ztank" "zdata"];
+      extraPools = [
+        "ztank"
+        "zdata"
+      ];
       package = config.boot.kernelPackages.zfs_cachyos;
     };
 
@@ -91,7 +94,7 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-lto-lto;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-lts-lto;
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
       "kernel.printk" = "3 3 3 3";
@@ -101,9 +104,7 @@
       enable = true;
       theme = "Win2K";
       themePackages = with inputs;
-      with pkgs; [
-        win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default
-      ];
+      with pkgs; [win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default];
     };
 
     loader = {
@@ -132,7 +133,6 @@
 
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "powersave";
   };
 
   hardware = {
@@ -234,11 +234,13 @@
     package = pkgs.steam.override {
       extraPkgs = _pkgs':
         with pkgs; [
-          (python3.withPackages (ps:
-            with ps; [
-              tkinter
-              virtualenv
-            ]))
+          (python3.withPackages (
+            ps:
+              with ps; [
+                tkinter
+                virtualenv
+              ]
+          ))
         ];
     };
     remotePlay.openFirewall = true;
