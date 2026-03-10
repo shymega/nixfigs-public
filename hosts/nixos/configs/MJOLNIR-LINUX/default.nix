@@ -7,8 +7,7 @@
   lib,
   config,
   ...
-}:
-{
+}: {
   imports = with inputs; [
     ./hardware-configuration.nix
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
@@ -58,10 +57,10 @@
       systemd.services = {
         rollback = {
           description = "Rollback ZFS datasets to a pristine state";
-          wantedBy = [ "initrd.target" ];
-          after = [ "zfs-import-ztank.service" ];
-          before = [ "sysroot.mount" ];
-          path = with pkgs; [ zfs ];
+          wantedBy = ["initrd.target"];
+          after = ["zfs-import-ztank.service"];
+          before = ["sysroot.mount"];
+          path = with pkgs; [zfs];
           serviceConfig.Type = "oneshot";
           script = ''
             zfs rollback -r ztank/crypt/nixos/local/root@blank || true
@@ -77,19 +76,17 @@
       ];
     };
 
-    kernelParams =
-      let
-        zfs_arc_max = 8 * 1024 * 1024 * 1024;
-        zfs_arc_min = zfs_arc_max - 1;
-      in
-      [
-        "nohibernate"
-        "zfs.zfs_arc_max=${toString zfs_arc_max}"
-        "zfs.zfs_arc_min=${toString zfs_arc_min}"
-        "zfs.l2arc_write_boost=33554432"
-        "zfs.l2arc_write_max=16777216"
-        "i915.enable_guc=3"
-      ];
+    kernelParams = let
+      zfs_arc_max = 8 * 1024 * 1024 * 1024;
+      zfs_arc_min = zfs_arc_max - 1;
+    in [
+      "nohibernate"
+      "zfs.zfs_arc_max=${toString zfs_arc_max}"
+      "zfs.zfs_arc_min=${toString zfs_arc_min}"
+      "zfs.l2arc_write_boost=33554432"
+      "zfs.l2arc_write_max=16777216"
+      "i915.enable_guc=3"
+    ];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
     kernel.sysctl = {
@@ -100,10 +97,8 @@
     plymouth = {
       enable = true;
       theme = "Win2K";
-      themePackages =
-        with inputs;
-        with pkgs;
-        [ win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+      themePackages = with inputs;
+      with pkgs; [win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default];
     };
 
     loader = {
@@ -242,14 +237,13 @@
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
-      extraPkgs =
-        pkgs':
+      extraPkgs = pkgs':
         with pkgs'.python3Packages;
-        [
-          tkinter
-          virtualenv
-        ]
-        ++ (with pkgs'; [ python3 ]);
+          [
+            tkinter
+            virtualenv
+          ]
+          ++ (with pkgs'; [python3]);
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
