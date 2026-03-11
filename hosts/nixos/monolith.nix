@@ -9,7 +9,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     ../../modules/nixos/secrets.nix
     ../../modules/nixos/roles.nix
@@ -99,7 +100,7 @@
     guix.enable = true;
     zerotierone = {
       enable = true;
-      joinNetworks = ["@secret@"];
+      joinNetworks = [ "@secret@" ];
     };
     geoclue2 = {
       enable = true;
@@ -137,12 +138,12 @@
   };
 
   networking = {
-    timeServers = lib.mkForce ["uk.pool.ntp.org"];
+    timeServers = lib.mkForce [ "uk.pool.ntp.org" ];
     usePredictableInterfaceNames = lib.mkForce false;
 
     firewall = {
       enable = true;
-      interfaces."podman+".allowedUDPPorts = [53];
+      interfaces."podman+".allowedUDPPorts = [ 53 ];
       checkReversePath = false;
     };
   };
@@ -162,7 +163,7 @@
     _1password-gui = {
       enable = true;
       package = pkgs._1password-gui;
-      polkitPolicyOwners = ["dzrodriguez"];
+      polkitPolicyOwners = [ "dzrodriguez" ];
     };
   };
 
@@ -206,15 +207,29 @@
     };
   };
 
-  programs.hyprland = let
-    inherit (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}) hyprland;
-  in {
-    enable = true;
-    # set the flake package
-    package = hyprland;
-    # make sure to also set the portal package, so that they are in sync
-    portalPackage =
-      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-    xwayland.enable = true; # Xwayland can be disabled.
-  };
+  programs.hyprland =
+    let
+      inherit (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}) hyprland;
+    in
+    {
+      enable = true;
+      # set the flake package
+      package = hyprland;
+      # make sure to also set the portal package, so that they are in sync
+      portalPackage =
+        (
+          inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland.overrideAttrs
+          (_oldAttrs: {
+            version = "unstable-git-revert";
+            src = pkgs.fetchFromGitHub {
+              owner = "hyprwm";
+              repo = "xdg-desktop-portal-hyprland";
+              rev = "eb6c02a2ead882f3474f3d7f2fbe966b64ed5110";
+              hash = "sha256-N/ZwsRLULLpBP5ecvAUzNq8E/CgLRwPwSrHyY3xB5KM=";
+            };
+          })
+        ).override
+          { inherit hyprland; };
+      xwayland.enable = true; # Xwayland can be disabled.
+    };
 }
