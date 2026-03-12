@@ -172,5 +172,6 @@
       url = "github:shymega/Win2K-Plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-openclaw.url = "github:openclaw/nix-openclaw";
   };
 }
