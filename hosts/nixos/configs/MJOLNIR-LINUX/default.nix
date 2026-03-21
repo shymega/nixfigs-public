@@ -143,7 +143,7 @@
     nvidia = {
       powerManagement.enable = false;
       powerManagement.finegrained = false;
-      open = false;
+      open = true;
       dynamicBoost.enable = false;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
