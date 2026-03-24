@@ -246,6 +246,26 @@ in {
     deployable = true;
   };
 
+  TWINS-LINUX = mkHost rec {
+    type = "nixos";
+    address = "TWINS-LINUX.rnet.rodriguez.org.uk";
+    hostname = "TWINS-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "personal"
+    ];
+    hardwareModules = [inputs.hardware.nixosModules.lenovo-thinkpad-x270];
+    extraModules = [
+      inputs.lanzaboote.nixosModules.lanzaboote
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "";
+    remoteBuild = true;
+    deployable = false;
+    embedHm = true;
+  };
+
   SMITH-LINUX = mkHost rec {
     type = "nixos";
     address = "SMITH-LINUX.rnet.rodriguez.org.uk";
@@ -264,7 +284,6 @@ in {
   };
 
   ### Experimental Device Ports ###
-
   ## ClockworkPi uConsole (CM4) ##
   # Received, Debian installed. Work ongoing to upstream DTB and driver patches. #
   CLOCKWORK-UC-CM4 = mkHost rec {
