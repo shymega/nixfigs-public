@@ -27,7 +27,7 @@
 
     forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
   in {
-    inherit (inputs.nixfigs-pkgs) overlays packages nixpkgs-config;
+    inherit (inputs.nixfigs-pkgs) overlays nixpkgs-config;
     inherit (inputs.nixfigs-roles) roles utils;
     # for `nix fmt`
     formatter = treeFmtEachSystem (pkgs: treeFmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
