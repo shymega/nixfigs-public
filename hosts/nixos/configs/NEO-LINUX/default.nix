@@ -86,7 +86,7 @@ in {
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
     zfs.package = config.boot.kernelPackages.zfs_cachyos;
 
