@@ -234,6 +234,10 @@
 
   system.stateVersion = "25.11";
 
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
@@ -243,15 +247,15 @@
             tkinter
             virtualenv
           ]
-          ++ (with pkgs'; [python3]);
+          ++ (with pkgs'; [
+            python3
+            hyprscope
+          ]);
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
+    gamescopeSession.enable = true;
   };
-  programs.gamemode.enable = true;
 
   hardware.cpu.intel.updateMicrocode = true;
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
-  };
 }
