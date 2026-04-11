@@ -146,7 +146,7 @@
       open = true;
       dynamicBoost.enable = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       prime = {
         sync.enable = true;
         offload = {
