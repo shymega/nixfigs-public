@@ -174,7 +174,6 @@
     };
     jovian = {
       url = "github:Jovian-Experiments/Jovian-NixOS";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 }
