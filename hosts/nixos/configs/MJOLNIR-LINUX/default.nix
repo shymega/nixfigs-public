@@ -256,5 +256,22 @@
     gamescopeSession.enable = true;
   };
 
+  specialisation = {
+    nvidia-offload = {
+      inheritParentConfig = true;
+      configuration = {
+        hardware.nvidia = {
+          prime = {
+            sync.enable = lib.mkForce false;
+            offload = {
+              enable = lib.mkForce true;
+              enableOffloadCmd = lib.mkForce true;
+            };
+          };
+        };
+      };
+    };
+  };
+
   hardware.cpu.intel.updateMicrocode = true;
 }
