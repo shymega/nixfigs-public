@@ -216,4 +216,32 @@
     portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     xwayland.enable = true; # Xwayland can be disabled.
   };
+
+  specialisation.jovian = {
+    inheritParentConfig = true;
+    configuration = {
+      imports = with inputs; [
+        jovian.nixosModules.default
+      ];
+
+      jovian = {
+        steam = {
+          enable = true;
+          autoStart = true;
+          desktopSession = "hyprland";
+          user = "dzrodriguez";
+        };
+
+        steamos = {
+          useSteamOSConfig = true;
+          enableBluetoothConfig = true;
+        };
+
+        decky-loader = {
+          enable = true;
+          user = "dzrodriguez";
+        };
+      };
+    };
+  };
 }
