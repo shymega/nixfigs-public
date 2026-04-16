@@ -9,7 +9,7 @@
 
   fileSystems = {
     "/" = {
-      device = "ztank/crypt/nixos/linux/local/root";
+      device = "ztank/crypt/nixos/local/root";
       fsType = "zfs";
     };
 
@@ -31,18 +31,6 @@
       neededForBoot = true;
     };
 
-    "/home/dzrodriguez/Games" = {
-      depends = ["/data/Games"];
-      device = "/data/Games";
-      fsType = "none";
-      neededForBoot = true;
-      options = [
-        "bind"
-        "nofail"
-        "x-systemd.automount"
-      ];
-    };
-
     "/home/dzrodriguez/dev" = {
       depends = ["/data/Development"];
       device = "/data/Development";
@@ -58,31 +46,31 @@
     };
 
     "/etc/nixos" = {
-      device = "ztank/crypt/nixos/linux/safe/nixos-config";
+      device = "ztank/crypt/nixos/safe/nixos-config";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/nix" = {
-      device = "ztank/crypt/nixos/linux/local/nix-store";
+      device = "ztank/crypt/nixos/local/nix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/gnu" = {
-      device = "ztank/crypt/nixos/linux/local/guix-store";
+      device = "ztank/crypt/nixos/local/guix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/persist" = {
-      device = "ztank/crypt/nixos/linux/safe/persist";
+      device = "ztank/crypt/nixos/safe/persist";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/var" = {
-      device = "ztank/crypt/nixos/linux/safe/var-store";
+      device = "ztank/crypt/nixos/safe/var-store";
       fsType = "zfs";
       neededForBoot = true;
     };
@@ -95,7 +83,7 @@
     };
 
     "/boot/efi" = {
-      device = "/dev/disk/by-label/ESP";
+      device = "/dev/disk/by-label/EFI";
       fsType = "vfat";
       neededForBoot = false;
       options = [

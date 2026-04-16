@@ -193,7 +193,7 @@
     };
     ollama = {
       enable = true;
-      package = pkgs.ollama-cuda;
+      package = pkgs.unstable.ollama-cuda;
       acceleration = "cuda";
       host = "100.105.111.121";
       port = 11434;
