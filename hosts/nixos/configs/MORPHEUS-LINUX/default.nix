@@ -206,9 +206,13 @@ in {
     ollama = {
       enable = false;
       package = pkgs.unstable.ollama;
-      acceleration = "vulkan";
-      models = "/data/AI/LLMs/Ollama/Models/";
-      rocmOverrideGfx = "11.0.0"; # 780M.
+      acceleration = "rocm";
+      models = "/data/AI/LLMs/Ollama/models";
+      rocmOverrideGfx = "11.0.0"; # 890M-like.
+      environmentVariables = {
+        HSA_ENABLE_SDMA = "0";
+      };
+      user = "ollamad-ai";
     };
     fstrim.enable = false;
     smartd = {
