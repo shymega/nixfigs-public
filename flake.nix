@@ -175,5 +175,6 @@
     jovian = {
       url = "github:Jovian-Experiments/Jovian-NixOS";
     };
+    nix-amd-ai.url = "github:noamsto/nix-amd-ai";
   };
 }
