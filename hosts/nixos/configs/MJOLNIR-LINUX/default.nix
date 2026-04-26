@@ -274,4 +274,7 @@
   };
 
   hardware.cpu.intel.updateMicrocode = true;
+
+  services.open-webui.enable = config.services.ollama.enable;
+  hardware.nvidia-container-toolkit.enable = true;
 }
