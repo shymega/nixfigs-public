@@ -179,9 +179,12 @@
     ollama = {
       enable = true;
       package = pkgs.unstable.ollama;
-      acceleration = "rocm";
+      acceleration = "vulkan";
       models = "/data/AI/LLMs/Ollama/models";
       rocmOverrideGfx = "11.5.0"; # 890M-like.
+      environmentVariables = {
+        HSA_ENABLE_SDMA = "0";
+      };
       user = "ollamad-ai";
     };
     fstrim.enable = true;
