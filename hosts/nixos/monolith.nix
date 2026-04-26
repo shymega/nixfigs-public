@@ -39,11 +39,11 @@
         }
       ];
       extraGroups = [
-        "i2c"
         "adbusers"
         "dialout"
         "disk"
         "docker"
+        "i2c"
         "input"
         "kvm"
         "libvirt"
@@ -53,6 +53,7 @@
         "networkmanager"
         "plugdev"
         "qemu-libvirtd"
+        "render"
         "scanner"
         "systemd-journal"
         "uucp"
