@@ -180,7 +180,7 @@
     ollama = {
       enable = true;
       package = pkgs.unstable.ollama;
-      acceleration = "vulkan";
+      acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/models";
       rocmOverrideGfx = "11.5.0"; # 890M-like.
       environmentVariables = {
@@ -260,4 +260,6 @@
     enableVulkan = true; # Declaratively wires Vulkan GPU backends for Lemonade
     lemonade.user = "dzrodriguez";
   };
+
+  services.open-webui.enable = config.services.ollama.enable;
 }

@@ -204,7 +204,7 @@ in {
       videoDrivers = ["amdgpu"];
     };
     ollama = {
-      enable = false;
+      enable = true;
       package = pkgs.unstable.ollama;
       acceleration = "rocm";
       models = "/data/AI/LLMs/Ollama/models";
@@ -264,4 +264,6 @@ in {
   };
 
   system.stateVersion = "25.11";
+
+  services.open-webui.enable = config.services.ollama.enable;
 }
