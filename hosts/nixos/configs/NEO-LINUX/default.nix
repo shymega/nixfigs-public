@@ -81,6 +81,7 @@ in {
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
       "iomem=relaxed"
+      "initcall_blacklist=algif_aead_init"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
