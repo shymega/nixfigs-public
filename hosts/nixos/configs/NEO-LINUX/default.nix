@@ -80,6 +80,7 @@ in {
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "zfs.l2arc_write_boost=33554432"
       "zfs.l2arc_write_max=16777216"
+      "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "initcall_blacklist=algif_aead_init"
     ];
