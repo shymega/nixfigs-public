@@ -182,7 +182,6 @@ in {
   };
 
   services = {
-    fprintd.enable = true;
     power-profiles-daemon.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
@@ -250,8 +249,10 @@ in {
     };
     logind = {
       settings.Login = {
-        LidSwitchExternalPower = "ignore";
+        HandleLidSwitchDocked = "ignore";
+        HandleLidSwitchExternalPower = "ignore";
         LidSwitchDocked = "ignore";
+        LidSwitchExternalPower = "ignore";
         LidSwitchIgnoreInhibited = "no";
       };
     };

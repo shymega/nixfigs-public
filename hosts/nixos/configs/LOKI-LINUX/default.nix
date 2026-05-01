@@ -156,7 +156,6 @@
   };
 
   services = {
-    fprintd.enable = true;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     zfs = {
