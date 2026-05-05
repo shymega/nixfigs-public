@@ -13,7 +13,6 @@
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
-    nix-amd-ai.nixosModules.default
   ];
 
   lantian.qemu-user-static-binfmt.enable = true;
@@ -251,15 +250,6 @@
     dedicatedServer.openFirewall = true;
   };
   programs.gamemode.enable = true;
-
-  hardware.amd-npu = {
-    enable = true;
-    enableFastFlowLM = true; # LLM inference on NPU
-    enableLemonade = true; # OpenAI-compatible API server
-    enableROCm = true; # Declaratively wires ROCm GPU backends for Lemonade
-    enableVulkan = true; # Declaratively wires Vulkan GPU backends for Lemonade
-    lemonade.user = "dzrodriguez";
-  };
 
   services.open-webui.enable = config.services.ollama.enable;
 }
