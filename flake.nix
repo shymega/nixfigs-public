@@ -27,6 +27,16 @@
 
     forEachSystem = inputs.nixpkgs.lib.genAttrs systems;
   in {
+    zfs-cachyos = self.nixosConfigurations.MJOLNIR-LINUX.config.boot.zfs.package.overrideAttrs (_: _: {
+      preBuild = ''
+        # force an exit with error
+        exit 1
+      '';
+
+      nativeBuildInputs = [
+        inputs.nixpkgs.legacyPackages.x86_64-linux.breakpointHook
+      ];
+    });
     inherit (inputs.nixfigs-pkgs) overlays nixpkgs-config;
     inherit (inputs.nixfigs-roles) roles utils;
     # for `nix fmt`
