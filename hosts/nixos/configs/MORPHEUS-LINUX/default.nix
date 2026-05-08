@@ -22,6 +22,8 @@ in {
     hostId = "c4e0feaa";
     usePredictableInterfaceNames = false;
   };
+  zramSwap.enable = true;
+  zramSwap.algorithm = "zstd";
   boot = {
     zfs = {
       extraPools = [
