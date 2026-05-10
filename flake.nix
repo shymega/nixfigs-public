@@ -171,7 +171,7 @@
     ucodenix.url = "github:e-tho/ucodenix";
     himmelblau.url = "github:himmelblau-idm/himmelblau?ref=2.0.4";
     hyprland = {
-      url = "github:hyprwm/Hyprland?ref=v0.54.3";
+      url = "github:hyprwm/Hyprland?ref=v0.55.0";
     };
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins?ref=v0.53.0";
