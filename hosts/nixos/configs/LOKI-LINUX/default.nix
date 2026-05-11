@@ -139,7 +139,6 @@
         #!/bin/sh
         /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
       '';
-      mode = "0755";
     };
   };
 
