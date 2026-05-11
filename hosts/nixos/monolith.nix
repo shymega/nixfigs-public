@@ -223,8 +223,6 @@
           user = "dzrodriguez";
         };
 
-        displayManager.steam.enable = false; # Ensure Jovian doesn't take over DM.
-
         steamos = {
           useSteamOSConfig = true;
           enableBluetoothConfig = true;
