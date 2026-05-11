@@ -62,7 +62,7 @@
           wantedBy = ["initrd.target"];
           after = ["zfs-import-ztank.service"];
           before = ["sysroot.mount"];
-          path = with pkgs; [zfs];
+          path = [config.boot.zfs.package];
           serviceConfig.Type = "oneshot";
           script = ''
             zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
