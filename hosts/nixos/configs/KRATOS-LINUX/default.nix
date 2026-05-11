@@ -23,6 +23,8 @@
     hostId = "7861be1c";
     usePredictableInterfaceNames = false;
   };
+  zramSwap.enable = true;
+  zramSwap.algorithm = "zstd";
   boot = {
     binfmt = {
       emulatedSystems = [

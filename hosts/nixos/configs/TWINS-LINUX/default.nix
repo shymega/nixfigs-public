@@ -22,6 +22,8 @@ in {
     hostId = "c6153b29";
     usePredictableInterfaceNames = false;
   };
+  zramSwap.enable = true;
+  zramSwap.algorithm = "zstd";
 
   boot = {
     binfmt = {

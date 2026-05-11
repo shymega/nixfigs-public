@@ -21,6 +21,8 @@
     hashedPasswordFile = lib.mkForce null;
     password = "changeme";
   };
+  zramSwap.enable = true;
+  zramSwap.algorithm = "zstd";
 
   networking = {
     hostName = "LOKI-LINUX";

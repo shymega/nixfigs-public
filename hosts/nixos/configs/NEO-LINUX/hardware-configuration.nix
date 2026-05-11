@@ -30,9 +30,6 @@
     resumeDevice = "/dev/disk/by-label/SWAP";
   };
 
-  zramSwap.enable = true;
-  zramSwap.algorithm = "zstd";
-
   fileSystems = {
     "/" = {
       device = "tank/local/root";
