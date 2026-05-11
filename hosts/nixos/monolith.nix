@@ -218,10 +218,12 @@
       jovian = {
         steam = {
           enable = true;
-          autoStart = true;
+          autoStart = false; # Disabled to keep greetd.
           desktopSession = "hyprland";
           user = "dzrodriguez";
         };
+
+        displayManager.steam.enable = false; # Ensure Jovian doesn't take over DM.
 
         steamos = {
           useSteamOSConfig = true;
@@ -233,6 +235,10 @@
           user = "dzrodriguez";
         };
       };
+
+      # Touch-screen friendly improvements
+      services.xserver.libinput.touchpad.tapping = true;
+      # Note: For a truly touch-friendly greetd, consider using 'regreet'.
     };
   };
 
