@@ -229,12 +229,6 @@
 
   system.stateVersion = "25.11";
 
-  environment.systemPackages = with pkgs; [
-    (writeShellScriptBin "reset-gpu" ''
-      cat /sys/kernel/debug/dri/1/amdgpu_gpu_recover
-    '')
-  ];
-
   programs.gamescope.enable = true;
   programs.gamemode = true;
   programs.steam = {
