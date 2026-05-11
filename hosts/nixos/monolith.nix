@@ -251,23 +251,7 @@
     # set the flake package
     package = hyprland;
     # make sure to also set the portal package, so that they are in sync
-    portalPackage = let
-      xdg-desktop-portal-hyprland-revert =
-        (
-          xdg-desktop-portal-hyprland.overrideAttrs
-          (_: {
-            version = "unstable-git-revert";
-            src = pkgs.fetchFromGitHub {
-              owner = "hyprwm";
-              repo = "xdg-desktop-portal-hyprland";
-              rev = "eb6c02a2ead882f3474f3d7f2fbe966b64ed5110";
-              hash = "sha256-N/ZwsRLULLpBP5ecvAUzNq8E/CgLRwPwSrHyY3xB5KM=";
-            };
-          })
-        ).override
-        {inherit hyprland;};
-    in
-      xdg-desktop-portal-hyprland;
+    portalPackage = xdg-desktop-portal-hyprland;
     xwayland.enable = true; # Xwayland can be disabled.
   };
 }
