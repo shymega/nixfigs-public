@@ -136,7 +136,6 @@ in {
         #!/bin/sh
         /bin/zfs rollback -r tank/local/root@blank || true
       '';
-      mode = "0755";
     };
   };
 
