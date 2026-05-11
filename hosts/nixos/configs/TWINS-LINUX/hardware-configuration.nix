@@ -25,9 +25,6 @@
     };
   };
 
-  zramSwap.enable = true;
-  zramSwap.algorithm = "zstd";
-
   fileSystems = {
     "/" = {
       device = "tank/local/root";
