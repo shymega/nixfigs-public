@@ -214,4 +214,6 @@
 
   system.stateVersion = "25.11";
 
+  # FIXME: Set cpuModelId.
+  services.ucodenix.enable = true;
 }

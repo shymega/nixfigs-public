@@ -241,5 +241,8 @@
     gamescopeSession.enable = true;
   };
 
+  # FIXME: Set cpuModelId.
+  services.ucodenix.enable = true;
+
   system.stateVersion = "25.11";
 }

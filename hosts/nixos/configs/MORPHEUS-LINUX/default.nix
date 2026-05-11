@@ -297,4 +297,7 @@ in {
   };
 
   services.open-webui.enable = config.services.ollama.enable;
+
+  # FIXME: Set cpuModelId.
+  services.ucodenix.enable = true;
 }
