@@ -13,8 +13,10 @@
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
-    nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.nix-cache-attic
+    nur-xddxdd.nixosModules.qemu-user-static-binfmt
+    nur-xddxdd.nixosModules.setupOverlay
+    ucodenix.nixosModules.default
   ];
 
   networking = {
