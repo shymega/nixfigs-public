@@ -327,9 +327,6 @@
     };
   };
 
-  # Reduces need for swap
-  zramSwap.enable = true;
-
   # Limit access to nix to users with the "wheel" group. ("sudoers")
   nix.settings.allowed-users = ["@wheel"];
 
