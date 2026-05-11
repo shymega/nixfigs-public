@@ -112,32 +112,6 @@ in {
     deployable = true;
   };
 
-  THOR-LINUX = mkHost rec {
-    type = "nixos";
-    address = "THOR-LINUX.rnet.rodriguez.org.uk";
-    hostname = "THOR-LINUX";
-    hostPlatform = "x86_64-linux";
-    hostRoles = [
-      "workstation"
-      "gaming"
-      "personal"
-    ];
-    hardwareModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-    ];
-    extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-    ];
-    pubkey = "";
-    embedHm = true;
-    remoteBuild = true;
-    deployable = true;
-  };
-
   MJOLNIR-LINUX = mkHost rec {
     type = "nixos";
     address = "MJOLNIR-LINUX.rnet.rodriguez.org.uk";
