@@ -266,23 +266,6 @@ in {
     embedHm = true;
   };
 
-  SMITH-LINUX = mkHost rec {
-    type = "nixos";
-    address = "SMITH-LINUX.rnet.rodriguez.org.uk";
-    hostname = "SMITH-LINUX";
-    hostPlatform = "aarch64-linux";
-    monolithConfig = false;
-    hostRoles = ["minimal"];
-    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
-    extraModules = [
-      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
-      "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-    ];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-  };
-
   ### Experimental Device Ports ###
   ## ClockworkPi uConsole (CM4) ##
   # Received, Debian installed. Work ongoing to upstream DTB and driver patches. #
