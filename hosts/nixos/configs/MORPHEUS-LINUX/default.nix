@@ -126,29 +126,27 @@ in {
       timeout = 6;
     };
 
-    initrd.systemd = {
-      services.rollback = {
-        description = "Rollback ZFS datasets to a pristine state";
-        wantedBy = ["initrd.target"];
-        after = ["zfs-import-ztank.service"];
-        before = ["sysroot.mount"];
-        path = [config.boot.zfs.package];
-        serviceConfig.Type = "oneshot";
-        script = ''
-          zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
-        '';
-      };
+    initrd.systemd.services.rollback = {
+      description = "Rollback ZFS datasets to a pristine state";
+      wantedBy = ["initrd.target"];
+      after = ["zfs-import-ztank.service"];
+      before = ["sysroot.mount"];
+      path = [config.boot.zfs.package];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
+      '';
+    };
+  };
 
-      shutdownRamfs = {
-        storePaths = ["${config.boot.zfs.package}/bin/zfs"];
-        contents."/etc/systemd/system-shutdown/zfs-rollback" = {
-          source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
-            #!/bin/sh
-            /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
-          '';
-          mode = "0755";
-        };
-      };
+  systemd.shutdownRamfs = {
+    storePaths = ["${config.boot.zfs.package}/bin/zfs"];
+    contents."/etc/systemd/system-shutdown/zfs-rollback" = {
+      source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
+        #!/bin/sh
+        /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+      '';
+      mode = "0755";
     };
   };
 
