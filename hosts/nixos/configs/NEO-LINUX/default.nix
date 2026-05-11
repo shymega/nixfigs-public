@@ -218,4 +218,7 @@ in {
     dedicatedServer.openFirewall = true;
     gamescopeSession.enable = true;
   };
+
+  # FIXME: Set cpuModelId.
+  services.ucodenix.enable = true;
 }
