@@ -67,7 +67,7 @@ in {
           wantedBy = ["initrd.target"];
           after = ["zfs-import-tank.service"];
           before = ["sysroot.mount"];
-          path = with pkgs; [zfs];
+          path = [config.boot.zfs.package];
           serviceConfig.Type = "oneshot";
           script = ''
             zfs rollback -r tank/local/root@blank
