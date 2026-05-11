@@ -264,7 +264,6 @@ in {
   system.stateVersion = "25.11";
 
   programs.gamescope.enable = true;
-  programs.gamemode = true;
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
