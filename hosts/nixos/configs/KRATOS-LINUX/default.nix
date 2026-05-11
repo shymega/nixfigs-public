@@ -52,8 +52,8 @@
           };
         };
       };
-      systemd = {
-        services.rollback = {
+      systemd.services = {
+        rollback = {
           description = "Rollback ZFS datasets to a pristine state";
           wantedBy = ["initrd.target"];
           after = ["zfs-import-ztank.service"];
@@ -63,17 +63,6 @@
           script = ''
             zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
           '';
-        };
-
-        shutdownRamfs = {
-          storePaths = ["${config.boot.zfs.package}/bin/zfs"];
-          contents."/etc/systemd/system-shutdown/zfs-rollback" = {
-            source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
-              #!/bin/sh
-              /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
-            '';
-            mode = "0755";
-          };
         };
       };
     };
@@ -136,6 +125,17 @@
       };
       generationsDir.copyKernels = true;
       timeout = 6;
+    };
+  };
+
+  systemd.shutdownRamfs = {
+    storePaths = ["${config.boot.zfs.package}/bin/zfs"];
+    contents."/etc/systemd/system-shutdown/zfs-rollback" = {
+      source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
+        #!/bin/sh
+        /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+      '';
+      mode = "0755";
     };
   };
 
