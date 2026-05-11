@@ -236,12 +236,24 @@
 
   system.stateVersion = "25.11";
 
-  programs.gamescope = {
-    enable = true;
-  };
+  programs.gamescope.enable = true;
+  programs.gamemode = true;
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
+      extraEnv = {
+        AMD_VULKAN_ICD = "RADV";
+        GAMEMODERUN = "1";
+        MANGOHUD = "1";
+        MANGOHUD_CONFIG = "read_cfg,no_display";
+        MESA_GLSL_CACHE_MAX_SIZE = "16G";
+        MESA_SHADER_CACHE_MAX_SIZE = "16G";
+        PROTON_ADD_CONFIG = "fsr4rdna3";
+        PROTON_LOCAL_SHADER_CACHE = "1";
+        VKD3D_CONFIG = "dxr,dxr11";
+        WINEDLLOVERRIDES = "dinput8,dxgi,dsound=n,b";
+        WINE_VK_VULKAN_ONLY = "1";
+      };
       extraPkgs = pkgs':
         with pkgs'.python3Packages;
           [
@@ -250,7 +262,6 @@
           ]
           ++ (with pkgs'; [
             python3
-            hyprscope
           ]);
     };
     remotePlay.openFirewall = true;
