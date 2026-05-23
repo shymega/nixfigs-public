@@ -218,14 +218,13 @@
       jovian = {
         steam = {
           enable = true;
-          autoStart = false; # Disabled to keep greetd.
+          autoStart = true; # Disabled to keep greetd.
           desktopSession = "hyprland";
           user = "dzrodriguez";
         };
 
         steamos = {
-          useSteamOSConfig = true;
-          enableBluetoothConfig = true;
+          useSteamOSConfig = false;
         };
 
         decky-loader = {
@@ -233,10 +232,6 @@
           user = "dzrodriguez";
         };
       };
-
-      # Touch-screen friendly improvements
-      services.xserver.libinput.touchpad.tapping = true;
-      # Note: For a truly touch-friendly greetd, consider using 'regreet'.
     };
   };
 
