@@ -11,7 +11,7 @@
   networking = {
     hostName = "CLOCKWORK-DT-CM4";
   };
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 
   users = {
     mutableUsers = false;
