@@ -191,8 +191,7 @@
     };
     ollama = {
       enable = true;
-      package = pkgs.unstable.ollama;
-      acceleration = "rocm";
+      package = pkgs.ollama-rocm;
       models = "/data/AI/LLMs/Ollama/models";
       rocmOverrideGfx = "11.5.0"; # 890M-like.
       environmentVariables = {
