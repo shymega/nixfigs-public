@@ -152,7 +152,6 @@
   programs = {
     zsh.enable = true;
     fish.enable = true;
-    adb.enable = true;
     mosh.enable = true;
     dconf.enable = true;
     xwayland.enable = true;
