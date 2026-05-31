@@ -5,6 +5,7 @@
   boot.zfs = {
     requestEncryptionCredentials = true;
     forceImportAll = true;
+    forceImportRoot = true;
   };
 
   fileSystems = {
