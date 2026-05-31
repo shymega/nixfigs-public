@@ -26,6 +26,7 @@
     zfs = {
       requestEncryptionCredentials = true;
       forceImportAll = true;
+      forceImportRoot = true;
     };
     resumeDevice = "/dev/disk/by-label/SWAP";
   };
