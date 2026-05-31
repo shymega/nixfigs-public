@@ -187,7 +187,7 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["modesetting "];
+      videoDrivers = ["modesetting"];
     };
     ollama = {
       enable = true;
