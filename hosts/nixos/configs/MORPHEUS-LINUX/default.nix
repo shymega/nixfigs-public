@@ -144,7 +144,7 @@ in {
     contents."/etc/systemd/system-shutdown/zfs-rollback" = {
       source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
         #!/bin/sh
-        /bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+        ${config.boot.zfs.package}/bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
       '';
     };
   };
