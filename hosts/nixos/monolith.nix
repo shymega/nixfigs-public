@@ -207,7 +207,7 @@
     };
   };
 
-  specialisation.jovian = {
+  specialisation.jovian = lib.optionalAttrs false {
     inheritParentConfig = true;
     configuration = {
       imports = with inputs; [
