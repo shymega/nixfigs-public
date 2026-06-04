@@ -138,7 +138,7 @@
       };
     };
     stylix = {
-      url = "github:danth/stylix?ref=release-25.11";
+      url = "github:danth/stylix?ref=release-26.05";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
@@ -174,7 +174,7 @@
       url = "github:hyprwm/Hyprland?ref=v0.55.2";
     };
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins?ref=v0.53.0";
+      url = "github:hyprwm/hyprland-plugins?ref=v0.55.0";
       inputs.hyprland.follows = "hyprland"; # Prevents version mismatch.
     };
     nixfigs-devenvs.url = "github:shymega/nixfigs-devenvs";
