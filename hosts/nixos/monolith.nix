@@ -243,7 +243,7 @@
     lib.subtractLists deprecated defaultModules;
 
   programs.hyprland = let
-    inherit (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}) hyprland xdg-desktop-portal-hyprland;
+    inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
   in {
     enable = true;
     # set the flake package
