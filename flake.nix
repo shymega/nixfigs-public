@@ -79,6 +79,7 @@
     nixfigs-virtual-private.url = "github:shymega/nixfigs-virtual-private";
     nixfigs-virtual.url = "github:shymega/nixfigs-virtual";
     nixfigs-roles.url = "github:shymega/nixfigs-roles";
+    nixfigs-work-container.url = "github:shymega/nixfigs-work-container";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     flake-registry = {
       url = "github:NixOS/flake-registry";
