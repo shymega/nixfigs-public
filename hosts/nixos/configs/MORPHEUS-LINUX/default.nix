@@ -257,7 +257,6 @@ in {
 
   system.stateVersion = "26.05";
 
-  programs.gamescope.enable = true;
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
@@ -286,7 +285,6 @@ in {
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
-    gamescopeSession.enable = true;
   };
 
   services.open-webui.enable = config.services.ollama.enable;

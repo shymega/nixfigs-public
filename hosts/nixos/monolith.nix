@@ -207,23 +207,23 @@
     };
   };
 
-  specialisation.jovian = lib.optionalAttrs false {
+  specialisation.jovian = {
     inheritParentConfig = true;
     configuration = {
       imports = with inputs; [
-        jovian.nixosModules.default
+        jovian-nixos.nixosModules.default
       ];
 
       jovian = {
         steam = {
           enable = true;
-          autoStart = true; # Disabled to keep greetd.
+          autoStart = true;
           desktopSession = "hyprland";
           user = "dzrodriguez";
         };
 
         steamos = {
-          useSteamOSConfig = false;
+          useSteamOSConfig = true;
         };
 
         decky-loader = {
@@ -231,6 +231,13 @@
           user = "dzrodriguez";
         };
       };
+
+      services.greetd.enable = lib.mkForce false;
+      programs.regreet.enable = lib.mkForce false;
+      programs.gamescope.enable = lib.mkForce false;
+      nixpkgs.overlays = lib.mkAfter (with inputs; [
+        jovian-nixos.overlays.default
+      ]);
     };
   };
 

@@ -245,7 +245,6 @@
 
   system.stateVersion = "26.05";
 
-  programs.gamescope.enable = true;
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
@@ -274,7 +273,6 @@
     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
-    gamescopeSession.enable = true;
   };
 
   specialisation = {

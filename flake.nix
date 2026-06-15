@@ -157,9 +157,10 @@
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-unstable.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     jovian-nixos = {
-      url = "github:Jovian-Experiments/Jovian-NixOS";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:Jovian-Experiments/Jovian-NixOS?ref=development";
+      inputs.nixpkgs.follows = "nixos-unstable";
     };
     shypkgs-private.url = "github:shymega/shypkgs-private";
     shypkgs-public.url = "github:shymega/shypkgs-public";
@@ -179,9 +180,6 @@
     win2k-plymouth = {
       url = "github:shymega/Win2K-Plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    jovian = {
-      url = "github:Jovian-Experiments/Jovian-NixOS";
     };
     nix-amd-ai.url = "github:noamsto/nix-amd-ai";
   };
