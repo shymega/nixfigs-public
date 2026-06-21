@@ -111,15 +111,8 @@
         enable = true;
         memtest86.enable = true;
         netbootxyz.enable = true;
-        extraFiles = {
-          "efi/shell/shellx64.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
-        };
-        extraEntries = {
-          "shell.conf" = ''
-            title UEFI shell
-            efi /EFI/SHELL/SHELLX64.EFI
-          '';
-        };
+        edk2-uefi-shell.enable = true;
+        rebootForBitlocker = true;
       };
       efi = {
         canTouchEfiVariables = true;
