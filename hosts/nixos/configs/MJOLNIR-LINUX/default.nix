@@ -203,6 +203,9 @@
       port = 11434;
       models = "/data/AI/LLMs/Ollama/models";
       user = "ollamad-ai";
+      environmentVariables = {
+        OLLAMA_CONTEXT_LENGTH = "32768";
+      };
     };
     fstrim.enable = true;
     smartd = {
