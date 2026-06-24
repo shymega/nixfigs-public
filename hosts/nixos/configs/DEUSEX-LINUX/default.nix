@@ -269,6 +269,4 @@
     enable = true;
     cpuModelId = "00B20F40";
   };
-
-  services.open-webui.enable = config.services.ollama.enable;
 }
