@@ -280,6 +280,8 @@ in {
     dedicatedServer.openFirewall = true;
   };
 
-  # FIXME: Set cpuModelId.
-  services.ucodenix.enable = true;
+  services.ucodenix = {
+    enable = true;
+    cpuModelId = "00A70F52";
+  };
 }
