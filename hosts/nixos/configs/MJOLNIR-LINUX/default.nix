@@ -286,6 +286,4 @@
   };
 
   hardware.cpu.intel.updateMicrocode = true;
-
-  services.open-webui.enable = config.services.ollama.enable;
 }
