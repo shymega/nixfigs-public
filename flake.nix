@@ -177,7 +177,7 @@
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs.nixpkgs.follows = "nixpkgs";
-    
+
       inputs.flake-compat.follows = "flake-compat";
     };
     devenv = {
@@ -215,7 +215,7 @@
         nixpkgs.follows = "nixpkgs";
         nix-index-database.follows = "nix-index-database";
       };
-    
+
       inputs.flake-compat.follows = "flake-compat";
     };
     nix-index-database = {
@@ -225,7 +225,7 @@
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
-    
+
       inputs.flake-compat.follows = "flake-compat";
     };
     flake-compat = {
@@ -269,7 +269,7 @@
     nixos-unstable.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     jovian-nixos = {
       url = "github:Jovian-Experiments/Jovian-NixOS?ref=development";
-    
+
       inputs.nixpkgs.follows = "nixpkgs";
     };
     shypkgs-private = {
@@ -290,7 +290,7 @@
     nur-xddxdd = {
       url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
-    
+
       inputs.nix-index-database.follows = "nix-index-database";
     };
     ucodenix.url = "github:e-tho/ucodenix";
@@ -312,7 +312,7 @@
     win2k-plymouth = {
       url = "github:shymega/Win2K-Plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
-    
+
       inputs.flake-compat.follows = "flake-compat";
     };
     nix-amd-ai = {
