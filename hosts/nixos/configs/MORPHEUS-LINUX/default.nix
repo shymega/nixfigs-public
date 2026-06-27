@@ -13,11 +13,23 @@
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
+    nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
     ucodenix.nixosModules.default
   ];
+
+  hardware.amd-npu = {
+    enable = true;
+    enableNPU = true;
+    enableFastFlowLM = true;
+    enableLemonade = true;
+    enableROCm = true;
+    enableVulkan = true;
+    enableImageGen = true;
+    lemonade.user = "dzrodriguez";
+  };
 
   networking = {
     hostName = "MORPHEUS-LINUX";
@@ -195,16 +207,6 @@ in {
     xserver = {
       enable = true;
       videoDrivers = ["amdgpu"];
-    };
-    ollama = {
-      enable = true;
-      package = pkgs.ollama-rocm;
-      models = "/data/AI/LLMs/Ollama/models";
-      rocmOverrideGfx = "11.0.0"; # 890M-like.
-      environmentVariables = {
-        HSA_ENABLE_SDMA = "0";
-      };
-      user = "ollamad-ai";
     };
     fstrim.enable = false;
     smartd = {
