@@ -96,18 +96,16 @@
     kernelParams = let
       zfs_arc_max = 8 * 1024 * 1024 * 1024;
       zfs_arc_min = zfs_arc_max - 1;
-    in
-      lib.mkAfter [
-        "nohibernate"
-        "zfs.zfs_arc_max=${toString zfs_arc_max}"
-        "zfs.zfs_arc_min=${toString zfs_arc_min}"
-        "zfs.l2arc_write_boost=33554432"
-        "zfs.l2arc_write_max=16777216"
-        "microcode.amd_sha_check=off"
-        "iomem=relaxed"
-        "initcall_blacklist=algif_aead_init"
-        "video=eDP-1:2880x1800,panel_orientation=normal"
-      ];
+    in [
+      "nohibernate"
+      "zfs.zfs_arc_max=${toString zfs_arc_max}"
+      "zfs.zfs_arc_min=${toString zfs_arc_min}"
+      "zfs.l2arc_write_boost=33554432"
+      "zfs.l2arc_write_max=16777216"
+      "microcode.amd_sha_check=off"
+      "iomem=relaxed"
+      "initcall_blacklist=algif_aead_init"
+    ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
