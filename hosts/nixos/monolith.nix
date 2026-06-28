@@ -241,20 +241,6 @@
     };
   };
 
-  boot.initrd.kernelModules = [
-    "xhci_pci"
-    "usbhid"
-    "hid_generic"
-  ];
-
-  boot.initrd.luks.cryptoModules = let
-    defaultModules = options.boot.initrd.luks.cryptoModules.default;
-    deprecated = lib.optionals (lib.versionAtLeast config.boot.kernelPackages.kernel.version "7.0") [
-      "aes_generic"
-    ];
-  in
-    lib.subtractLists deprecated defaultModules;
-
   programs.hyprland = let
     inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
   in {
