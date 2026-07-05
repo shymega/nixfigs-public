@@ -171,7 +171,7 @@
       flake = false;
     };
     auto-cpufreq = {
-      url = "github:AdnanHodzic/auto-cpufreq?rev=a1ac308be7b558f85c91a6a3e86cbc0cebdadbbc";
+      url = "github:AdnanHodzic/auto-cpufreq?ref=v3.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
