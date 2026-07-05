@@ -2079,25 +2079,21 @@
     },
     "himmelblau": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay_2"
+        ]
       },
       "locked": {
-        "lastModified": 1763667760,
-        "narHash": "sha256-5kzAX6LLBxtyZj5DTGrDEXMfJpzsIFute0pMFAkKx2g=",
+        "lastModified": 1781192810,
+        "narHash": "sha256-zgxKqVIT7ukfkxH6obTzXGPXVOYLKn3ZEIZI9IrZpyU=",
         "owner": "himmelblau-idm",
         "repo": "himmelblau",
-        "rev": "92829150bb50079a614f4349b152cbbc1dc42c3e",
+        "rev": "f4e43ca0f7c296027c9b26ec0cff3d385626c179",
         "type": "github"
       },
       "original": {
         "owner": "himmelblau-idm",
-        "ref": "2.0.4",
+        "ref": "3.1.7",
         "repo": "himmelblau",
         "type": "github"
       }
@@ -3355,7 +3351,7 @@
           "nixpkgs"
         ],
         "pre-commit": "pre-commit",
-        "rust-overlay": "rust-overlay_3"
+        "rust-overlay": "rust-overlay_2"
       },
       "locked": {
         "lastModified": 1782141370,
@@ -5212,27 +5208,6 @@
       }
     },
     "rust-overlay_2": {
-      "inputs": {
-        "nixpkgs": [
-          "himmelblau",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1759977258,
-        "narHash": "sha256-hOxEFSEBoqDmJb7BGX1CzT1gvUPK6r+Qs+n3IxBgfTs=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "1d0c6173f57d07db7957b50e799240d4f2d7520f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "rust-overlay_3": {
       "inputs": {
         "nixpkgs": [
           "lanzaboote",
