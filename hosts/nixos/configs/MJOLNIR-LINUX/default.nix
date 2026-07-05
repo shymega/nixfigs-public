@@ -196,7 +196,7 @@
       videoDrivers = [
         "modesetting"
         "nvidia"
-	"displaylink"
+        "displaylink"
       ];
     };
     ollama = {
