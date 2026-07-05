@@ -295,8 +295,6 @@
     ucodenix.url = "github:e-tho/ucodenix";
     himmelblau = {
       url = "github:himmelblau-idm/himmelblau?ref=3.1.7";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.follows = "nixfigs-pkgs/hyprnix/hyprland";
     hyprland-plugins = {
