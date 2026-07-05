@@ -3326,7 +3326,7 @@
       "inputs": {
         "nix-github-actions": "nix-github-actions",
         "nixpkgs": [
-          "nixpkgs"
+          "nixos-unstable"
         ]
       },
       "locked": {

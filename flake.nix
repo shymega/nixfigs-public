@@ -269,8 +269,7 @@
     nixos-unstable.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     jovian-nixos = {
       url = "github:Jovian-Experiments/Jovian-NixOS?ref=development";
-
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixos-unstable";
     };
     shypkgs-private = {
       url = "github:shymega/shypkgs-private";
