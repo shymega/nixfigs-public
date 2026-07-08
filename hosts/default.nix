@@ -180,25 +180,6 @@ in {
     deployable = true;
   };
 
-  LOKI-LINUX = mkHost rec {
-    type = "nixos";
-    address = "LOKI-LINUX.rnet.rodriguez.org.uk";
-    hostname = "LOKI-LINUX";
-    hostPlatform = "x86_64-linux";
-    hostRoles = [
-      "workstation"
-      "personal"
-    ];
-    embedHm = true;
-    extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-    ];
-    pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
-    remoteBuild = true;
-    deployable = true;
-  };
-
   DEUSEX-LINUX = mkHost rec {
     type = "nixos";
     address = "DEUSEX-LINUX.rnet.rodriguez.org.uk";
