@@ -103,7 +103,6 @@ in {
       inputs.hardware.nixosModules.common-pc
     ];
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
@@ -130,7 +129,6 @@ in {
       inputs.hardware.nixosModules.common-pc
     ];
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
@@ -152,7 +150,6 @@ in {
     embedHm = true;
     hardwareModules = [inputs.hardware.nixosModules.gpd-win-max-2-2023];
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
@@ -172,7 +169,6 @@ in {
     ];
     embedHm = true;
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
@@ -192,7 +188,6 @@ in {
     ];
     embedHm = true;
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       inputs.hardware-shymega.nixosModules.gpd-duo
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
@@ -212,7 +207,6 @@ in {
     ];
     hardwareModules = [inputs.hardware.nixosModules.lenovo-thinkpad-x270];
     extraModules = [
-      inputs.lanzaboote.nixosModules.lanzaboote
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
