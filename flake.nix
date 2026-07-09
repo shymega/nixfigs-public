@@ -237,12 +237,6 @@
       url = "github:nix-community/home-manager?ref=release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote?ref=v1.1.0";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
     stylix = {
       url = "github:danth/stylix?ref=release-26.05";
       inputs = {
