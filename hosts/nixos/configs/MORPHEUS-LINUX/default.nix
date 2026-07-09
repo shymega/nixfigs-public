@@ -116,12 +116,25 @@ in {
     };
 
     loader = {
-      systemd-boot = {
+      limine = {
         enable = true;
-        memtest86.enable = true;
-        netbootxyz.enable = true;
-        edk2-uefi-shell.enable = true;
-        rebootForBitlocker = true;
+        enableEditor = true;
+        maxGenerations = 3;
+        additionalFiles = {
+          "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+          "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.efi";
+        };
+        extraEntries = ''
+          /+Utilities
+          //UEFI Shell
+          protocol: efi
+          comment: Make sure secure boot is disabled before using any EFI utilites! -- Access the UEFI shell for troubleshooting and development
+          image_path: boot():/limine/efi/shell/shell.efi
+          //Memtest86
+          protocol: efi
+          comment: Make sure secure boot is disabled before using any EFI utilites! -- Diagnose system memory issues and stress-test RAM modules
+          image_path: boot():/limine/efi/memtest86/memtest86.efi
+        '';
       };
       efi = {
         canTouchEfiVariables = true;
