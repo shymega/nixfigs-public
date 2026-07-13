@@ -232,7 +232,6 @@
       autodetect = true;
     };
     input-remapper.enable = false;
-    thermald.enable = true;
     power-profiles-daemon.enable = lib.mkForce false;
     udev = {
       extraRules = ''

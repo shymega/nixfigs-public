@@ -238,7 +238,6 @@ in {
       autodetect = true;
     };
     input-remapper.enable = true;
-    thermald.enable = true;
     udev = {
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ADP1", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
