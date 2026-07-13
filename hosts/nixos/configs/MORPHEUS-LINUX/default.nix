@@ -96,8 +96,6 @@ in {
       "nohibernate"
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
-      "zfs.l2arc_write_boost=33554432"
-      "zfs.l2arc_write_max=16777216"
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "pcie_aspm=off"
@@ -241,7 +239,10 @@ in {
     };
     xserver = {
       enable = true;
-      videoDrivers = ["modesetting" "displaylink"];
+      # DisplayLink stays for docking, but amdgpu must lead: the DisplayLink
+      # module only needs modesetting for evdi outputs, which it pins itself
+      # via its own OutputClass rule.
+      videoDrivers = ["amdgpu" "displaylink"];
     };
     fstrim.enable = false;
     smartd = {
