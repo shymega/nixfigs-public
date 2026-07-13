@@ -310,4 +310,6 @@ in {
     enable = true;
     cpuModelId = "00A70F52";
   };
+
+  hardware.gpd.ppt.enable = lib.mkForce false;
 }
