@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
+# SPDX-FileCopyrightTexn: 2024 Dom Rodriguez <shymega@shymega.org.uk
 #
 # SPDX-License-Identifier: GPL-3.0-only
 {
@@ -99,6 +99,7 @@ in {
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "pcie_aspm=off"
+      "iommu=pt"
       "initcall_blacklist=algif_aead_init"
     ];
     extraModprobeConfig = lib.mkAfter ''
