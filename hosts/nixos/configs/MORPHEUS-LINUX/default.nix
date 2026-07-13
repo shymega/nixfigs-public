@@ -8,8 +8,10 @@
   config,
   ...
 }: let
-  zfs_arc_max = 8 * 1024 * 1024 * 1024;
-  zfs_arc_min = zfs_arc_max - 1;
+  # Let the ARC flex between the floor and the cap; pinning min to max prevents
+  # it shrinking when ROCm/NPU workloads and VMs need the memory.
+  zfs_arc_max = 24 * 1024 * 1024 * 1024;
+  zfs_arc_min = 4 * 1024 * 1024 * 1024;
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
@@ -74,11 +76,13 @@ in {
           device = "/dev/disk/by-label/OS_CRYPTO";
           preLVM = true;
           allowDiscards = true;
+          bypassWorkqueues = true;
         };
         DATA = {
           device = "/dev/disk/by-label/DATA";
           preLVM = true;
           allowDiscards = true;
+          bypassWorkqueues = true;
         };
       };
       # Add FIDO2 support.
@@ -166,7 +170,7 @@ in {
       path = [config.boot.zfs.package];
       serviceConfig.Type = "oneshot";
       script = ''
-        zfs rollback -r ztank/crypt/nixos/linux/local/root@blank
+        zfs rollback -r ztank/crypt/nixos/local/root@blank
       '';
     };
   };
@@ -176,7 +180,7 @@ in {
     contents."/etc/systemd/system-shutdown/zfs-rollback" = {
       source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
         #!/bin/sh
-        ${config.boot.zfs.package}/bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+        ${config.boot.zfs.package}/bin/zfs rollback -r ztank/crypt/nixos/local/root@blank || true
       '';
     };
   };
@@ -212,7 +216,11 @@ in {
   };
 
   services = {
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
+    power-profiles-daemon.enable = true;
+    # nixos-hardware's common/pc/laptop enables TLP whenever power-profiles-daemon
+    # is off, and TLP's stock defaults kill turbo on battery and runtime-park the
+    # NVMe. Disable it explicitly so it can never conflict with PPD.
+    tlp.enable = pkgs.lib.mkForce false;
     fwupd.enable = true;
     hardware.bolt.enable = true;
     handheld-daemon = {
