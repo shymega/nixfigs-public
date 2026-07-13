@@ -107,7 +107,6 @@
     loader = {
       limine = {
         enable = true;
-        enableEditor = true;
         secureBoot.enable = true;
         maxGenerations = 3;
         additionalFiles = {
