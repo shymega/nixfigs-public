@@ -182,6 +182,10 @@
 
   services = {
     fwupd.enable = true;
+    # nixos-hardware's common/pc/laptop enables TLP whenever power-profiles-daemon
+    # is off, and TLP's stock defaults kill turbo on battery and runtime-park the
+    # NVMe. Disable it explicitly so it can never conflict with PPD.
+    tlp.enable = pkgs.lib.mkForce false;
     hardware.bolt.enable = true;
     zfs = {
       trim = {
@@ -208,9 +212,7 @@
       package = pkgs.ollama-vulkan;
       rocmOverrideGfx = "11.0.2"; # 890M-like.
     };
-    thermald.enable = true;
-    input-remapper.enable = false;
-    power-profiles-daemon.enable = lib.mkForce false;
+    power-profiles-daemon.enable = true;
     udev = {
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"
