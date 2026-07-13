@@ -109,7 +109,7 @@ in {
       limine = {
         enable = true;
         enableEditor = true;
-	secureBoot.enable = true;
+        secureBoot.enable = true;
         maxGenerations = 3;
         additionalFiles = {
           "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";

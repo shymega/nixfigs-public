@@ -124,7 +124,7 @@
       limine = {
         enable = true;
         enableEditor = true;
-	secureBoot.enable = true;
+        secureBoot.enable = true;
         maxGenerations = 3;
         extraConfig = ''
           interface_rotation: 180
