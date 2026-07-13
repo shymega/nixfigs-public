@@ -96,6 +96,7 @@ in {
       "zfs.l2arc_write_max=16777216"
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
+      "pcie_aspm=off"
       "initcall_blacklist=algif_aead_init"
     ];
     extraModprobeConfig = lib.mkAfter ''
