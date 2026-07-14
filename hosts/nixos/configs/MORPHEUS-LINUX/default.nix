@@ -112,7 +112,7 @@ in {
       limine = {
         enable = true;
         secureBoot.enable = true;
-        maxGenerations = 6;
+        maxGenerations = 3;
         additionalFiles = {
           "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
           "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.efi";
