@@ -101,7 +101,6 @@
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
-      "initcall_blacklist=algif_aead_init"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1

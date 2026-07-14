@@ -87,7 +87,6 @@ in {
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "iommu=pt"
-      "initcall_blacklist=algif_aead_init"
     ];
     extraModprobeConfig = lib.mkAfter ''
       options kvm_amd nested=1
