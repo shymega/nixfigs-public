@@ -10,12 +10,20 @@
 }: {
   imports = with inputs; [
     ./hardware-configuration.nix
+    ../../../../modules/nixos/alarm-clock.nix
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
   ];
 
   lantian.qemu-user-static-binfmt.enable = true;
+
+  nixfigs.alarm-clock = {
+    enable = true;
+    # Wakes on schedule, but stays silent: no alarm should go off here.
+    wakeOnly = true;
+    bedtime.enable = true;
+  };
 
   networking = {
     hostName = "MJOLNIR-LINUX";
