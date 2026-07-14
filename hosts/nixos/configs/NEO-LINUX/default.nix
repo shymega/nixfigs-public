@@ -186,7 +186,7 @@ in {
     zfs = {
       trim = {
         enable = true;
-        interval = "Sun *-*-* 02:00:00";
+        interval = "Sun *-*-* 03:00:00";
       };
       autoScrub = {
         enable = true;
