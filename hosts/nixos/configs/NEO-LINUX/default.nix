@@ -197,7 +197,6 @@ in {
     xserver = {
       enable = true;
     };
-    thermald.enable = true;
   };
 
   powerManagement = {
