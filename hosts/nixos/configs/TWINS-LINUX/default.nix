@@ -36,8 +36,9 @@ in {
       "ntfs"
       "zfs"
     ];
-    kernelPackages = pkgs.linuxPackages_6_18;
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
+    zfs.package = config.boot.kernelPackages.zfs_cachyos;
     zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
 
     extraModprobeConfig = ''
