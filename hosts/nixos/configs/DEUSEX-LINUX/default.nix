@@ -9,6 +9,7 @@
 }: {
   imports = with inputs; [
     ./hardware-configuration.nix
+    ../../../../modules/nixos/alarm-clock.nix
     nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
@@ -28,6 +29,11 @@
   };
 
   lantian.qemu-user-static-binfmt.enable = true;
+
+  nixfigs.alarm-clock = {
+    enable = true;
+    bedtime.enable = true;
+  };
 
   networking = {
     hostName = "DEUSEX-LINUX";
