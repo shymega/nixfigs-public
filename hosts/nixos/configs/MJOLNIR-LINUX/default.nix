@@ -88,7 +88,6 @@
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "i915.enable_guc=3"
-      "initcall_blacklist=algif_aead_init"
     ];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 

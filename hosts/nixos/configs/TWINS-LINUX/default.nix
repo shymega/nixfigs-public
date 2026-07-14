@@ -50,7 +50,6 @@ in {
       "nohibernate"
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
-      "initcall_blacklist=algif_aead_init"
     ];
 
     kernel.sysctl = {
