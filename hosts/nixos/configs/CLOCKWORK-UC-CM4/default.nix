@@ -9,7 +9,7 @@
 }: {
   imports = [./hardware-configuration.nix];
   networking = {
-    hostName = "CLOCKWORK-DT-CM4";
+    hostName = "CLOCKWORK-UC-CM4";
   };
   system.stateVersion = "26.05";
 
