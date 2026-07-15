@@ -7,8 +7,11 @@
   inputs,
   ...
 }: let
-  zfs_arc_max = 8 * 1024 * 1024 * 1024;
-  zfs_arc_min = zfs_arc_max - 1;
+  # Let the ARC flex between the floor and the cap; pinning min to max prevents
+  # it shrinking when workloads and VMs need the memory.
+  # Only 16 GiB RAM, so keep ARC modest: 6 GiB cap with a 2 GiB floor.
+  zfs_arc_max = 6 * 1024 * 1024 * 1024;
+  zfs_arc_min = 2 * 1024 * 1024 * 1024;
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
