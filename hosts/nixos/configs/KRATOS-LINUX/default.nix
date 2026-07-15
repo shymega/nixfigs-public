@@ -73,8 +73,11 @@
     };
 
     kernelParams = let
+      # Let the ARC flex between the floor and the cap; pinning min to max prevents
+      # it shrinking when ROCm/NPU workloads and VMs need the memory.
+      # 32 GiB RAM - 16 GiB APU VRAM = 16 GiB usable; cap ARC at half.
       zfs_arc_max = 8 * 1024 * 1024 * 1024;
-      zfs_arc_min = zfs_arc_max - 1;
+      zfs_arc_min = 4 * 1024 * 1024 * 1024;
     in [
       "nohibernate"
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
