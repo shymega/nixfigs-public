@@ -8,8 +8,11 @@
   config,
   ...
 }: let
-  zfs_arc_max = 8 * 1024 * 1024 * 1024;
-  zfs_arc_min = zfs_arc_max - 1;
+  # Let the ARC flex between the floor and the cap; pinning min to max prevents
+  # it shrinking when ROCm/NPU workloads and VMs need the memory.
+  # 32 GiB RAM - 8 GiB APU VRAM = 24 GiB usable; cap ARC at half.
+  zfs_arc_max = 12 * 1024 * 1024 * 1024;
+  zfs_arc_min = 4 * 1024 * 1024 * 1024;
 in {
   imports = with inputs; [
     ./hardware-configuration.nix
