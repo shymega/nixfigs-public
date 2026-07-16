@@ -134,7 +134,6 @@ in {
       enable = true;
       videoDrivers = [
         "modesetting"
-        "i915"
       ];
     };
     fwupd.enable = true;
@@ -183,14 +182,6 @@ in {
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages32 = with pkgs.pkgsi686Linux; [vaapiIntel];
-      extraPackages = with pkgs; [
-        vaapiIntel
-        libva-vdpau-driver
-        libvdpau-va-gl
-        intel-media-driver
-        intel-compute-runtime
-      ];
     };
   };
   system.stateVersion = "26.05";
