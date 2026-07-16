@@ -70,6 +70,9 @@ in {
 
     plymouth = {
       enable = true;
+      theme = "Win2K";
+      themePackages = with inputs;
+      with pkgs; [win2k-plymouth.packages.${pkgs.stdenv.hostPlatform.system}.default];
     };
 
     loader = {
