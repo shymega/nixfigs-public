@@ -10,12 +10,25 @@
   imports = with inputs; [
     ./hardware-configuration.nix
     ../../../../modules/nixos/alarm-clock.nix
+    ../../../../modules/nixos/restic-backup.nix
     nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
     ucodenix.nixosModules.default
   ];
+
+  nixfigs.resticBackup = {
+    enable = true;
+    bucket = "shymega-backups";
+    excludeFile = "/home/dzrodriguez/.config/restic/exclude.txt";
+    paths = [
+      "/home/dzrodriguez"
+      "/home/dzrodriguez/Documents"
+      "/home/dzrodriguez/Multimedia"
+      "/home/dzrodriguez/projects"
+    ];
+  };
 
   hardware.amd-npu = {
     enable = true;
