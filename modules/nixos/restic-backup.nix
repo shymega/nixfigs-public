@@ -46,8 +46,8 @@ in {
 
     environmentFile = mkOption {
       type = types.path;
-      default = config.age.secrets.b2_backup_env.path;
-      defaultText = literalExpression "config.age.secrets.b2_backup_env.path";
+      default = config.age.secrets.bt_backup_env.path;
+      defaultText = literalExpression "config.age.secrets.bt_backup_env.path";
       description = ''
         EnvironmentFile providing RESTIC_PASSWORD, B2_ACCOUNT_ID and
         B2_ACCOUNT_KEY. Decrypted via agenix; the encrypted secret itself
