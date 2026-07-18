@@ -4,6 +4,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -101,5 +102,33 @@ in {
       runCheck = true;
       checkOpts = ["--read-data-subset=5%"];
     };
+
+    # The restic module names its unit "restic-backups-b2" after the
+    # services.restic.backups.b2 job above, and only wires it to a timer
+    # (no wantedBy on the service itself) -- so `systemctl start
+    # restic-backups-b2.service` already works standalone. These just wrap
+    # that plus a status/monitoring view.
+    environment.systemPackages = [
+      (pkgs.writeShellScriptBin "b2-backup-now" ''
+        set -euo pipefail
+        echo "Triggering restic-backups-b2.service (blocks until it finishes)..."
+        ${lib.getExe' pkgs.systemd "systemctl"} start --wait restic-backups-b2.service
+        ${lib.getExe' pkgs.systemd "systemctl"} status --no-pager restic-backups-b2.service
+      '')
+      (pkgs.writeShellScriptBin "b2-backup-status" ''
+        set -euo pipefail
+        echo "=== Last run ==="
+        ${lib.getExe' pkgs.systemd "systemctl"} status --no-pager restic-backups-b2.service || true
+        echo
+        echo "=== Next scheduled run ==="
+        ${lib.getExe' pkgs.systemd "systemctl"} list-timers restic-backups-b2.timer --no-pager
+        echo
+        echo "=== Recent log ==="
+        ${lib.getExe' pkgs.systemd "journalctl"} -u restic-backups-b2.service -n 50 --no-pager
+        echo
+        echo "=== Latest snapshots ==="
+        restic-b2 snapshots --latest 5
+      '')
+    ];
   };
 }
