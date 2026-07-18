@@ -85,8 +85,8 @@ in {
   config = mkIf cfg.enable {
     services.restic.backups.b2 = {
       repository = "b2:${cfg.bucket}:${cfg.repositoryPath}";
-      paths = cfg.paths;
-      environmentFile = cfg.environmentFile;
+      inherit (cfg) paths;
+      inherit (cfg) environmentFile;
       initialize = true;
       inhibitsSleep = true;
       extraBackupArgs = [
@@ -98,7 +98,7 @@ in {
         RandomizedDelaySec = cfg.randomizedDelaySec;
         Persistent = true;
       };
-      pruneOpts = cfg.pruneOpts;
+      inherit (cfg) pruneOpts;
       runCheck = true;
       checkOpts = ["--read-data-subset=5%"];
     };
