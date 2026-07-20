@@ -191,10 +191,7 @@ in {
 
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "powersave";
   };
-
-  environment.variables.AMD_VULKAN_ICD = "RADV";
 
   hardware = {
     graphics = {

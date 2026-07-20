@@ -174,7 +174,7 @@
 
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "powersave";
+    cpuFreqGovernor = "performance";
   };
 
   hardware = {
@@ -255,7 +255,8 @@
       autodetect = true;
     };
     input-remapper.enable = false;
-    power-profiles-daemon.enable = lib.mkForce false;
+    power-profiles-daemon.enable = lib.mkForce true;
+    thermald.enable = true;
     udev = {
       extraRules = ''
         SUBSYSTEM=="power_supply", KERNEL=="ACAD", ATTR{online}=="0", RUN+="${pkgs.lib.getExe' pkgs.systemd "systemctl"} --no-block start battery.target"

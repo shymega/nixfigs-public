@@ -285,7 +285,7 @@
     ucodenix.url = "github:e-tho/ucodenix";
     himmelblau = {
       url = "github:himmelblau-idm/himmelblau?ref=3.1.7";
-    
+
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.follows = "nixfigs-pkgs/hyprnix/hyprland";
@@ -306,7 +306,7 @@
     };
     nix-amd-ai = {
       url = "github:noamsto/nix-amd-ai";
-    
+
       inputs.flake-compat.follows = "flake-compat";
     };
   };
