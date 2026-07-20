@@ -132,7 +132,7 @@ in {
   };
 
   services = {
-    power-profiles-daemon.enable = pkgs.lib.mkForce false;
+    power-profiles-daemon.enable = pkgs.lib.mkForce true;
     xserver = {
       enable = true;
       videoDrivers = [
@@ -178,7 +178,6 @@ in {
 
   powerManagement = {
     enable = true;
-    cpuFreqGovernor = "powersave";
   };
 
   hardware = {
