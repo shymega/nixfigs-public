@@ -4,6 +4,7 @@
 {
   inputs,
   pkgs,
+  lib,
   config,
   ...
 }: {
@@ -315,4 +316,6 @@
     enable = true;
     cpuModelId = "00B20F40";
   };
+
+  hardware.gpd.ppt.enable = lib.mkForce false;
 }
