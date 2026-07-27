@@ -96,7 +96,7 @@ in {
       timerConfig = {
         OnCalendar = cfg.onCalendar;
         RandomizedDelaySec = cfg.randomizedDelaySec;
-        Persistent = true;
+        Persistent = false;
       };
       inherit (cfg) pruneOpts;
       runCheck = true;
