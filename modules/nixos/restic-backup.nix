@@ -103,6 +103,13 @@ in {
       checkOpts = ["--read-data-subset=5%"];
     };
 
+    # The restic module doesn't expose unitConfig knobs directly, so the
+    # AC-power gating is layered on top of the generated
+    # restic-backups-b2.service unit here.
+    systemd.services.restic-backups-b2.unitConfig = {
+      ConditionACPower = true;
+    };
+
     # The restic module names its unit "restic-backups-b2" after the
     # services.restic.backups.b2 job above, and only wires it to a timer
     # (no wantedBy on the service itself) -- so `systemctl start
