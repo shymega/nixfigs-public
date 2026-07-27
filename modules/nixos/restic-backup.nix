@@ -104,10 +104,11 @@ in {
     };
 
     # The restic module doesn't expose unitConfig knobs directly, so the
-    # AC-power gating is layered on top of the generated
-    # restic-backups-b2.service unit here.
+    # AC-power and network-online gating is layered on top of the
+    # generated restic-backups-b2.service unit here.
     systemd.services.restic-backups-b2.unitConfig = {
       ConditionACPower = true;
+      ConditionPathExists = "/tmp/network-online.flag";
     };
 
     # The restic module names its unit "restic-backups-b2" after the
