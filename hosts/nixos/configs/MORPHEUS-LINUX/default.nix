@@ -24,7 +24,7 @@ in {
   ];
 
   nixfigs.resticBackup = {
-    enable = true;
+    enable = false;
     bucket = "shymega-backups";
     excludeFile = "/home/dzrodriguez/.config/restic/exclude.txt";
     paths = [
