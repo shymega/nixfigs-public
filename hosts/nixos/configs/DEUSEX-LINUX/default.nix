@@ -243,7 +243,7 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["modesetting" "displaylink"];
+      videoDrivers = ["amdgpu" "displaylink"];
     };
     fstrim.enable = true;
     smartd = {
