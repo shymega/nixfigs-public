@@ -1,11 +1,8 @@
 {
-  config,
   lib,
   ...
 }:
-with lib; let
-  cfg = config.nixfigs.graphical.windowManagers;
-in {
+with lib; {
   options.nixfigs.graphical.windowManagers = {
     selectedWindowManager = lib.mkOption {
       type = lib.types.str;
