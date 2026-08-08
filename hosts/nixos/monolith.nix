@@ -206,39 +206,48 @@
     };
   };
 
-  specialisation.jovian = lib.optionalAttrs false {
-    inheritParentConfig = true;
-    configuration = {
-      imports = with inputs; [
-        jovian-nixos.nixosModules.default
-      ];
+  specialisation.jovian = let
+    hostIs = name: config.networking.hostName == name;
+    isMjolnir = hostIs "MJOLNIR-LINUX";
+    isMorpheus = hostIs "MORPHEUS-LINUX";
+    isDeusEx = hostIs "DEUSEX-LINUX";
+    isKratos = hostIs "KRATOS-LINUX";
+    isSupportedHost = isMjolnir || isMorpheus || isDeusEx || isKratos;
+  in
+    lib.optionalAttrs isSupportedHost {
+      inheritParentConfig = true;
+      configuration = {
+        nixpkgs.pkgs = import inputs.nixpkgs-unstable {
+          inherit (pkgs.stdenv.hostPlatform) system;
+          config.allowUnfree = true;
+        };
+        imports = with inputs; [
+          jovian-nixos.nixosModules.default
+        ];
 
-      jovian = {
-        steam = {
-          enable = true;
-          autoStart = true;
-          desktopSession = "hyprland";
-          user = "dzrodriguez";
+        jovian = {
+          steam = {
+            enable = true;
+            autoStart = true;
+            desktopSession = "hyprland";
+            user = "dzrodriguez";
+          };
+
+          steamos = {
+            useSteamOSConfig = true;
+          };
+
+          decky-loader = {
+            enable = true;
+            user = "dzrodriguez";
+          };
         };
 
-        steamos = {
-          useSteamOSConfig = true;
-        };
-
-        decky-loader = {
-          enable = true;
-          user = "dzrodriguez";
-        };
+        services.greetd.enable = lib.mkForce false;
+        programs.regreet.enable = lib.mkForce false;
+        programs.gamescope.enable = lib.mkForce false;
       };
-
-      services.greetd.enable = lib.mkForce false;
-      programs.regreet.enable = lib.mkForce false;
-      programs.gamescope.enable = lib.mkForce false;
-      nixpkgs.overlays = lib.mkAfter (with inputs; [
-        jovian-nixos.overlays.default
-      ]);
     };
-  };
 
   programs.hyprland = let
     inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
@@ -256,7 +265,7 @@
     inherit (config.nixfigs.graphical.windowManagers) selectedWindowManager;
   in
     lib.mkIf (selectedWindowManager
-    == "hyprland") {
+      == "hyprland") {
       package = hypr-nixpkgs.mesa;
       package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
     };
