@@ -208,31 +208,28 @@
   };
 
   specialisation.jovian = let
-    hostIs = name: config.networking.hostName == name;
-    isMjolnir = hostIs "MJOLNIR-LINUX";
-    isMorpheus = hostIs "MORPHEUS-LINUX";
-    isDeusEx = hostIs "DEUSEX-LINUX";
-    isKratos = hostIs "KRATOS-LINUX";
-    isSupportedHost = isMjolnir || isMorpheus || isDeusEx || isKratos;
     overlays = let
       hyprnixOverlaySafe = _: prev: let
         inherit (prev.stdenv.hostPlatform) system;
       in
         inputs.nixfigs-pkgs.inputs.hyprnix.packages.${system} or {};
-    in (with inputs.nixfigs-pkgs.inputs; [
-      agenix.overlays.default
-      devenv.overlays.default
-      dzr-taskwarrior-recur.overlays.default
-      hyprnixOverlaySafe
-      nix-alien.overlays.default
-      nix-cachyos-kernel.overlays.default
-      nix-doom-emacs-unstraightened.overlays.default
-      nur.overlays.default
-      shypkgs-public.overlays.default
-      waybar.overlays.default
-    ]);
+    in
+      with inputs.nixfigs-pkgs.inputs;
+        [
+          agenix.overlays.default
+          devenv.overlays.default
+          dzr-taskwarrior-recur.overlays.default
+          hyprnixOverlaySafe
+          nix-alien.overlays.default
+          nix-cachyos-kernel.overlays.default
+          nix-doom-emacs-unstraightened.overlays.default
+          nur.overlays.default
+          shypkgs-public.overlays.default
+          waybar.overlays.default
+        ]
+        ++ [inputs.nixfigs-pkgs.unstable-nixpkgs];
   in
-    lib.optionalAttrs isSupportedHost {
+    lib.optionalAttrs false {
       inheritParentConfig = true;
       configuration = {
         nixpkgs.pkgs = lib.mkForce (import inputs.nixpkgs-unstable {
