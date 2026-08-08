@@ -206,6 +206,40 @@
     };
   };
 
+  specialisation.jovian = lib.optionalAttrs false {
+    inheritParentConfig = true;
+    configuration = {
+      imports = with inputs; [
+        jovian-nixos.nixosModules.default
+      ];
+
+      jovian = {
+        steam = {
+          enable = true;
+          autoStart = true;
+          desktopSession = "hyprland";
+          user = "dzrodriguez";
+        };
+
+        steamos = {
+          useSteamOSConfig = true;
+        };
+
+        decky-loader = {
+          enable = true;
+          user = "dzrodriguez";
+        };
+      };
+
+      services.greetd.enable = lib.mkForce false;
+      programs.regreet.enable = lib.mkForce false;
+      programs.gamescope.enable = lib.mkForce false;
+      nixpkgs.overlays = lib.mkAfter (with inputs; [
+        jovian-nixos.overlays.default
+      ]);
+    };
+  };
+
   programs.hyprland = let
     inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
   in {
