@@ -8,6 +8,7 @@
   libx,
   pkgs,
   inputs,
+  self,
   ...
 }: {
   imports = [
@@ -213,14 +214,32 @@
     isDeusEx = hostIs "DEUSEX-LINUX";
     isKratos = hostIs "KRATOS-LINUX";
     isSupportedHost = isMjolnir || isMorpheus || isDeusEx || isKratos;
+    overlays = let
+      hyprnixOverlaySafe = _: prev: let
+        inherit (prev.stdenv.hostPlatform) system;
+      in
+        inputs.nixfigs-pkgs.inputs.hyprnix.packages.${system} or {};
+    in (with inputs.nixfigs-pkgs.inputs; [
+      agenix.overlays.default
+      devenv.overlays.default
+      dzr-taskwarrior-recur.overlays.default
+      hyprnixOverlaySafe
+      nix-alien.overlays.default
+      nix-cachyos-kernel.overlays.default
+      nix-doom-emacs-unstraightened.overlays.default
+      nur.overlays.default
+      shypkgs-public.overlays.default
+      waybar.overlays.default
+    ]);
   in
     lib.optionalAttrs isSupportedHost {
       inheritParentConfig = true;
       configuration = {
-        nixpkgs.pkgs = lib.mkForce import inputs.nixpkgs-unstable {
+        nixpkgs.pkgs = lib.mkForce (import inputs.nixpkgs-unstable {
+          config = self.nixpkgs-config;
           inherit (pkgs.stdenv.hostPlatform) system;
-          config.allowUnfree = true;
-        };
+          inherit overlays;
+        });
         imports = with inputs; [
           jovian-nixos.nixosModules.default
         ];
