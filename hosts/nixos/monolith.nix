@@ -209,7 +209,7 @@
   programs.hyprland = let
     inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
   in {
-    enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland" or false;
+    enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland";
     # set the flake package
     package = hyprland;
     # make sure to also set the portal package, so that they are in sync
@@ -219,9 +219,10 @@
 
   hardware.graphics = let
     hypr-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    inherit (config.nixfigs.graphical.windowManagers) selectedWindowManager;
   in
-    lib.optionalAttrs config.nixfigs.graphical.windowManagers.selectedWindowManager
-    == "hyprland" or false {
+    lib.mkIf (selectedWindowManager
+    == "hyprland") {
       package = hypr-nixpkgs.mesa;
       package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
     };

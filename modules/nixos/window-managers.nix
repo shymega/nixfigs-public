@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}:
+{lib, ...}:
 with lib; {
   options.nixfigs.graphical.windowManagers = {
     selectedWindowManager = lib.mkOption {
