@@ -217,7 +217,7 @@
     lib.optionalAttrs isSupportedHost {
       inheritParentConfig = true;
       configuration = {
-        nixpkgs.pkgs = import inputs.nixpkgs-unstable {
+        nixpkgs.pkgs = lib.mkForce import inputs.nixpkgs-unstable {
           inherit (pkgs.stdenv.hostPlatform) system;
           config.allowUnfree = true;
         };
