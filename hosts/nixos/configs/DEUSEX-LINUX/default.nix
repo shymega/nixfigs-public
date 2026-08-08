@@ -12,6 +12,7 @@
     ./hardware-configuration.nix
     ../../../../modules/nixos/alarm-clock.nix
     ../../../../modules/nixos/restic-backup.nix
+    ../../../../modules/nixos/window-managers.nix
     nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
