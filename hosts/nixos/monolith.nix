@@ -222,6 +222,13 @@
   in lib.optionalAttrs config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland" or false {
     package = hypr-nixpkgs.mesa;
     package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
+  specialisation = {
+    sway = {
+      inheritParentConfig = true;
+      configuration = {
+        config.nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
+      };
+    };
   };
 
   specialisation = {
