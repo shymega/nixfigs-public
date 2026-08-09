@@ -87,7 +87,6 @@
       inputs.base16-schemes.follows = "base16-schemes";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-registry.follows = "flake-registry";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.home-manager.follows = "home-manager";
       inputs.hyprland-plugins.follows = "hyprland-plugins";
       inputs.nix-doom-emacs-unstraightened.follows = "nix-doom-emacs-unstraightened";
@@ -121,7 +120,6 @@
       url = "github:shymega/nixfigs-helpers";
       inputs.agenix.follows = "agenix";
       inputs.flake-compat.follows = "flake-compat";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-common = {
@@ -129,7 +127,6 @@
       inputs.agenix.follows = "agenix";
       inputs.flake-compat.follows = "flake-compat";
       inputs.flake-registry.follows = "flake-registry";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.home-manager.follows = "home-manager";
       inputs.hyprland-plugins.follows = "hyprland-plugins";
       inputs.impermanence.follows = "impermanence";
@@ -232,7 +229,6 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-    flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
       url = "github:nix-community/home-manager?ref=release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -312,6 +308,8 @@
       url = "github:noamsto/nix-amd-ai";
 
       inputs.flake-compat.follows = "flake-compat";
+    
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }
