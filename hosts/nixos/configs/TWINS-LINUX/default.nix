@@ -6,13 +6,7 @@
   pkgs,
   inputs,
   ...
-}: let
-  # Let the ARC flex between the floor and the cap; pinning min to max prevents
-  # it shrinking when workloads and VMs need the memory.
-  # Only 16 GiB RAM, so keep ARC modest: 6 GiB cap with a 2 GiB floor.
-  zfs_arc_max = 6 * 1024 * 1024 * 1024;
-  zfs_arc_min = 2 * 1024 * 1024 * 1024;
-in {
+}: {
   imports = with inputs; [
     ./hardware-configuration.nix
     nur-xddxdd.nixosModules.setupOverlay
@@ -49,7 +43,10 @@ in {
       options kvm_intel emulate_invalid_guest_state=0
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
-    kernelParams = [
+    kernelParams = let
+      zfs_arc_max = 6 * 1024 * 1024 * 1024;
+      zfs_arc_min = 2 * 1024 * 1024 * 1024;
+    in [
       "nohibernate"
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
