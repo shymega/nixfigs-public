@@ -267,7 +267,7 @@
         ACTION=="add|change", SUBSYSTEM=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c31c", ATTR{power/autosuspend}="-1"
 
         # Thinkpad dock (WFH)
-        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="3066", SYMLINK+="docked", TAG+="systemd"
+        SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30b4", SYMLINK+="docked", TAG+="systemd"
 
         # Thinkpad dock (office)
         SUBSYSTEM=="usb", ACTION=="add|change", ATTR{idVendor}=="17ef", ATTR{idProduct}=="30a9", SYMLINK+="docked", TAG+="systemd"
