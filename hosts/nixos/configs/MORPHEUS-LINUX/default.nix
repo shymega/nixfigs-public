@@ -38,6 +38,8 @@ in {
 
   nixfigs.alarm-clock = {
     enable = true;
+    # Wakes on schedule, but stays silent: no alarm should go off here.
+    wakeOnly = true;
     bedtime.enable = true;
   };
 
