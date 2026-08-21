@@ -46,8 +46,8 @@
   lantian.qemu-user-static-binfmt.enable = true;
 
   nixfigs.alarm-clock = {
-    enable = false;
-    bedtime.enable = false;
+    enable = true;
+    bedtime.enable = true;
   };
 
   networking = {
