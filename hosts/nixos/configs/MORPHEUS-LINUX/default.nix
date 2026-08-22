@@ -245,10 +245,7 @@ in {
     };
     xserver = {
       enable = true;
-      # DisplayLink stays for docking, but amdgpu must lead: the DisplayLink
-      # module only needs modesetting for evdi outputs, which it pins itself
-      # via its own OutputClass rule.
-      videoDrivers = ["amdgpu" "displaylink"];
+      videoDrivers = ["amdgpu"];
     };
     fstrim.enable = false;
     smartd = {

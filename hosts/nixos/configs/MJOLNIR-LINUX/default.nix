@@ -15,7 +15,6 @@
     ../../../../modules/nixos/window-managers.nix
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
-    nur-xddxdd.nixosModules.setupOverlay
   ];
 
   nixfigs.resticBackup = {
@@ -236,7 +235,6 @@
       videoDrivers = [
         "modesetting"
         "nvidia"
-        "displaylink"
       ];
     };
     ollama = {
