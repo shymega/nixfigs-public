@@ -75,7 +75,7 @@ in {
           path = [config.boot.zfs.package];
           serviceConfig.Type = "oneshot";
           script = ''
-            zfs rollback -r tank/local/root@blank
+            zfs rollback -r tank/local/root@blank || true
           '';
         };
       };

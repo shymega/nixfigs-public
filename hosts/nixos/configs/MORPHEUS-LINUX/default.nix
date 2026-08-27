@@ -177,7 +177,7 @@ in {
       path = [config.boot.zfs.package];
       serviceConfig.Type = "oneshot";
       script = ''
-        zfs rollback -r ztank/crypt/nixos/local/root@blank
+        zfs rollback -r ztank/crypt/nixos/local/root@blank || true
       '';
     };
   };
