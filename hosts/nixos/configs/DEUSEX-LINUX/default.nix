@@ -121,14 +121,15 @@
       # 64 GiB RAM - 16 GiB APU VRAM = 48 GiB usable; cap ARC at half.
       zfs_arc_max = 24 * 1024 * 1024 * 1024;
       zfs_arc_min = 4 * 1024 * 1024 * 1024;
-    in lib.mkAfter [
-      "nohibernate"
-      "zfs.zfs_arc_max=${toString zfs_arc_max}"
-      "zfs.zfs_arc_min=${toString zfs_arc_min}"
-      "microcode.amd_sha_check=off"
-      "iomem=relaxed"
-      "video=eDP-1:2880x1800,panel_orientation=normal"
-    ];
+    in
+      lib.mkAfter [
+        "nohibernate"
+        "zfs.zfs_arc_max=${toString zfs_arc_max}"
+        "zfs.zfs_arc_min=${toString zfs_arc_min}"
+        "microcode.amd_sha_check=off"
+        "iomem=relaxed"
+        "video=eDP-1:2880x1800,panel_orientation=normal"
+      ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
