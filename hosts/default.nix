@@ -187,9 +187,9 @@ in {
       "personal"
     ];
     embedHm = true;
-    extraModules = [
-      inputs.hardware-shymega.nixosModules.gpd-duo
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    extraModules = with inputs; [
+      inputs.hardware.nixosModules.gpd-duo
+      {environment.systemPackages = [nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
     pubkey = "";
     remoteBuild = true;

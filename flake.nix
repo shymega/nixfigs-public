@@ -183,11 +183,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hardware = {
-      url = "github:NixOS/nixos-hardware";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hardware-shymega = {
-      url = "github:shymega/nixos-hardware?ref=shymega";
+      url = "github:NixOS/nixos-hardware?ref=pull/1524/merge";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence = {
