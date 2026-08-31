@@ -1472,36 +1472,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1787144466,
-        "narHash": "sha256-HHfv2/HkNSKbbSyU9iD/g8lbP6r4tl33sSw1W4rXCk0=",
+        "lastModified": 1788216197,
+        "narHash": "sha256-qcuM/+Dbxn0Lr8Gb+h46JFkBtV14wOfhRHkfOEm8t0w=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "0471accf8d0a8210b31d947497d179ecc99e0021",
+        "rev": "74192341b12ff56c98a1607a53628d91de31f33c",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "repo": "nixos-hardware",
-        "type": "github"
-      }
-    },
-    "hardware-shymega": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785253988,
-        "narHash": "sha256-b5rCiwiaaQofpuvmWyUy+t9G2GEK4k2UwcyFA87Cukg=",
-        "owner": "shymega",
-        "repo": "nixos-hardware",
-        "rev": "47797b80a15094d7bd6f77bda856c412e8c299c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "shymega",
-        "ref": "shymega",
+        "ref": "pull/1524/merge",
         "repo": "nixos-hardware",
         "type": "github"
       }
@@ -4264,7 +4244,6 @@
         "flake-compat": "flake-compat_2",
         "flake-registry": "flake-registry",
         "hardware": "hardware",
-        "hardware-shymega": "hardware-shymega",
         "himmelblau": "himmelblau",
         "home-manager": "home-manager",
         "hyprland": [
