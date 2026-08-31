@@ -68,7 +68,6 @@
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
     nixfigs-secrets = {
       url = "github:shymega/nixfigs-secrets";
@@ -98,7 +97,6 @@
       inputs.nixfigs-roles.follows = "nixfigs-roles";
       inputs.nixfigs-secrets.follows = "nixfigs-secrets";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-master.follows = "nixpkgs-master";
       inputs.nixpkgs-shymega.follows = "nixpkgs-shymega";
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
       inputs.shypkgs-private.follows = "shypkgs-private";
@@ -136,7 +134,6 @@
       inputs.nixfigs-networks.follows = "nixfigs-networks";
       inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-master.follows = "nixpkgs-master";
       inputs.nixpkgs-shymega.follows = "nixpkgs-shymega";
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
@@ -178,7 +175,7 @@
       inputs.flake-compat.follows = "flake-compat";
     };
     devenv = {
-      url = "github:cachix/devenv/latest";
+      url = "github:cachix/devenv?ref=latest";
       inputs.flake-compat.follows = "flake-compat";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -207,9 +204,8 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nix-index-database.follows = "nix-index-database";
+        flake-compat.follows = "flake-compat";
       };
-
-      inputs.flake-compat.follows = "flake-compat";
     };
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
@@ -252,11 +248,6 @@
       url = "github:nix-community/srvos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-unstable.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
-    jovian-nixos = {
-      url = "github:Jovian-Experiments/Jovian-NixOS?ref=development";
-      inputs.nixpkgs.follows = "nixos-unstable";
-    };
     shypkgs-private = {
       url = "github:shymega/shypkgs-private";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
@@ -266,7 +257,6 @@
       url = "github:shymega/shypkgs-public";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-master.follows = "nixpkgs-master";
     };
     onepassword-shell-plugins = {
       url = "github:1Password/shell-plugins";
@@ -275,18 +265,17 @@
     nur-xddxdd = {
       url = "github:xddxdd/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
-
       inputs.nix-index-database.follows = "nix-index-database";
     };
     ucodenix.url = "github:e-tho/ucodenix";
     himmelblau = {
-      url = "github:himmelblau-idm/himmelblau?ref=3.1.10";
+      url = "github:himmelblau-idm/himmelblau?ref=4.0.0";
 
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.follows = "nixfigs-pkgs/hyprnix/hyprland";
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins?ref=v0.56.0";
+      url = "github:hyprwm/hyprland-plugins?ref=v0.55.0";
       inputs.hyprland.follows = "hyprland"; # Prevents version mismatch.
     };
     nixfigs-devenvs = {
