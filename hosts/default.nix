@@ -176,10 +176,10 @@ in {
     deployable = true;
   };
 
-  DEUSEX-LINUX = mkHost rec {
+  HEIMDALL-LINUX = mkHost rec {
     type = "nixos";
-    address = "DEUSEX-LINUX.rnet.rodriguez.org.uk";
-    hostname = "DEUSEX-LINUX";
+    address = "HEIMDALL-LINUX.rnet.rodriguez.org.uk";
+    hostname = "HEIMDALL-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
       "workstation"
