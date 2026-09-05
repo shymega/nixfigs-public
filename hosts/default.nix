@@ -137,10 +137,10 @@ in {
     deployable = true;
   };
 
-  MORPHEUS-LINUX = mkHost rec {
+  FREYR-LINUX = mkHost rec {
     type = "nixos";
-    address = "MORPHEUS-LINUX.rnet.rodriguez.org.uk";
-    hostname = "MORPHEUS-LINUX";
+    address = "FREYR-LINUX.rnet.rodriguez.org.uk";
+    hostname = "FREYR-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
       "workstation"
