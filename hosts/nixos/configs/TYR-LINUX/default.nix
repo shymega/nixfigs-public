@@ -15,7 +15,7 @@
   ];
 
   networking = {
-    hostName = "TWINS-LINUX";
+    hostName = "TYR-LINUX";
     hostId = "c6153b29";
     usePredictableInterfaceNames = false;
   };
@@ -36,7 +36,7 @@
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
     zfs.package = config.boot.kernelPackages.zfs_cachyos;
-    zfs.devNodes = "/dev/TWINS-LINUX/ROOT";
+    zfs.devNodes = "/dev/TYR-LINUX/ROOT";
 
     extraModprobeConfig = ''
       options kvm_intel nested=1
