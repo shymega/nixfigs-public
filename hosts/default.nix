@@ -196,10 +196,10 @@ in {
     deployable = true;
   };
 
-  TWINS-LINUX = mkHost rec {
+  TYR-LINUX = mkHost rec {
     type = "nixos";
-    address = "TWINS-LINUX.rnet.rodriguez.org.uk";
-    hostname = "TWINS-LINUX";
+    address = "TYR-LINUX.rnet.rodriguez.org.uk";
+    hostname = "TYR-LINUX";
     hostPlatform = "x86_64-linux";
     hostRoles = [
       "workstation"
