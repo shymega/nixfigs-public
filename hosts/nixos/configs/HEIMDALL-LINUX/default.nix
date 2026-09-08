@@ -32,7 +32,7 @@
     ];
   };
 
-  hardware.amd-npu = {
+  hardware.amd-npu = lib.optionalAttrs false {
     enable = true;
     enableNPU = true;
     enableFastFlowLM = true;
