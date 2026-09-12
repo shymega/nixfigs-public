@@ -11,6 +11,7 @@
   imports = with inputs; [
     ./hardware-configuration.nix
     ../../../../modules/nixos/alarm-clock.nix
+    ../../../../modules/nixos/brightness-reset.nix
     ../../../../modules/nixos/restic-backup.nix
     ../../../../modules/nixos/window-managers.nix
     nix-amd-ai.nixosModules.default
@@ -19,6 +20,8 @@
     nur-xddxdd.nixosModules.setupOverlay
     ucodenix.nixosModules.default
   ];
+
+  nixfigs.brightness-reset.enable = true;
 
   nixfigs.resticBackup = {
     enable = false;

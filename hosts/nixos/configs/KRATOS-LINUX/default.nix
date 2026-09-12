@@ -9,11 +9,14 @@
 }: {
   imports = with inputs; [
     ./hardware-configuration.nix
+    ../../../../modules/nixos/brightness-reset.nix
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
     ucodenix.nixosModules.default
   ];
+
+  nixfigs.brightness-reset.enable = true;
 
   lantian.qemu-user-static-binfmt.enable = true;
 
