@@ -9,10 +9,13 @@
 }: {
   imports = with inputs; [
     ./hardware-configuration.nix
+    ../../../../modules/nixos/brightness-reset.nix
     nur-xddxdd.nixosModules.setupOverlay
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.nix-cache-attic
   ];
+
+  nixfigs.brightness-reset.enable = true;
 
   networking = {
     hostName = "TYR-LINUX";
