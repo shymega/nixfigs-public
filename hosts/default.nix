@@ -86,31 +86,6 @@
       }
     else throw "unknown host type '${type}'";
 in {
-  NEO-LINUX = mkHost rec {
-    type = "nixos";
-    address = "NEO-LINUX.rnet.rodriguez.org.uk";
-    hostname = "NEO-LINUX";
-    hostPlatform = "x86_64-linux";
-    hostRoles = [
-      "workstation"
-      "gaming"
-      "personal"
-    ];
-    hardwareModules = [
-      inputs.hardware.nixosModules.common-cpu-amd
-      inputs.hardware.nixosModules.common-gpu-amd
-      inputs.hardware.nixosModules.common-pc-ssd
-      inputs.hardware.nixosModules.common-pc
-    ];
-    extraModules = [
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-    ];
-    pubkey = "";
-    embedHm = true;
-    remoteBuild = true;
-    deployable = true;
-  };
-
   MJOLNIR-LINUX = mkHost rec {
     type = "nixos";
     address = "MJOLNIR-LINUX.rnet.rodriguez.org.uk";
