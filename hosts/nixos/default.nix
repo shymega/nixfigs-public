@@ -41,8 +41,8 @@
           (./configs + "/${hostname}")
           ../../modules/nixos/generators.nix
           agenix.nixosModules.default
-          auto-cpufreq.nixosModules.default
           hyprland.nixosModules.default
+          auto-cpufreq.nixosModules.default
           determinate.nixosModules.default
           {nixpkgs.pkgs = genPkgs hostPlatform overlays;}
         ])

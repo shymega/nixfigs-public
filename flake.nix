@@ -273,9 +273,11 @@
 
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.follows = "nixfigs-pkgs/hyprnix/hyprland";
+    hyprland = {
+      url = "github:hyprwm/hyprland?rev=d50ca8950ac8753c54e50b6d44f4461df14bfabb";
+    };
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins?ref=v0.55.0";
+      url = "github:hyprwm/hyprland-plugins?ref=v0.56.0";
       inputs.hyprland.follows = "hyprland"; # Prevents version mismatch.
     };
     nixfigs-devenvs = {
