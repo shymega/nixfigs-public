@@ -63,6 +63,7 @@
   zramSwap.enable = true;
   zramSwap.algorithm = "zstd";
   boot = {
+    crashDump.enable = true;
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
