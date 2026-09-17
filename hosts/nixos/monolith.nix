@@ -266,7 +266,7 @@
     };
 
   programs.hyprland = let
-    inherit (pkgs) hyprland xdg-desktop-portal-hyprland;
+    inherit (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}) hyprland xdg-desktop-portal-hyprland;
   in {
     enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland";
     # set the flake package
