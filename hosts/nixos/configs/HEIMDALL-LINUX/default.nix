@@ -63,7 +63,14 @@
   zramSwap.enable = true;
   zramSwap.algorithm = "zstd";
   boot = {
-    crashDump.enable = true;
+    crashDump = {
+      enable = true;
+      # Default 128M is too tight: current kernel (bzImage) is ~16M and the
+      # initrd is ~83M, leaving no room for kexec_file_load's placement/
+      # alignment overhead -- it was failing every boot with
+      # "kexec_file_load failed: Cannot assign requested address".
+      reservedMemory = "256M";
+    };
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
