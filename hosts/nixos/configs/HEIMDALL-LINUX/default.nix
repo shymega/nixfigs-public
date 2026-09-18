@@ -30,7 +30,7 @@
   # on disable -- same aquamarine version/source otherwise, so no ABI/version
   # skew is introduced. Remove once the hypothesis is confirmed/refuted.
   programs.hyprland.package = let
-    system           = pkgs.stdenv.hostPlatform.system;
+    system = pkgs.stdenv.hostPlatform.system;
     patchedAquamarine = inputs.hyprland.inputs.aquamarine.packages.${system}.aquamarine.overrideAttrs (old: {
       patches = (old.patches or []) ++ [./patches/aquamarine-dpms-crtc-churn.patch];
     });
