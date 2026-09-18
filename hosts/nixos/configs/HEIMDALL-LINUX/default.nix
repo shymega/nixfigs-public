@@ -140,6 +140,17 @@
         "microcode.amd_sha_check=off"
         "iomem=relaxed"
         "video=eDP-1:2880x1800,panel_orientation=normal"
+
+        # Reserve pstore/ramoops backing memory in a genuine e820 gap
+        # (0xc7e180000-0xc7f1bffff, ~16MiB, unclaimed by System RAM or any
+        # device) so a future oops/panic survives a reboot into
+        # /sys/fs/pstore -> systemd-pstore.service. Re-verify this address
+        # is still a free gap in `dmesg | grep BIOS-e820` if RAM/BIOS changes.
+        "ramoops.mem_address=0xC7E180000"
+        "ramoops.mem_size=0x400000"
+        "ramoops.record_size=0x100000"
+        "ramoops.console_size=0x100000"
+        "ramoops.pmsg_size=0x100000"
       ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
