@@ -21,24 +21,6 @@
     ucodenix.nixosModules.default
   ];
 
-  # Test patch for the hard-reset-on-battery bug in report.md: aquamarine's
-  # CRTC-release-on-disable + rescan-on-every-enabledState-transition logic
-  # (hyprwm/aquamarine #254, commit f5cdaa8) is suspected of turning a
-  # DPMS-off-induced connector flap into a CRTC reassignment/modeset loop on
-  # this dual-CRTC device. This overrides just this host's Hyprland package
-  # to link against a patched aquamarine that only rescans on re-enable, not
-  # on disable -- same aquamarine version/source otherwise, so no ABI/version
-  # skew is introduced. Remove once the hypothesis is confirmed/refuted.
-  programs.hyprland.package = let
-    system = pkgs.stdenv.hostPlatform.system;
-    patchedAquamarine = inputs.hyprland.inputs.aquamarine.packages.${system}.aquamarine.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [
-        "${inputs.nixfigs-pkgs}/pkgs/aquamarine/aquamarine-dpms-crtc-churn.patch"
-      ];
-    });
-  in
-    lib.mkForce (inputs.hyprland.packages.${system}.hyprland.override {aquamarine = patchedAquamarine;});
-
   nixfigs.brightness-reset.enable = true;
 
   nixfigs.resticBackup = {
