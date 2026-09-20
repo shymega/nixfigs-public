@@ -155,7 +155,9 @@
     extraModprobeConfig = ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
+      options ec_sys write_support=1
     '';
+    kernelModules = ["ec_sys"];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
     kernel.sysctl = {
       "fs.inotify.max_user_watches" = "819200";
@@ -213,13 +215,31 @@
     };
   };
 
-  systemd.shutdownRamfs = {
-    storePaths = ["${config.boot.zfs.package}/bin/zfs"];
-    contents."/etc/systemd/system-shutdown/zfs-rollback" = {
-      source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
-        #!/bin/sh
-        ${config.boot.zfs.package}/bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
-      '';
+  systemd = {
+    shutdownRamfs = {
+      storePaths = ["${config.boot.zfs.package}/bin/zfs"];
+      contents."/etc/systemd/system-shutdown/zfs-rollback" = {
+        source = pkgs.writeShellScript "zfs-rollback-shutdown" ''
+          #!/bin/sh
+          ${config.boot.zfs.package}/bin/zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
+        '';
+      };
+    };
+    services.power-thermal-snapshot = {
+      description = "Log sensor/power state for crash correlation";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.lm_sensors}/bin/sensors";
+      };
+    };
+    timers.power-thermal-snapshot = {
+      description = "Periodic power-thermal-snapshot logging";
+      wantedBy = ["timers.target"];
+      timerConfig = {
+        OnBootSec = "30s";
+        OnUnitActiveSec = "30s";
+        AccuracySec = "5s";
+      };
     };
   };
 
@@ -305,6 +325,10 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    dmidecode
+  ];
+
   system.stateVersion = "26.05";
 
   programs.steam = {
@@ -342,5 +366,8 @@
     cpuModelId = "00B20F40";
   };
 
+  # Keep off: this module drives ryzenadj, which doesn't correctly support the
+  # AI 9 HX 370's PM table -- writes can land at the wrong offset and corrupt
+  # unrelated SMU state on this exact chip.
   hardware.gpd.ppt.enable = lib.mkForce false;
 }
