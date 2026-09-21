@@ -254,6 +254,13 @@
       environmentVariables = {
         OLLAMA_CONTEXT_LENGTH = "32768";
       };
+      loadModels = [
+        "qwen2.5-coder:14b"
+        "qwen3-coder:30b"
+        "deepseek-coder-v2:16b-lite"
+        "codestral:22b"
+        "devstral:24b"
+      ];
     };
     fstrim.enable = true;
     smartd = {
