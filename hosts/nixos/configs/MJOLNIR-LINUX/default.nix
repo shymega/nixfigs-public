@@ -262,6 +262,10 @@
         "deepseek-coder-v2:16b-lite"
         "codestral:22b"
         "devstral:24b"
+        "deepseek-r1:14b"
+        "magistral:24b"
+        "llama3.2:3b"
+        "phi4-mini:3.8b"
       ];
     };
     fstrim.enable = true;
