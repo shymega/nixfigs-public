@@ -293,8 +293,6 @@
       url = "github:noamsto/nix-amd-ai";
 
       inputs.flake-compat.follows = "flake-compat";
-
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }
