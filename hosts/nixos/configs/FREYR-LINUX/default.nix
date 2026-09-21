@@ -19,6 +19,7 @@ in {
     ../../../../modules/nixos/brightness-reset.nix
     ../../../../modules/nixos/restic-backup.nix
     ../../../../modules/nixos/window-managers.nix
+    nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
@@ -44,6 +45,17 @@ in {
     # Wakes on schedule, but stays silent: no alarm should go off here.
     wakeOnly = true;
     bedtime.enable = true;
+  };
+
+  hardware.amd-npu = {
+    enable = true;
+    enableNPU = true;
+    enableFastFlowLM = true;
+    enableLemonade = true;
+    enableROCm = true;
+    enableVulkan = true;
+    enableImageGen = true;
+    lemonade.user = "dzrodriguez";
   };
 
   networking = {
