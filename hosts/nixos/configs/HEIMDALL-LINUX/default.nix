@@ -128,6 +128,25 @@
             zfs rollback -r ztank/crypt/nixos/linux/local/root@blank || true
           '';
         };
+
+        rotate-edp1-fbcon = {
+          description = "Rotate eDP-1 fbcon 180 degrees via sysfs";
+          wantedBy = ["initrd.target"];
+          after = ["systemd-udev-settle.service"];
+          before = ["initrd.target"];
+          serviceConfig.Type = "oneshot";
+          # fbcon's rotate/rotate_all knobs are global to the console, not
+          # per-connector, so gate on eDP-1 specifically being the connected
+          # panel rather than blindly rotating -- keeps this a no-op if an
+          # external display ever ends up driving the console instead.
+          script = ''
+            for c in /sys/class/drm/card*-eDP-1; do
+              [ "$(cat "$c/status" 2>/dev/null)" = "connected" ] || continue
+              [ -w /sys/class/graphics/fbcon/rotate_all ] || continue
+              echo 2 > /sys/class/graphics/fbcon/rotate_all
+            done
+          '';
+        };
       };
     };
     zfs = {
