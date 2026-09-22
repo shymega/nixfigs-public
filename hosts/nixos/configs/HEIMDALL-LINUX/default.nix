@@ -21,18 +21,6 @@
     ucodenix.nixosModules.default
   ];
 
-  programs.hyprland.package = let
-    system = pkgs.stdenv.hostPlatform.system;
-    patchedAquamarine = inputs.hyprland.inputs.aquamarine.packages.${system}.aquamarine.overrideAttrs (old: {
-      patches =
-        (old.patches or [])
-        ++ [
-          "${inputs.nixfigs-pkgs}/pkgs/aquamarine/aquamarine-dpms-crtc-churn.patch"
-        ];
-    });
-  in
-    lib.mkForce (inputs.hyprland.packages.${system}.hyprland.override {aquamarine = patchedAquamarine;});
-
   nixfigs.brightness-reset.enable = true;
 
   nixfigs.resticBackup = {
