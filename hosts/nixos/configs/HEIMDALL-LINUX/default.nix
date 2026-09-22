@@ -164,24 +164,32 @@
       zfs_arc_max = 24 * 1024 * 1024 * 1024;
       zfs_arc_min = 4 * 1024 * 1024 * 1024;
     in
-      lib.mkAfter [
-        "nohibernate"
-        "zfs.zfs_arc_max=${toString zfs_arc_max}"
-        "zfs.zfs_arc_min=${toString zfs_arc_min}"
-        "microcode.amd_sha_check=off"
-        "iomem=relaxed"
-        "video=eDP-1:2880x1800,panel_orientation=normal"
+      lib.mkMerge [
+        # gpd-duo's hardware module sets its own video=DP-3:...,panel_orientation=normal
+        # via mkBefore (order 500); fb_get_options() takes the first video= match per
+        # connector name, so ours needs a lower mkOrder to win. This disables DP-3 for
+        # the early fbdev/fbcon console specifically, breaking DP-3/eDP-1 clone mode so
+        # rotate-edp1-fbcon's sysfs rotation only ever touches eDP-1's console. DP-3
+        # itself is unaffected once Hyprland does its own KMS modeset.
+        (lib.mkOrder 400 ["video=DP-3:d"])
+        (lib.mkAfter [
+          "nohibernate"
+          "zfs.zfs_arc_max=${toString zfs_arc_max}"
+          "zfs.zfs_arc_min=${toString zfs_arc_min}"
+          "microcode.amd_sha_check=off"
+          "iomem=relaxed"
 
-        # Reserve pstore/ramoops backing memory in a genuine e820 gap
-        # (0xc7e180000-0xc7f1bffff, ~16MiB, unclaimed by System RAM or any
-        # device) so a future oops/panic survives a reboot into
-        # /sys/fs/pstore -> systemd-pstore.service. Re-verify this address
-        # is still a free gap in `dmesg | grep BIOS-e820` if RAM/BIOS changes.
-        "ramoops.mem_address=0xC7E180000"
-        "ramoops.mem_size=0x400000"
-        "ramoops.record_size=0x100000"
-        "ramoops.console_size=0x100000"
-        "ramoops.pmsg_size=0x100000"
+          # Reserve pstore/ramoops backing memory in a genuine e820 gap
+          # (0xc7e180000-0xc7f1bffff, ~16MiB, unclaimed by System RAM or any
+          # device) so a future oops/panic survives a reboot into
+          # /sys/fs/pstore -> systemd-pstore.service. Re-verify this address
+          # is still a free gap in `dmesg | grep BIOS-e820` if RAM/BIOS changes.
+          "ramoops.mem_address=0xC7E180000"
+          "ramoops.mem_size=0x400000"
+          "ramoops.record_size=0x100000"
+          "ramoops.console_size=0x100000"
+          "ramoops.pmsg_size=0x100000"
+        ])
       ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
