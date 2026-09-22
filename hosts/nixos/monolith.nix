@@ -265,14 +265,14 @@
       };
     };
 
-  programs.hyprland = let
-    inherit (inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}) hyprland xdg-desktop-portal-hyprland;
-  in {
+  programs.hyprland = {
     enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland";
-    # set the flake package
-    package = hyprland;
-    # make sure to also set the portal package, so that they are in sync
-    portalPackage = xdg-desktop-portal-hyprland;
+    # hyprnixOverlaySafe (nixfigs-pkgs/overlays/default.nix) already sources
+    # hyprland/xdg-desktop-portal-hyprland from hyprwm/Hyprland's own
+    # self-consistent flake, with the aquamarine dpms-crtc-churn patch and
+    # wayland-protocols bump applied -- no need to redo that here.
+    package = pkgs.hyprland;
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
     xwayland.enable = true; # Xwayland can be disabled.
   };
 
