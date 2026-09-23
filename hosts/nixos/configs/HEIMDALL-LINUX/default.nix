@@ -170,6 +170,8 @@
         "ramoops.record_size=0x100000"
         "ramoops.console_size=0x100000"
         "ramoops.pmsg_size=0x100000"
+
+        "gpd_fan_board=win_mini"
       ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
