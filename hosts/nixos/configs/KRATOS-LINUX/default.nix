@@ -87,6 +87,7 @@
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
+      "gpd_fan_board=win4"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
