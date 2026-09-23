@@ -124,6 +124,7 @@ in {
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "iommu=pt"
+      "gpd_fan_board=wm2"
     ];
     extraModprobeConfig = lib.mkAfter ''
       options kvm_amd nested=1
