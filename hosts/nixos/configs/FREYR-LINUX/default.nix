@@ -124,6 +124,8 @@ in {
       "microcode.amd_sha_check=off"
       "iomem=relaxed"
       "iommu=pt"
+      "amdgpu.dcdebugmask=0x10"
+      "amdgpu.sg_display=0"
       "gpd_fan_board=wm2"
     ];
     extraModprobeConfig = lib.mkAfter ''
