@@ -86,13 +86,13 @@
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "microcode.amd_sha_check=off"
-      "gpd_fan_board=win4"
       "amdgpu.dcdebugmask=0x10"
       "amdgpu.sg_display=0"
     ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
+      options gpd_fan gpd_fan_board=win4
     '';
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
