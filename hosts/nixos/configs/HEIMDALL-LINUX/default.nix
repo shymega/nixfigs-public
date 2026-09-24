@@ -157,7 +157,6 @@
         "zfs.zfs_arc_max=${toString zfs_arc_max}"
         "zfs.zfs_arc_min=${toString zfs_arc_min}"
         "microcode.amd_sha_check=off"
-        "iomem=relaxed"
         "video=eDP-1:2880x1800,panel_orientation=normal"
 
         # Reserve pstore/ramoops backing memory in a genuine e820 gap
