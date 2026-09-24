@@ -124,11 +124,11 @@ in {
       "microcode.amd_sha_check=off"
       "amdgpu.dcdebugmask=0x10"
       "amdgpu.sg_display=0"
-      "gpd_fan_board=wm2"
     ];
     extraModprobeConfig = lib.mkAfter ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
+      options gpd_fan gpd_fan_board=wm2
     '';
 
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
