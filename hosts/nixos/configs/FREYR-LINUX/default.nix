@@ -122,8 +122,6 @@ in {
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "microcode.amd_sha_check=off"
-      "iomem=relaxed"
-      "iommu=pt"
       "amdgpu.dcdebugmask=0x10"
       "amdgpu.sg_display=0"
       "gpd_fan_board=wm2"
