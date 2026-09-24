@@ -172,6 +172,8 @@
         "ramoops.pmsg_size=0x100000"
 
         "gpd_fan_board=win_mini"
+        "amdgpu.dcdebugmask=0x10"
+        "amdgpu.sg_display=0"
       ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
