@@ -4541,6 +4541,10 @@
         "agenix": "agenix",
         "auto-cpufreq": "auto-cpufreq",
         "base16-schemes": "base16-schemes",
+        "breezy-desktop": [
+          "nixfigs-pkgs",
+          "breezy-desktop"
+        ],
         "deploy-rs": "deploy-rs",
         "determinate": "determinate",
         "devenv": "devenv",

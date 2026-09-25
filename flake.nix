@@ -294,5 +294,6 @@
 
       inputs.flake-compat.follows = "flake-compat";
     };
+    breezy-desktop.follows = "nixfigs-pkgs/breezy-desktop";
   };
 }
