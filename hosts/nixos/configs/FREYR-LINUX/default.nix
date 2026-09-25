@@ -24,8 +24,10 @@ in {
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
     ucodenix.nixosModules.default
+    breezy-desktop.nixosModules.default
   ];
 
+  services.breezy-desktop.enable = true;
   nixfigs.brightness-reset.enable = true;
 
   nixfigs.resticBackup = {
