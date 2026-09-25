@@ -15,8 +15,10 @@
     ../../../../modules/nixos/window-managers.nix
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
-    nur-xddxdd.nixosModules.setupOverlay
+    breezy-desktop.nixosModules.default
   ];
+
+  services.breezy-desktop.enable = true;
 
   nixfigs.resticBackup = {
     enable = false;
