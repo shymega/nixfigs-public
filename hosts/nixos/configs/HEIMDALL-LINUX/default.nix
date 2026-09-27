@@ -301,6 +301,9 @@
     # is off, and TLP's stock defaults kill turbo on battery and runtime-park the
     # NVMe. Disable it explicitly so it can never conflict with PPD.
     tlp.enable = pkgs.lib.mkForce false;
+    # thermald drives Intel's DPTF; there's no such thing on this AMD APU, so it
+    # would just be a dead service. Keep it off explicitly.
+    thermald.enable = false;
     hardware.bolt.enable = true;
     zfs = {
       trim = {
@@ -395,4 +398,8 @@
   # AI 9 HX 370's PM table -- writes can land at the wrong offset and corrupt
   # unrelated SMU state on this exact chip.
   hardware.gpd.ppt.enable = lib.mkForce false;
+
+  # auto-cpufreq asserts against services.power-profiles-daemon.enable, which
+  # is on above; PPD is already doing this host's governor/EPP switching.
+  programs.auto-cpufreq.enable = false;
 }
