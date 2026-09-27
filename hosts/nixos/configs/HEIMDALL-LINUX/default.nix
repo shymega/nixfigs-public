@@ -180,7 +180,7 @@
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
       options ec_sys write_support=1
-      options gpd_fan gpd_fan_board=win_mini
+      options gpd_fan gpd_fan_board=duo
     '';
     kernelModules = ["ec_sys"];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
