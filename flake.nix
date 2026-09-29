@@ -156,10 +156,7 @@
       url = "github:shymega/nixfigs-work-container";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    determinate = {
-      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     flake-registry = {
       url = "github:NixOS/flake-registry";
       flake = false;
@@ -200,11 +197,7 @@
     };
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nix-index-database.follows = "nix-index-database";
-        flake-compat.follows = "flake-compat";
-      };
+      inputs.flake-compat.follows = "flake-compat";
     };
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
