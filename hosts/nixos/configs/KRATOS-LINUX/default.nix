@@ -95,7 +95,6 @@
     extraModprobeConfig = ''
       options kvm_amd nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
-      options gpd_fan gpd_fan_board=win4
     '';
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
