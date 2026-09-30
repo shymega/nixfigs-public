@@ -6,8 +6,17 @@
 {
   config,
   lib,
+  username,
   ...
-}: {
+}: let
+  # NOT config.users.users.${username}.home: using that here (as a fileSystems
+  # attribute name) forces eager evaluation of users.users, which pulls in
+  # services.rpcbind.enable (nixos/modules/tasks/filesystems/nfs.nix), which
+  # depends on boot.supportedFilesystems, which introspects config.fileSystems
+  # again -- infinite recursion. Plain "/home/${username}" is what that option
+  # defaults to anyway, without the cycle.
+  homeDir = "/home/${username}";
+in {
   ############################################################################
   # Kernel: sysctl, boot parameters & modules
   ############################################################################
@@ -165,18 +174,14 @@
   # noexec prevents running untrusted binaries
   # nodev prevents fake devices being used for privilege escalation
   #
-  # Only "/home" and "/var" get options merged in here: every monolith host
-  # already has these as real, separately-mounted filesystems (see each
-  # host's disks.nix/hardware-configuration.nix), so no device/fsType needs
-  # restating. The rest of nix-mineral's bind-remount set assumed a
-  # traditional multi-partition layout with its own "/root", "/tmp", "/srv",
-  # "/etc" and "~/Downloads" mounts; on the ZFS-root hosts here those are
-  # plain directories inside the root dataset, not separate filesystems, so
-  # declaring options for them with no device/fsType breaks eval.
-  #
-  # FIXME: reinstate nosuid/noexec/nodev for "/root", "/tmp", "/srv", "/etc",
-  # "/boot" and "/home/dzrodriguez/Downloads" once those exist as their own
-  # datasets/mounts on the hosts that use this specialisation.
+  # "/home" and "/var" are already real, separately-mounted filesystems on
+  # every monolith host (see each host's disks.nix/hardware-configuration.nix),
+  # so only "options" is merged in here -- restating "device"/"fsType" would
+  # conflict with the real definition. The rest are self-binds (a directory
+  # mounted onto itself, `fsType = "none"`, matching disks.nix's own bind
+  # mounts e.g. "/home/dzrodriguez/Games") purely to layer extra mount
+  # options on, since they aren't separate filesystems on the ZFS-root hosts
+  # here.
   fileSystems = {
     "/home".options = [
       "nosuid"
@@ -189,6 +194,72 @@
       "noexec"
       "nodev"
     ];
+
+    "/root" = {
+      device = "/root";
+      fsType = "none";
+      options = [
+        "bind"
+        "nosuid"
+        "noexec"
+        "nodev"
+      ];
+    };
+
+    "/tmp" = {
+      device = "/tmp";
+      fsType = "none";
+      options = [
+        "bind"
+        "nosuid"
+        "exec"
+        "nodev"
+      ];
+    };
+
+    "/srv" = {
+      device = "/srv";
+      fsType = "none";
+      options = [
+        "bind"
+        "nosuid"
+        "noexec"
+        "nodev"
+      ];
+    };
+
+    "/etc" = {
+      device = "/etc";
+      fsType = "none";
+      neededForBoot = true;
+      options = [
+        "bind"
+        "nosuid"
+        "nodev"
+      ];
+    };
+
+    "/boot" = {
+      device = "/boot";
+      fsType = "none";
+      options = [
+        "bind"
+        "nosuid"
+        "noexec"
+        "nodev"
+      ];
+    };
+
+    "${homeDir}/Downloads" = {
+      device = "${homeDir}/Downloads";
+      fsType = "none";
+      options = [
+        "bind"
+        "nosuid"
+        "noexec"
+        "nodev"
+      ];
+    };
   };
 
   ############################################################################
