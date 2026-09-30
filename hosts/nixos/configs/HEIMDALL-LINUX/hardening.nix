@@ -149,8 +149,8 @@
       ];
     };
 
-    "/home/lawrence/Downloads" = {
-      device = "/home/lawrence/Downloads";
+    "/home/dzrodriguez/Downloads" = {
+      device = "/home/dzrodriguez/Downloads";
       options = [
         "bind"
         "nosuid"
@@ -332,11 +332,11 @@
 
   services = {
     timesyncd = {
-      enable = false;
+      enable = true;
     };
 
     chrony = {
-      enable = true;
+      enable = false;
 
       # Enable seccomp filter
       extraFlags = ["-F 1"];
