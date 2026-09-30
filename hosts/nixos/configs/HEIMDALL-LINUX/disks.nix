@@ -10,7 +10,7 @@
 
   fileSystems = {
     "/" = {
-      device = "ztank/crypt/nixos/linux/local/root";
+      device = "ztank/crypt/nixos/local/root";
       fsType = "zfs";
     };
 
@@ -71,31 +71,31 @@
     };
 
     "/nix" = {
-      device = "ztank/crypt/nixos/linux/local/nix-store";
+      device = "ztank/crypt/nixos/local/nix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/gnu" = {
-      device = "ztank/crypt/nixos/linux/local/guix-store";
+      device = "ztank/crypt/nixos/local/guix-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/persist" = {
-      device = "ztank/crypt/nixos/linux/safe/persist";
+      device = "ztank/crypt/nixos/safe/persist";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/var" = {
-      device = "ztank/crypt/nixos/linux/safe/var-store";
+      device = "ztank/crypt/nixos/safe/var-store";
       fsType = "zfs";
       neededForBoot = true;
     };
 
     "/home/dzrodriguez/.local/share/atuin" = {
-      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos/linux"; # Replace with by-label.
+      device = "/dev/zvol/zdata/crypt/shared/homes/atuin/nixos"; # Replace with by-label.
       fsType = "ext4";
       neededForBoot = false;
       options = ["x-systemd.automount"];
