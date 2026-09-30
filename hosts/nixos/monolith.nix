@@ -293,5 +293,12 @@
         nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
       };
     };
+
+    hardening = {
+      inheritParentConfig = true;
+      configuration = {
+        imports = [../../modules/nixos/hardening.nix];
+      };
+    };
   };
 }
