@@ -149,8 +149,8 @@
       ];
     };
 
-    "/home/lawrence/Downloads" = {
-      device = "/home/lawrence/Downloads";
+    "/home/dzrodriguez/Downloads" = {
+      device = "/home/dzrodriguez/Downloads";
       options = [
         "bind"
         "nosuid"
@@ -284,7 +284,10 @@
 
         su.requireWheel = true; # Restrict su to wheel group
         su-l.requireWheel = true; # Restrict su -l to wheel group
-        system-login.failDelay.delay = "4000000"; # 4 second delay to failed login attempts
+        system-login.failDelay.delay = let
+          secondsStr = "5";
+          microseconds = builtins.fromJSON secondsStr * 1000000;
+        in builtins.toString microseconds; # 4 second delay to failed login attempts
       };
     };
   };
@@ -332,11 +335,11 @@
 
   services = {
     timesyncd = {
-      enable = false;
+      enable = true;
     };
 
     chrony = {
-      enable = true;
+      enable = false;
 
       # Enable seccomp filter
       extraFlags = ["-F 1"];
