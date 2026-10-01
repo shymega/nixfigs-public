@@ -89,8 +89,15 @@
             preLVM = true;
             allowDiscards = true;
           };
-          DATA = {
-            device = "/dev/disk/by-label/DATA";
+          # `zdata` is striped across these two disks (SATA SSD + NVMe
+          # 2242); both must unlock for the pool to assemble.
+          DATA_SATA = {
+            device = "/dev/disk/by-label/DATA_SATA";
+            preLVM = true;
+            allowDiscards = true;
+          };
+          DATA_NVME = {
+            device = "/dev/disk/by-label/DATA_NVME";
             preLVM = true;
             allowDiscards = true;
           };
