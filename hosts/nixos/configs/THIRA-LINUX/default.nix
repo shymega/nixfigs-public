@@ -113,11 +113,10 @@
     };
 
     kernelParams = let
-      # 32 GiB RAM total; the Meteor Lake iGPU shares system memory dynamically
-      # rather than a fixed carve-out, but VMs/AI workloads still need headroom
-      # over ARC. Cap ARC at a quarter of RAM, floor high enough it won't
-      # collapse to near-zero under memory pressure.
-      zfs_arc_max = 8 * 1024 * 1024 * 1024;
+      # 32 GiB RAM - 12 GiB iGPU VRAM carve-out = 20 GiB usable; cap ARC at
+      # half of that, floor high enough it won't collapse to near-zero
+      # under memory pressure from VMs/AI workloads.
+      zfs_arc_max = 10 * 1024 * 1024 * 1024;
       zfs_arc_min = 2 * 1024 * 1024 * 1024;
     in
       lib.mkAfter [
