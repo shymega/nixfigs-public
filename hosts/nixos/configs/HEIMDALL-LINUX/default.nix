@@ -54,6 +54,9 @@
   nixfigs.alarm-clock = {
     enable = true;
     onCalendar = "*-*-* 07:30:00";
+    forceSpeakers = true;
+    blockBluetooth = true;
+    inhibitPowerAndLid = true;
     bedtime = {
       enable = true;
       onCalendar = "*-*-* 01:00:00";
