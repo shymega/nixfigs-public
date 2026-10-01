@@ -170,25 +170,6 @@ in {
     deployable = true;
   };
 
-  TYR-LINUX = mkHost rec {
-    type = "nixos";
-    address = "TYR-LINUX.rnet.rodriguez.org.uk";
-    hostname = "TYR-LINUX";
-    hostPlatform = "x86_64-linux";
-    hostRoles = [
-      "workstation"
-      "personal"
-    ];
-    hardwareModules = [inputs.hardware.nixosModules.lenovo-thinkpad-x270];
-    extraModules = [
-      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
-    ];
-    pubkey = "";
-    remoteBuild = true;
-    deployable = false;
-    embedHm = true;
-  };
-
   ### Experimental Device Ports ###
   ## ClockworkPi uConsole (CM4) ##
   # Received, Debian installed. Work ongoing to upstream DTB and driver patches. #
