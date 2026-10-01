@@ -397,8 +397,4 @@
   # AI 9 HX 370's PM table -- writes can land at the wrong offset and corrupt
   # unrelated SMU state on this exact chip.
   hardware.gpd.ppt.enable = lib.mkForce false;
-
-  # auto-cpufreq asserts against services.power-profiles-daemon.enable, which
-  # is on above; PPD is already doing this host's governor/EPP switching.
-  programs.auto-cpufreq.enable = false;
 }
