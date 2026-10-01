@@ -7,8 +7,44 @@
   pkgs,
   ...
 }: let
+  inherit (lib) getExe';
   cfg = config.nixfigs.alarm-clock;
   user = config.users.users.${cfg.user};
+
+  rfkill = getExe' pkgs.util-linux "rfkill";
+
+  # Matched by description, not by node/device name: the alsa_card bus path
+  # (pci-0000_XX_00.N) shifts across docks/boots, but this friendly name is
+  # stable on both hosts that use this option.
+  selectSpeakerSink = pkgs.writeShellScript "alarm-select-speaker-sink" ''
+    set -euo pipefail
+    wpctl=${getExe' pkgs.wireplumber "wpctl"}
+    sed=${getExe' pkgs.gnused "sed"}
+    grep=${getExe' pkgs.gnugrep "grep"}
+    head=${getExe' pkgs.coreutils "head"}
+    sleep=${getExe' pkgs.coreutils "sleep"}
+
+    dev_id=$("$wpctl" status | "$sed" -n '/Devices:/,/Sinks:/p' \
+      | "$grep" 'Ryzen HD Audio Controller' | "$grep" -oE '[0-9]+' | "$head" -1) || true
+    if [ -n "$dev_id" ]; then
+      "$wpctl" set-profile "$dev_id" 1
+      "$sleep" 0.5
+    fi
+
+    # Prefer the GPD Duo convolver's virtual sink when present (it's what
+    # actually reaches the Duo speakers, EQ'd) -- the raw card sink is
+    # swallowed internally and never appears under Sinks: on that hardware.
+    # Hosts without the convolver fall through to the raw card sink below.
+    sink_id=$("$wpctl" status | "$sed" -n '/Filters:/,/Streams:/p' \
+      | "$grep" 'laptop-convolver' | "$grep" 'Audio/Sink' | "$grep" -oE '[0-9]+' | "$head" -1) || true
+    if [ -z "$sink_id" ]; then
+      sink_id=$("$wpctl" status | "$sed" -n '/Sinks:/,/Sources:/p' \
+        | "$grep" 'Ryzen HD Audio Controller' | "$grep" -oE '[0-9]+' | "$head" -1) || true
+    fi
+    if [ -n "$sink_id" ]; then
+      "$wpctl" set-default "$sink_id"
+    fi
+  '';
 in
   with lib; {
     options.nixfigs.alarm-clock = {
@@ -64,6 +100,24 @@ in
         '';
       };
 
+      forceSpeakers = mkEnableOption ''
+        forcing playback onto the onboard "Ryzen HD Audio Controller" analog
+        speakers before the alarm plays, activating its ALSA profile first if
+        WirePlumber has it set to off (it does, by default, after most
+        suspend/resume cycles on these hosts)
+      '';
+
+      blockBluetooth = mkEnableOption ''
+        rfkill-blocking Bluetooth before the alarm plays and before bedtime
+        suspends, so a paired device can't be or become the default sink;
+        unblocked again once the post-alarm inhibit window ends
+      '';
+
+      inhibitPowerAndLid = mkEnableOption ''
+        also inhibiting the power button and lid switch (on top of sleep) for
+        the duration of the post-alarm inhibit window
+      '';
+
       bedtime = {
         enable = mkEnableOption "scheduled nightly suspend";
 
@@ -102,11 +156,14 @@ in
             ExecStart =
               if cfg.wakeOnly
               then ["${getExe' pkgs.coreutils "true"}"]
-              else [
-                "${getExe' pkgs.wireplumber "wpctl"} set-volume @DEFAULT_AUDIO_SINK@ ${toString (cfg.volume / 100.0)}"
-                "${getExe' pkgs.wireplumber "wpctl"} set-mute @DEFAULT_AUDIO_SINK@ 0"
-                "${getExe pkgs.mpv} --no-video --no-terminal --ao=pipewire ${escapeShellArg cfg.audioFile}"
-              ];
+              else
+                optional cfg.blockBluetooth "${rfkill} block bluetooth"
+                ++ optional cfg.forceSpeakers selectSpeakerSink
+                ++ [
+                  "${getExe' pkgs.wireplumber "wpctl"} set-volume @DEFAULT_AUDIO_SINK@ ${toString (cfg.volume / 100.0)}"
+                  "${getExe' pkgs.wireplumber "wpctl"} set-mute @DEFAULT_AUDIO_SINK@ 0"
+                  "${getExe pkgs.mpv} --no-video --no-terminal --ao=pipewire ${escapeShellArg cfg.audioFile}"
+                ];
           };
         };
 
@@ -130,7 +187,9 @@ in
             # No --ignore-inhibitors: a held sleep lock (a long build, a manual
             # inhibit-suspension@N) skips bedtime for that night rather than
             # suspending out from under it.
-            ExecStart = "${getExe' pkgs.systemd "systemctl"} suspend";
+            ExecStart =
+              optional cfg.blockBluetooth "${rfkill} block bluetooth"
+              ++ ["${getExe' pkgs.systemd "systemctl"} suspend"];
           };
         };
 
@@ -145,6 +204,22 @@ in
             Unit = "bedtime.service";
           };
         };
+      })
+
+      (mkIf (cfg.enable && (cfg.blockBluetooth || cfg.inhibitPowerAndLid)) {
+        # Overrides nixfigs-common's generic inhibit-suspension@ template:
+        # extends --what= to cover the power key/lid (instead of just sleep),
+        # and/or appends the Bluetooth unblock once the held sleep ends.
+        systemd.services."inhibit-suspension@".serviceConfig.ExecStart = mkForce (
+          [
+            (concatStringsSep " " (
+              [(getExe' pkgs.systemd "systemd-inhibit")]
+              ++ ["--what=${concatStringsSep ":" (["sleep"] ++ optionals cfg.inhibitPowerAndLid ["handle-power-key" "handle-lid-switch"])}"]
+              ++ ["--why=PreventSuspension" "--who=system" (getExe' pkgs.coreutils "sleep") "%ih"]
+            ))
+          ]
+          ++ optional cfg.blockBluetooth "${rfkill} unblock bluetooth"
+        );
       })
     ];
   }
