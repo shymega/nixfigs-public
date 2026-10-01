@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
+# SPDX-FileCopyrightText: 2023-2026 Dom 'shymega' Rodriguez <shymega@shymega.org.uk>
 #
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 #
 {
   config,
@@ -230,9 +230,11 @@
             # NixOS system built against it (upstream bug, reproduces on current
             # nixpkgs-unstable HEAD too). Reimplement it the same way stable does.
             (final: prev: {
-              lib = prev.lib // {
-                importService = prev.lib.modules.importApply (prev.path + "/lib/services/service.nix");
-              };
+              lib =
+                prev.lib
+                // {
+                  importService = prev.lib.modules.importApply (prev.path + "/lib/services/service.nix");
+                };
             })
           ];
       });

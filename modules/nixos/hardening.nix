@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2026 Dom Rodriguez <shymega@shymega.org.uk
+# SPDX-FileCopyrightText: 2023-2026 Dom 'shymega' Rodriguez <shymega@shymega.org.uk>
 #
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 # https://github.com/cynicsketch/nix-mineral
 # Several of these options are the default but having them defined is useful for educational purposes
 {
