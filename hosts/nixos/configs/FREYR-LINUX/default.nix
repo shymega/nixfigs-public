@@ -58,6 +58,12 @@ in {
     enableVulkan = true;
     enableImageGen = true;
     lemonade.user = "dzrodriguez";
+    # gpuTarget only covers gfx1150/gfx1151 (Strix) and can't express this
+    # host's real chip -- a 7840U (Phoenix), Radeon 780M, gfx1103 -- but
+    # lemonade's internals still key off gpuTarget's default (gfx1150).
+    # Compile for both so llama-server/sd-server actually load kernels for
+    # the real iGPU instead of a build that only covers the wrong ISA.
+    rocmGpuTargets = ["gfx1103" "gfx1150"];
   };
 
   networking = {
