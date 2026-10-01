@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2024 Dom Rodriguez <shymega@shymega.org.uk
+# SPDX-FileCopyrightText: 2023-2026 Dom 'shymega' Rodriguez <shymega@shymega.org.uk>
 #
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: Apache-2.0
 {pkgs, ...}: {
   # Minisforum MS-S1 MAX: AMD Ryzen AI Max+ 395 "Strix Halo", Radeon 8060S
   # iGPU (gfx1151). BIOS UMA carve-out reserves 48GB of unified RAM as VRAM.
