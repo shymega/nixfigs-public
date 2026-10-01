@@ -239,8 +239,8 @@ in {
       ];
     };
 
-    "/boot" = {
-      device = "/boot";
+    "/boot/efi" = {
+      device = "/boot/efi";
       fsType = "none";
       options = [
         "bind"

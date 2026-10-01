@@ -308,7 +308,7 @@
       };
     };
 
-    hardening = lib.optionalAttrs false {
+    hardening = {
       inheritParentConfig = true;
       configuration = {
         imports = [../../modules/nixos/hardening.nix];
