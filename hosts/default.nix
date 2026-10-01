@@ -169,45 +169,4 @@ in {
     remoteBuild = true;
     deployable = true;
   };
-
-  ### Experimental Device Ports ###
-  ## ClockworkPi uConsole (CM4) ##
-  # Received, Debian installed. Work ongoing to upstream DTB and driver patches. #
-  CLOCKWORK-UC-CM4 = mkHost rec {
-    type = "nixos";
-    address = "dial-in.rnet.rodriguez.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "aarch64-linux";
-    hostname = "CLOCKWORK-UC-CM4";
-    remoteBuild = true;
-    deployable = false;
-    monolithConfig = false;
-    hostRoles = ["minimal"];
-    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
-    extraModules = [
-      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
-      "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-    ];
-  };
-
-  ## End ClockworkPi uConsole (CM4) ##
-
-  ## ClockworkPi DevTerm (CM4) ##
-  CLOCKWORK-DT-CM4 = mkHost rec {
-    type = "nixos";
-    address = "dial-in.rnet.rodriguez.org.uk";
-    username = "dzrodriguez";
-    hostPlatform = "aarch64-linux";
-    hostname = "CLOCKWORK-DT-CM4";
-    hostRoles = ["minimal"];
-    remoteBuild = true;
-    deployable = false;
-    monolithConfig = false;
-    hardwareModules = [inputs.hardware.nixosModules.raspberry-pi-4];
-    extraModules = [
-      {environment.systemPackages = [inputs.agenix.packages.${hostPlatform}.default];}
-      "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-    ];
-  };
-  ## End ClockworkPi DevTerm (CM4) ##
 }
