@@ -127,7 +127,7 @@ in {
     extraModules = [
       {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
     ];
-    pubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBqOAfNq3lGPElJ0L6qAqQLDykRWsN9dE4sMZkD6YVKu";
+    pubkey = "";
     remoteBuild = true;
     deployable = true;
   };
