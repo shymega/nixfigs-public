@@ -207,63 +207,75 @@
     };
   };
 
-  specialisation.jovian = let
-    overlays = let
-      hyprnixOverlaySafe = _: prev: let
-        inherit (prev.stdenv.hostPlatform) system;
-      in
-        inputs.nixfigs-pkgs.inputs.hyprnix.packages.${system} or {};
-    in
-      with inputs.nixfigs-pkgs.inputs;
-        [
-          agenix.overlays.default
-          devenv.overlays.default
-          dzr-taskwarrior-recur.overlays.default
-          hyprnixOverlaySafe
-          nix-alien.overlays.default
-          nix-cachyos-kernel.overlays.default
-          nix-doom-emacs-unstraightened.overlays.default
-          nur.overlays.default
-          shypkgs-public.overlays.default
-          waybar.overlays.default
-        ]
-        ++ [inputs.nixfigs-pkgs.unstable-nixpkgs];
-  in
-    lib.optionalAttrs false {
-      inheritParentConfig = true;
-      configuration = {
-        nixpkgs.pkgs = lib.mkForce (import inputs.nixpkgs-unstable {
-          config = self.nixpkgs-config;
-          inherit (pkgs.stdenv.hostPlatform) system;
-          inherit overlays;
-        });
-        imports = with inputs; [
-          jovian-nixos.nixosModules.default
-        ];
+  specialisation.jovian = lib.optionalAttrs false {
+    inheritParentConfig = true;
+    configuration = {
+      nixpkgs.pkgs = lib.mkForce (import inputs.nixpkgs-unstable {
+        inherit (pkgs.stdenv.hostPlatform) system;
+        config = self.nixpkgs-config;
+        overlays =
+          builtins.attrValues self.overlays
+          ++ [
+            inputs.jovian-nixos.overlays.default
+            # `encfs`, `leafnode`, and `pinentry-gtk2` were removed from
+            # nixpkgs-unstable (deprecated fuse2 / EOL PCRE / deprecated GTK2
+            # dependencies); reuse the working derivations from the parent
+            # stable pkgs.
+            (_: _: {inherit (pkgs) encfs leafnode pinentry-gtk2;})
+            # `gcr` (unversioned) was split into ABI-versioned `gcr_*` outputs;
+            # nixos/modules/programs/nm-applet.nix still references the old name.
+            (final: prev: {gcr = prev.gcr_3;})
+            # `lib.importService` is declared in nixpkgs-unstable's `lib/default.nix`
+            # but doesn't reach `lib/services/lib.nix`'s `configure`, breaking every
+            # NixOS system built against it (upstream bug, reproduces on current
+            # nixpkgs-unstable HEAD too). Reimplement it the same way stable does.
+            (final: prev: {
+              lib = prev.lib // {
+                importService = prev.lib.modules.importApply (prev.path + "/lib/services/service.nix");
+              };
+            })
+          ];
+      });
+      imports = with inputs; [
+        jovian-nixos.nixosModules.default
+      ];
 
-        jovian = {
-          steam = {
-            enable = true;
-            autoStart = true;
-            desktopSession = "hyprland";
-            user = "dzrodriguez";
-          };
+      # `hostPlatform.linux-kernel` was removed in nixpkgs 26.11, but the
+      # (26.05-era) `system.boot.loader.kernelFile` default still reads it.
+      # x86_64 always uses "bzImage"; set it directly to skip that lookup.
+      system.boot.loader.kernelFile = lib.mkForce "bzImage";
 
-          steamos = {
-            useSteamOSConfig = true;
-          };
+      home-manager.users.dzrodriguez = {
+        # `services-modular` re-imports nixpkgs-unstable's `lib/services/lib.nix`
+        # directly with its own `lib`, which doesn't carry the `importService`
+        # patch above; disable it too (unused here).
+        disabledModules = [(inputs.home-manager + "/modules/services-modular")];
+        # home-manager's manpage builds its options reference via its own
+        # independent module import (docs/default.nix), bypassing the
+        # disabledModules above and hitting the same broken `home.services`
+        # option type. Not needed here, so skip building it.
+        manual.manpages.enable = false;
+      };
 
-          decky-loader = {
-            enable = true;
-            user = "dzrodriguez";
-          };
+      jovian = {
+        steam = {
+          enable = true;
+          autoStart = true;
+          desktopSession = "hyprland";
+          user = "dzrodriguez";
         };
 
-        services.greetd.enable = lib.mkForce false;
-        programs.regreet.enable = lib.mkForce false;
-        programs.gamescope.enable = lib.mkForce false;
+        steamos = {
+          useSteamOSConfig = true;
+        };
+
+        decky-loader = {
+          enable = true;
+          user = "dzrodriguez";
+        };
       };
     };
+  };
 
   programs.hyprland = {
     enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland";

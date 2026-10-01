@@ -287,5 +287,9 @@
       inputs.flake-compat.follows = "flake-compat";
     };
     breezy-desktop.follows = "nixfigs-pkgs/breezy-desktop";
+    jovian-nixos = {
+      url = "github:Jovian-Experiments/Jovian-NixOS";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 }
