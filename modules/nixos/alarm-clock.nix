@@ -71,7 +71,7 @@ in
 
       volume = mkOption {
         type = types.ints.between 0 100;
-        default = 74;
+        default = 100;
         description = ''
           Volume, as a percentage, that the default sink is forced to (and
           unmuted at) before playback, so a sink left muted or turned down
