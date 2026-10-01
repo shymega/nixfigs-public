@@ -224,12 +224,12 @@
             (_: _: {inherit (pkgs) encfs leafnode pinentry-gtk2;})
             # `gcr` (unversioned) was split into ABI-versioned `gcr_*` outputs;
             # nixos/modules/programs/nm-applet.nix still references the old name.
-            (final: prev: {gcr = prev.gcr_3;})
+            (_final: prev: {gcr = prev.gcr_3;})
             # `lib.importService` is declared in nixpkgs-unstable's `lib/default.nix`
             # but doesn't reach `lib/services/lib.nix`'s `configure`, breaking every
             # NixOS system built against it (upstream bug, reproduces on current
             # nixpkgs-unstable HEAD too). Reimplement it the same way stable does.
-            (final: prev: {
+            (_final: prev: {
               lib =
                 prev.lib
                 // {
