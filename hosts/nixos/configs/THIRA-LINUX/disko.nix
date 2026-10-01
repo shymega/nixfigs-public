@@ -11,13 +11,16 @@
 {
   disko.devices = {
     disk = {
-      # 2TB NVMe (2280) -- OS storage, pool `ztank`.
+      # 2TB NVMe (2280) -- quad-boot: NixOS (primary, via Limine) + CachyOS +
+      # Bazzite + Windows 11 all share this disk, each in its own ESP/root
+      # pair. ~440G is left unpartitioned for future use.
       os = {
         type = "disk";
         device = "/dev/disk/by-id/REPLACE_ME_NVME_2280";
         content = {
           type = "gpt";
           partitions = {
+            # NixOS ESP (Limine bootloader)
             esp = {
               size = "2G";
               type = "EF00";
@@ -32,8 +35,10 @@
                 ];
               };
             };
+
+            # LUKS container for ZFS (NixOS root/nix/gnu/persist/var)
             luks = {
-              size = "100%";
+              size = "600G";
               type = "8309";
               label = "OS_CRYPTO";
               content = {
@@ -44,6 +49,72 @@
                   type = "zfs";
                   pool = "ztank";
                 };
+              };
+            };
+
+            # CachyOS ESP
+            esp_cachyos = {
+              size = "2G";
+              type = "EF00";
+              label = "ESP_CACHYOS";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+              };
+            };
+
+            # CachyOS root
+            root_cachyos = {
+              size = "350G";
+              type = "8300";
+              label = "CACHYOS_ROOT";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+              };
+            };
+
+            # Bazzite ESP
+            esp_bazzite = {
+              size = "2G";
+              type = "EF00";
+              label = "ESP_BAZZITE";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+              };
+            };
+
+            # Bazzite root
+            root_bazzite = {
+              size = "350G";
+              type = "8300";
+              label = "BAZZITE_ROOT";
+              content = {
+                type = "filesystem";
+                format = "btrfs";
+              };
+            };
+
+            # Windows ESP
+            esp_windows = {
+              size = "2G";
+              type = "EF00";
+              label = "ESP_WINDOWS";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+              };
+            };
+
+            # Windows C: drive
+            root_windows = {
+              size = "250G";
+              type = "0700";
+              label = "WINDOWS";
+              content = {
+                type = "filesystem";
+                format = "ntfs";
               };
             };
           };

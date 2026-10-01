@@ -14,11 +14,9 @@
     ../../../../modules/nixos/brightness-reset.nix
     ../../../../modules/nixos/restic-backup.nix
     ../../../../modules/nixos/window-managers.nix
-    nix-amd-ai.nixosModules.default
     nur-xddxdd.nixosModules.nix-cache-attic
     nur-xddxdd.nixosModules.qemu-user-static-binfmt
     nur-xddxdd.nixosModules.setupOverlay
-    ucodenix.nixosModules.default
   ];
 
   nixfigs.brightness-reset.enable = true;
@@ -33,17 +31,6 @@
       "/home/dzrodriguez/Multimedia"
       "/home/dzrodriguez/projects"
     ];
-  };
-
-  hardware.amd-npu = {
-    enable = true;
-    enableNPU = true;
-    enableFastFlowLM = true;
-    enableLemonade = true;
-    enableROCm = true;
-    enableVulkan = true;
-    enableImageGen = true;
-    lemonade.user = "dzrodriguez";
   };
 
   lantian.qemu-user-static-binfmt.enable = true;
@@ -126,22 +113,22 @@
     };
 
     kernelParams = let
-      # Let the ARC flex between the floor and the cap; pinning min to max prevents
-      # it shrinking when ROCm/NPU workloads and VMs need the memory.
-      # 64 GiB RAM - 16 GiB APU VRAM = 48 GiB usable; cap ARC at half.
-      zfs_arc_max = 24 * 1024 * 1024 * 1024;
-      zfs_arc_min = 4 * 1024 * 1024 * 1024;
+      # 32 GiB RAM total; the Meteor Lake iGPU shares system memory dynamically
+      # rather than a fixed carve-out, but VMs/AI workloads still need headroom
+      # over ARC. Cap ARC at a quarter of RAM, floor high enough it won't
+      # collapse to near-zero under memory pressure.
+      zfs_arc_max = 8 * 1024 * 1024 * 1024;
+      zfs_arc_min = 2 * 1024 * 1024 * 1024;
     in
       lib.mkAfter [
         "nohibernate"
         "zfs.zfs_arc_max=${toString zfs_arc_max}"
         "zfs.zfs_arc_min=${toString zfs_arc_min}"
-        "microcode.amd_sha_check=off"
         "iomem=relaxed"
-        "video=eDP-1:2880x1800,panel_orientation=normal"
+        "video=eDP-1:3000x2000"
       ];
     extraModprobeConfig = ''
-      options kvm_amd nested=1
+      options kvm_intel nested=1
       options kvm ignore_msrs=1 report_ignored_msrs=0
     '';
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
@@ -162,9 +149,6 @@
         enable = true;
         secureBoot.enable = true;
         maxGenerations = 3;
-        extraConfig = ''
-          interface_rotation: 180
-        '';
         additionalFiles = {
           "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
           "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.efi";
@@ -216,20 +200,13 @@
   };
 
   hardware = {
-    amdgpu.initrd.enable = true;
-    gpd.duo = {
-      audioEnhancement.enable = true;
-    };
     graphics = {
       enable = true;
       enable32Bit = true;
       extraPackages = with pkgs; [
-        # VA-API and VDPAU
-        libva-vdpau-driver
-
-        # AMD ROCm OpenCL runtime
-        rocmPackages.clr
-        rocmPackages.clr.icd
+        intel-media-driver
+        vpl-gpu-rt
+        intel-compute-runtime
       ];
     };
     i2c.enable = false;
@@ -258,7 +235,7 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["amdgpu"];
+      videoDrivers = ["modesetting"];
     };
     fstrim.enable = true;
     smartd = {
@@ -299,13 +276,11 @@
     enable = true;
     package = pkgs.steam.override {
       extraEnv = {
-        AMD_VULKAN_ICD = "RADV";
         GAMEMODERUN = "1";
         MANGOHUD = "1";
         MANGOHUD_CONFIG = "read_cfg,no_display";
         MESA_GLSL_CACHE_MAX_SIZE = "16G";
         MESA_SHADER_CACHE_MAX_SIZE = "16G";
-        PROTON_ADD_CONFIG = "fsr4rdna3";
         PROTON_LOCAL_SHADER_CACHE = "1";
         VKD3D_CONFIG = "dxr,dxr11";
         WINEDLLOVERRIDES = "dinput8,dxgi,dsound=n,b";
@@ -324,11 +299,4 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
   };
-
-  services.ucodenix = {
-    enable = true;
-    cpuModelId = "00B20F40";
-  };
-
-  hardware.gpd.ppt.enable = lib.mkForce false;
 }

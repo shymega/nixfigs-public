@@ -14,20 +14,20 @@
     "thunderbolt"
     "usbhid"
     "sdhci_pci"
-    "amdgpu"
+    "i915"
     "hid_apple"
   ];
   boot.initrd.kernelModules = [
-    "amdgpu"
+    "i915"
     "thunderbolt"
     "hid_apple"
   ];
   boot.kernelModules = [
-    "kvm-amd"
-    "amdgpu"
+    "kvm-intel"
+    "i915"
   ];
   boot.extraModulePackages = [];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
