@@ -44,7 +44,7 @@
 
   networking = {
     hostName = "THIRA-LINUX";
-    hostId = "aa1cf1f3";
+    hostId = "1393030b";
     usePredictableInterfaceNames = false;
   };
   zramSwap.enable = true;
