@@ -194,39 +194,35 @@
             type = "zfs_fs";
             options.canmount = "off";
           };
-          "crypt/nixos/linux" = {
+          "crypt/nixos/local" = {
             type = "zfs_fs";
             options.canmount = "off";
           };
-          "crypt/nixos/linux/local" = {
-            type = "zfs_fs";
-            options.canmount = "off";
-          };
-          "crypt/nixos/linux/local/root" = {
+          "crypt/nixos/local/root" = {
             type = "zfs_fs";
             mountpoint = "/";
             options.canmount = "on";
           };
-          "crypt/nixos/linux/local/nix-store" = {
+          "crypt/nixos/local/nix-store" = {
             type = "zfs_fs";
             mountpoint = "/nix";
             options.canmount = "on";
           };
-          "crypt/nixos/linux/local/guix-store" = {
+          "crypt/nixos/local/guix-store" = {
             type = "zfs_fs";
             mountpoint = "/gnu";
             options.canmount = "on";
           };
-          "crypt/nixos/linux/safe" = {
+          "crypt/nixos/safe" = {
             type = "zfs_fs";
             options.canmount = "off";
           };
-          "crypt/nixos/linux/safe/persist" = {
+          "crypt/nixos/safe/persist" = {
             type = "zfs_fs";
             mountpoint = "/persist";
             options.canmount = "on";
           };
-          "crypt/nixos/linux/safe/var-store" = {
+          "crypt/nixos/safe/var-store" = {
             type = "zfs_fs";
             mountpoint = "/var";
             options.canmount = "on";
