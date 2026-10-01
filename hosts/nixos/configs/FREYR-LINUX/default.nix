@@ -44,7 +44,11 @@ in {
 
   nixfigs.alarm-clock = {
     enable = true;
-    bedtime.enable = true;
+    onCalendar = "*-*-* 07:30:00";
+    bedtime = {
+      enable = true;
+      onCalendar = "*-*-* 01:00:00";
+    };
   };
 
   hardware.amd-npu = {
