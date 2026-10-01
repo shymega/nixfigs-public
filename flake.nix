@@ -161,10 +161,6 @@
       url = "github:NixOS/flake-registry";
       flake = false;
     };
-    auto-cpufreq = {
-      url = "github:AdnanHodzic/auto-cpufreq?ref=v3.1.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs.nixpkgs.follows = "nixpkgs";
