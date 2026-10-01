@@ -236,6 +236,12 @@
       enable = true;
       videoDrivers = ["modesetting"];
     };
+    ollama = {
+      enable = true;
+      package = pkgs.ollama-vulkan;
+      models = "/data/AI/LLMs/Ollama/models";
+      user = "ollamad-ai";
+    };
     fstrim.enable = true;
     smartd = {
       enable = true;
