@@ -174,14 +174,14 @@ in {
   # noexec prevents running untrusted binaries
   # nodev prevents fake devices being used for privilege escalation
   #
-  # "/home" and "/var" are already real, separately-mounted filesystems on
-  # every monolith host (see each host's disks.nix/hardware-configuration.nix),
-  # so only "options" is merged in here -- restating "device"/"fsType" would
-  # conflict with the real definition. The rest are self-binds (a directory
-  # mounted onto itself, `fsType = "none"`, matching disks.nix's own bind
-  # mounts e.g. "/home/dzrodriguez/Games") purely to layer extra mount
-  # options on, since they aren't separate filesystems on the ZFS-root hosts
-  # here.
+  # "/home", "/var" and "/boot/efi" are already real, separately-mounted
+  # filesystems on every monolith host (see each host's
+  # disks.nix/hardware-configuration.nix), so only "options" is merged in
+  # here -- restating "device"/"fsType" would conflict with the real
+  # definition. The rest are self-binds (a directory mounted onto itself,
+  # `fsType = "none"`, matching disks.nix's own bind mounts e.g.
+  # "/home/dzrodriguez/Games") purely to layer extra mount options on, since
+  # they aren't separate filesystems on the ZFS-root hosts here.
   fileSystems = {
     "/home".options = [
       "nosuid"
@@ -190,6 +190,12 @@ in {
     ];
 
     "/var".options = [
+      "nosuid"
+      "noexec"
+      "nodev"
+    ];
+
+    "/boot/efi".options = [
       "nosuid"
       "noexec"
       "nodev"
@@ -235,17 +241,6 @@ in {
       options = [
         "bind"
         "nosuid"
-        "nodev"
-      ];
-    };
-
-    "/boot/efi" = {
-      device = "/boot/efi";
-      fsType = "none";
-      options = [
-        "bind"
-        "nosuid"
-        "noexec"
         "nodev"
       ];
     };
