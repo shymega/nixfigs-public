@@ -150,7 +150,11 @@
         "ztank"
         "zdata"
       ];
-      package = config.boot.kernelPackages.zfs_cachyos;
+      # `or` fallback: the `lts`/`lts-sway` specialisations below swap
+      # `kernelPackages` to `linuxPackages_6_18`, which has no `zfs_cachyos`
+      # attribute -- fall back to the version-matched generic attribute so
+      # those specialisations still evaluate.
+      package = config.boot.kernelPackages.zfs_cachyos or config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute};
     };
 
     kernelParams = let
