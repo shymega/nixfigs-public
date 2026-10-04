@@ -9,7 +9,23 @@
   genPkgs = system: overlays:
     import inputs.nixpkgs {
       inherit system;
-      overlays = builtins.attrValues self.overlays ++ overlays;
+      overlays =
+        builtins.attrValues self.overlays
+        ++ overlays
+        ++ [
+          (_: prev: {
+            nix-output-monitor = prev.nix-output-monitor.overrideAttrs (_finalAttrs: prevAttrs: {
+              patches =
+                prevAttrs.patches or []
+                ++ [
+                  (prev.fetchpatch {
+                    url = "https://patch-diff.githubusercontent.com/raw/maralorn/nix-output-monitor/pull/321.patch";
+                    hash = "sha256-pMZaiQriff1AbtLKdE+MkefRokyhmdF4z8E6azT2dJ8=";
+                  })
+                ];
+            });
+          })
+        ];
       config = self.nixpkgs-config;
     };
   genConfiguration = hostname: {
