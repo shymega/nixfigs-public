@@ -150,11 +150,12 @@
         "ztank"
         "zdata"
       ];
-      # `or` fallback: the `lts`/`lts-sway` specialisations below swap
-      # `kernelPackages` to `linuxPackages_6_18`, which has no `zfs_cachyos`
-      # attribute -- fall back to the version-matched generic attribute so
-      # those specialisations still evaluate.
-      package = config.boot.kernelPackages.zfs_cachyos or config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute};
+      # Reference the CachyOS kernel's zfs module directly, rather than via
+      # `config.boot.kernelPackages.zfs_cachyos`: the `lts`/`lts-sway`
+      # specialisations below force `kernelPackages` to `linuxPackages_6_18`,
+      # which has no `zfs_cachyos` attribute, and reading through the
+      # (specialisation-overridden) option would crash evaluating those.
+      package = pkgs.cachyosKernels.linuxPackages-cachyos-latest.zfs_cachyos;
     };
 
     kernelParams = let
