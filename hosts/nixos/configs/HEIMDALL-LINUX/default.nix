@@ -150,11 +150,7 @@
         "ztank"
         "zdata"
       ];
-      # `or` fallback: the `lts`/`lts-sway` specialisations below swap
-      # `kernelPackages` to `linuxPackages_6_12`, which has no `zfs_cachyos`
-      # attribute -- fall back to the version-matched generic attribute so
-      # those specialisations still evaluate.
-      package = config.boot.kernelPackages.zfs_cachyos or config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute};
+      package = config.boot.kernelPackages.zfs_cachyos;
     };
 
     kernelParams = let
@@ -434,18 +430,16 @@
     lts = {
       inheritParentConfig = true;
       configuration = {
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
-        # amdxdna (the NPU kernel module) requires kernel >= 6.14; 6.12 LTS
-        # can't satisfy that, so drop the whole NPU/ROCm/FastFlowLM stack here.
-        hardware.amd-npu.enable = lib.mkForce false;
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+        boot.zfs.package = lib.mkForce config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute};
       };
     };
 
     lts-sway = {
       inheritParentConfig = true;
       configuration = {
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
-        hardware.amd-npu.enable = lib.mkForce false;
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+        boot.zfs.package = lib.mkForce config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute};
         nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
       };
     };
