@@ -435,6 +435,9 @@
       inheritParentConfig = true;
       configuration = {
         boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+        # amdxdna (the NPU kernel module) requires kernel >= 6.14; 6.12 LTS
+        # can't satisfy that, so drop the whole NPU/ROCm/FastFlowLM stack here.
+        hardware.amd-npu.enable = lib.mkForce false;
       };
     };
 
@@ -442,6 +445,7 @@
       inheritParentConfig = true;
       configuration = {
         boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+        hardware.amd-npu.enable = lib.mkForce false;
         nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
       };
     };
