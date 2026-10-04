@@ -359,6 +359,29 @@
 
   environment.systemPackages = with pkgs; [
     dmidecode
+    (writeShellScriptBin "heimdall-system-report" ''
+      set -euo pipefail
+      out="$HOME/heimdall-system-report.txt"
+      {
+        echo "=== HEIMDALL-LINUX system report ($(${lib.getExe' coreutils "date"} -u +%Y-%m-%dT%H:%M:%SZ)) ==="
+        echo
+        echo "--- Kernel ---"
+        ${lib.getExe' coreutils "uname"} -a
+        echo
+        echo "--- BIOS/EC ---"
+        sudo ${lib.getExe' dmidecode "dmidecode"} -s bios-vendor
+        sudo ${lib.getExe' dmidecode "dmidecode"} -s bios-version
+        sudo ${lib.getExe' dmidecode "dmidecode"} -s bios-release-date
+        echo
+        echo "--- System ---"
+        sudo ${lib.getExe' dmidecode "dmidecode"} -s system-product-name
+        sudo ${lib.getExe' dmidecode "dmidecode"} -s system-serial-number
+        echo
+        echo "--- amdgpu driver ---"
+        ${lib.getExe' kmod "modinfo"} amdgpu | grep -E "^version|^srcversion" || true
+      } >"$out"
+      echo "Wrote $out"
+    '')
   ];
 
   system.stateVersion = "26.05";
