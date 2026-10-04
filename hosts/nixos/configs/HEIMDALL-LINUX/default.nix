@@ -425,4 +425,21 @@
   # AI 9 HX 370's PM table -- writes can land at the wrong offset and corrupt
   # unrelated SMU state on this exact chip.
   hardware.gpd.ppt.enable = lib.mkForce false;
+
+  specialisation = {
+    lts = {
+      inheritParentConfig = true;
+      configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+      };
+    };
+
+    lts-sway = {
+      inheritParentConfig = true;
+      configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+        nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
+      };
+    };
+  };
 }
