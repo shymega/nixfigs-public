@@ -101,7 +101,7 @@
       };
     };
     zfs = {
-      package = config.boot.kernelPackages.zfs_cachyos;
+      package = pkgs.cachyosKernels.linuxPackages-cachyos-latest.zfs_cachyos;
       extraPools = [
         "ztank"
         "zdata"
@@ -321,21 +321,58 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
   };
-
-  specialisation = {
-    nvidia-offload = {
-      inheritParentConfig = true;
-      configuration = {
-        hardware.nvidia = {
-          prime = {
-            sync.enable = lib.mkForce false;
-            offload = {
-              enable = lib.mkForce true;
-              enableOffloadCmd = lib.mkForce true;
-            };
+  specialisation = let
+    nvidiaOffloadConfig = {
+      hardware.nvidia = {
+        prime = {
+          sync.enable = lib.mkForce false;
+          offload = {
+            enable = lib.mkForce true;
+            enableOffloadCmd = lib.mkForce true;
           };
         };
       };
+    };
+
+    ltsKernelConfig = {
+      boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+      # `pkgs.zfs` is the default `boot.zfs.package` value; the NixOS zfs
+      # module auto-selects the matching kernel module for whatever
+      # `kernelPackages` is active via `cfgZfs.modulePackage`. Do not point
+      # this at `config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute}`
+      # directly -- nixpkgs builds that attribute with `configFile = "kernel"`
+      # (kernel module only, no userspace tools, no `lib/udev`), which breaks
+      # activation: "failed to get symlink metadata for .../lib/udev".
+      boot.zfs.package = lib.mkForce pkgs.zfs;
+    };
+
+    swayConfig = {
+      nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
+    };
+  in {
+    nvidia-offload = {
+      inheritParentConfig = true;
+      configuration = nvidiaOffloadConfig;
+    };
+
+    lts = {
+      inheritParentConfig = true;
+      configuration = ltsKernelConfig;
+    };
+
+    lts-sway = {
+      inheritParentConfig = true;
+      configuration = ltsKernelConfig // swayConfig;
+    };
+
+    lts-nvidia-offload = {
+      inheritParentConfig = true;
+      configuration = ltsKernelConfig // nvidiaOffloadConfig;
+    };
+
+    lts-sway-nvidia-offload = {
+      inheritParentConfig = true;
+      configuration = ltsKernelConfig // swayConfig // nvidiaOffloadConfig;
     };
   };
 
