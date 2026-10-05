@@ -84,7 +84,7 @@ in {
         "ztank"
         "zdata"
       ];
-      package = config.boot.kernelPackages.zfs_cachyos;
+      package = pkgs.cachyosKernels.linuxPackages-cachyos-latest.zfs_cachyos;
       devNodes = "/dev/disk/by-uuid";
     };
     binfmt = {
@@ -348,4 +348,30 @@ in {
   };
 
   hardware.gpd.ppt.enable = lib.mkForce false;
+
+  specialisation = {
+    lts = {
+      inheritParentConfig = true;
+      configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+        # `pkgs.zfs` is the default `boot.zfs.package` value; the NixOS zfs
+        # module auto-selects the matching kernel module for whatever
+        # `kernelPackages` is active via `cfgZfs.modulePackage`. Do not point
+        # this at `config.boot.kernelPackages.${pkgs.zfs.kernelModuleAttribute}`
+        # directly -- nixpkgs builds that attribute with `configFile = "kernel"`
+        # (kernel module only, no userspace tools, no `lib/udev`), which breaks
+        # activation: "failed to get symlink metadata for .../lib/udev".
+        boot.zfs.package = lib.mkForce pkgs.zfs;
+      };
+    };
+
+    lts-sway = {
+      inheritParentConfig = true;
+      configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_18;
+        boot.zfs.package = lib.mkForce pkgs.zfs;
+        nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
+      };
+    };
+  };
 }
