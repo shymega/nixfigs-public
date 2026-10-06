@@ -137,9 +137,7 @@
       # attribute's existence without forcing it, so this stays safe to
       # evaluate under any `kernelPackages`, falling back to `pkgs.zfs` there.
       package =
-        if config.boot.kernelPackages ? zfs_cachyos
-        then config.boot.kernelPackages.zfs_cachyos
-        else pkgs.zfs;
+        config.boot.kernelPackages.zfs_cachyos or pkgs.zfs;
     };
 
     kernelParams = let
