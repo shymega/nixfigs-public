@@ -286,6 +286,6 @@
       url = "github:Jovian-Experiments/Jovian-NixOS";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3.23.0";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/=3.22.5";
   };
 }
