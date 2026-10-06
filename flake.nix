@@ -156,7 +156,6 @@
       url = "github:shymega/nixfigs-work-container";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     flake-registry = {
       url = "github:NixOS/flake-registry";
       flake = false;
