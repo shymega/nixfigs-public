@@ -269,14 +269,16 @@
         OLLAMA_CONTEXT_LENGTH = "32768";
       };
       loadModels = [
+        "codestral:22b"
+        "deepseek-r1:14b"
+        "devstral:24b"
+        "llama3.2:3b"
+        "magistral:24b"
+        "phi4-mini:3.8b"
         "qwen2.5-coder:14b"
         "qwen3-coder:30b"
-        "codestral:22b"
-        "devstral:24b"
-        "deepseek-r1:14b"
-        "magistral:24b"
-        "llama3.2:3b"
-        "phi4-mini:3.8b"
+        "tev1:0.8b"
+        "tev1:4b"
       ];
     };
     fstrim.enable = true;
