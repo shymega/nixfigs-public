@@ -260,7 +260,7 @@
     };
     ollama = {
       enable = true;
-      package = pkgs.ollama-cuda;
+      package = pkgs.unstable.ollama-cuda;
       host = "100.105.111.121";
       port = 11434;
       models = "/data/AI/LLMs/Ollama/models";
