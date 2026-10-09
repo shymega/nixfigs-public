@@ -167,6 +167,8 @@
 
         "amdgpu.dcdebugmask=0x10"
         "amdgpu.sg_display=0"
+
+        "pcie_aspm=off"
       ];
     extraModprobeConfig = ''
       options kvm_amd nested=1
