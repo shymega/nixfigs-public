@@ -248,7 +248,7 @@
       models = "/data/AI/LLMs/Ollama/models";
       user = "ollamad-ai";
     };
-    fstrim.enable = true;
+    fstrim.enable = false;
     smartd = {
       enable = true;
       autodetect = true;
