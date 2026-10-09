@@ -311,7 +311,7 @@
       enable = true;
       videoDrivers = ["amdgpu" "displaylink"];
     };
-    fstrim.enable = true;
+    fstrim.enable = false;
     smartd = {
       enable = true;
       autodetect = true;

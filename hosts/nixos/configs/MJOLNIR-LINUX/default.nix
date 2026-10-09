@@ -281,7 +281,7 @@
         "tev1:4b"
       ];
     };
-    fstrim.enable = true;
+    fstrim.enable = false;
     smartd = {
       enable = true;
       autodetect = true;
