@@ -219,10 +219,9 @@
 
   hardware.graphics = let
     hypr-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    inherit (config.nixfigs.graphical.windowManagers) selectedWindowManager;
+    inherit (config.programs.hyprland) enable;
   in
-    lib.mkIf (selectedWindowManager
-      == "hyprland") {
+    lib.mkIf enable {
       package = hypr-nixpkgs.mesa;
       package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
     };
