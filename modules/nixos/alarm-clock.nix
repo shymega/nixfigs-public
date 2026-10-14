@@ -175,6 +175,10 @@ in
             WakeSystem = true;
             AccuracySec = "1s";
             Unit = "alarm-clock.service";
+            # A missed alarm (powered off at onCalendar) must not fire the
+            # moment the timer is next started -- it should just wait for the
+            # next onCalendar occurrence.
+            Persistent = false;
           };
         };
       })
@@ -198,10 +202,11 @@ in
           wantedBy = ["timers.target"];
           timerConfig = {
             OnCalendar = cfg.bedtime.onCalendar;
-            # Emphatically not Persistent=: a bedtime missed while powered off
-            # must not fire on the next boot and suspend the machine underneath
-            # whoever just turned it on.
             Unit = "bedtime.service";
+            # Emphatically Persistent = false: a bedtime missed while powered
+            # off must not fire on the next boot and suspend the machine
+            # underneath whoever just turned it on.
+            Persistent = false;
           };
         };
       })
