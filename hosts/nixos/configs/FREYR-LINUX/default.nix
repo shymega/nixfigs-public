@@ -45,12 +45,13 @@ in {
   nixfigs.alarm-clock = {
     enable = true;
     onCalendar = "*-*-* 07:30:00";
-    forceSpeakers = true;
-    blockBluetooth = true;
-    inhibitPowerAndLid = true;
+    wakeOnly = true;
+    forceSpeakers = false;
+    blockBluetooth = false;
+    inhibitPowerAndLid = false;
     bedtime = {
       enable = true;
-      onCalendar = "*-*-* 01:00:00";
+      onCalendar = "*-*-* 01:30:00";
     };
   };
 
