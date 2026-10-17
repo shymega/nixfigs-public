@@ -152,7 +152,16 @@
         "zfs.zfs_arc_max=${toString zfs_arc_max}"
         "zfs.zfs_arc_min=${toString zfs_arc_min}"
         "microcode.amd_sha_check=off"
-        "video=eDP-1:2880x1800,panel_orientation=upside_down"
+
+        # nixos-hardware's gpd.duo module sets this same connector with an
+        # explicit "2880x1800" mode, which has no refresh/timing given --
+        # the DRM cmdline parser CVT-generates one, and amdgpu rejects it
+        # against the panel's EDID on every resume ("[drm] User-defined
+        # mode not supported: ..."). mkAfter places this after that
+        # module's kernelParams, so this connector-matching entry parses
+        # last and overrides it: same orientation fix (panel is physically
+        # mounted upside down), without the rejected forced mode.
+        "video=eDP-1:panel_orientation=upside_down"
 
         # Reserve pstore/ramoops backing memory in a genuine e820 gap
         # (0xc7e180000-0xc7f1bffff, ~16MiB, unclaimed by System RAM or any
