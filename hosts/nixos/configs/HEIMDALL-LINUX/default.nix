@@ -243,6 +243,18 @@
   };
 
   systemd = {
+    # Diagnostic for the blank-screen/power-cycle crashes: nothing was
+    # petting the SP5100 TCO hardware watchdog (RuntimeWatchdogUSec was 0),
+    # so a true kernel-level hang and an EC/firmware-initiated power cycle
+    # were indistinguishable -- both show up identically as a silent reset
+    # with an empty kernel ring buffer and an empty /sys/fs/pstore. Petting
+    # it every 30s (half the SP5100's 60s timeout) means a hang that reaches
+    # this far down will trip it instead. After the next crash, check
+    # `wdctl /dev/watchdog0`'s BOOT-STATUS column: CARDRESET set confirms a
+    # watchdog-triggered reset (kernel-level hang); still unset means the
+    # power cycle originates below the OS (EC/firmware), independent of this.
+    settings.Manager.RuntimeWatchdogSec = "30s";
+
     shutdownRamfs = {
       storePaths = ["${config.boot.zfs.package}/bin/zfs"];
       contents."/etc/systemd/system-shutdown/zfs-rollback" = {
