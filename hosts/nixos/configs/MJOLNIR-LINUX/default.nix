@@ -125,6 +125,12 @@
       "zfs.zfs_arc_max=${toString zfs_arc_max}"
       "zfs.zfs_arc_min=${toString zfs_arc_min}"
       "i915.enable_guc=3"
+      # Keeps nvidia-drm attached to a framebuffer console across
+      # suspend/resume. Without it, the PRIME-sync NVIDIA/Intel hybrid setup
+      # only re-signals the hotplug/connector-status event for one output
+      # (DP-2) on resume; the other stays dark until a VT switch forces a
+      # full connector re-probe.
+      "nvidia_drm.fbdev=1"
     ];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
 
