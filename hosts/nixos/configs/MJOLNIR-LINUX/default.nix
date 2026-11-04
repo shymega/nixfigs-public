@@ -214,7 +214,7 @@
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
       prime = {
-        sync.enable = true;
+        sync.enable = false;
         offload = {
           enable = false;
           enableOffloadCmd = false;
