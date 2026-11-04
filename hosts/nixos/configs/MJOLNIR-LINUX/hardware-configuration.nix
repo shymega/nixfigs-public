@@ -15,6 +15,7 @@
   boot.extraModprobeConfig = ''
     option i915 fastboot=1
     option nvidia_drm modeset=1
+    options nouveau modeset=0
   '';
   boot.blacklistedKernelModules = ["nouveau" "nvidiafb"];
 
