@@ -207,7 +207,7 @@
   };
 
   programs.hyprland = {
-    enable = config.nixfigs.graphical.windowManagers.selectedWindowManager == "hyprland";
+    enable = true;
     # hyprnixOverlaySafe (nixfigs-pkgs/overlays/default.nix) already sources
     # hyprland/xdg-desktop-portal-hyprland from hyprwm/Hyprland's own
     # self-consistent flake, with the aquamarine dpms-crtc-churn patch and
@@ -219,21 +219,12 @@
 
   hardware.graphics = let
     hypr-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    inherit (config.programs.hyprland) enable;
-  in
-    lib.mkIf enable {
-      package = hypr-nixpkgs.mesa;
-      package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
-    };
+  in {
+    package = hypr-nixpkgs.mesa;
+    package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
+  };
 
   specialisation = {
-    sway = {
-      inheritParentConfig = true;
-      configuration = {
-        nixfigs.graphical.windowManagers.selectedWindowManager = lib.mkForce "sway";
-      };
-    };
-
     hardening = {
       inheritParentConfig = true;
       configuration = {
