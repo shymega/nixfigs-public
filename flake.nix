@@ -56,18 +56,20 @@
     generators = import ./nix/generators.nix {inherit self;};
   };
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-shymega.url = "github:shymega/nixpkgs?ref=shymega/staging";
+    nixpkgs.follows = "nixfigs-pkgs/nixpkgs";
+    nixpkgs-unstable.follows = "nixfigs-pkgs/nixpkgs-unstable";
+    nixpkgs-shymega.follows = "nixfigs-pkgs/nixpkgs-shymega";
     nixfigs-secrets = {
       url = "github:shymega/nixfigs-secrets";
       inputs.agenix.follows = "agenix";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-networks = {
       url = "github:shymega/nixfigs-networks";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-homes = {
@@ -99,9 +101,6 @@
       inputs.nix-alien.follows = "nix-alien";
       inputs.nix-doom-emacs-unstraightened.follows = "nix-doom-emacs-unstraightened";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-shymega.follows = "nixpkgs-shymega";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
       inputs.shypkgs-public.follows = "shypkgs-public";
     };
     nixfigs-helpers = {
@@ -130,16 +129,19 @@
     nixfigs-virtual-private = {
       url = "github:shymega/nixfigs-virtual-private";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-virtual = {
       url = "github:shymega/nixfigs-virtual";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-roles = {
       url = "github:shymega/nixfigs-roles";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixfigs-work-container = {
@@ -183,6 +185,7 @@
     nix-alien = {
       url = "github:thiagokokada/nix-alien";
       inputs.flake-compat.follows = "flake-compat";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
@@ -212,7 +215,10 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    base16-schemes.url = "github:SenchoPens/base16.nix";
+    base16-schemes = {
+      url = "github:SenchoPens/base16.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-doom-emacs-unstraightened = {
       url = "github:marienz/nix-doom-emacs-unstraightened";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -228,6 +234,7 @@
     shypkgs-private = {
       url = "github:shymega/shypkgs-private";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     shypkgs-public = {
@@ -258,6 +265,7 @@
     nixfigs-devenvs = {
       url = "github:shymega/nixfigs-devenvs";
       inputs.nixfigs-helpers.follows = "nixfigs-helpers";
+      inputs.nixfigs-pkgs.follows = "nixfigs-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     win2k-plymouth = {
@@ -270,6 +278,7 @@
       url = "github:noamsto/nix-amd-ai";
 
       inputs.flake-compat.follows = "flake-compat";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     breezy-desktop.follows = "nixfigs-pkgs/breezy-desktop";
     jovian-nixos = {
@@ -277,6 +286,9 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    flox.url = "github:flox/flox/latest";
+    flox = {
+      url = "github:flox/flox/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
