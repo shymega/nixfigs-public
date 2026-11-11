@@ -27,14 +27,16 @@
   }: let
     libx = inputs.nixfigs-helpers.libx.${hostPlatform};
     inherit (inputs.nixpkgs) lib;
+    pkgs = genPkgs hostPlatform overlays;
   in
     darwin.lib.darwinSystem {
-      pkgs = genPkgs hostPlatform overlays;
-      modules = [(../hosts/darwin + "/${hostname}")];
+      modules = [
+        (../hosts/darwin + "/${hostname}")
+        {nixpkgs.pkgs = pkgs;}
+      ];
       specialArgs = {
         hostAddress = address;
         hostType = type;
-        pkgs = genPkgs hostPlatform overlays;
         inherit
           self
           inputs
