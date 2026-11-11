@@ -286,9 +286,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    flox = {
-      url = "github:flox/flox/latest";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flox.follows = "nixfigs-pkgs/flox";
   };
 }
