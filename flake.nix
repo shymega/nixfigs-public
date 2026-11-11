@@ -276,9 +276,7 @@
     };
     nix-amd-ai = {
       url = "github:noamsto/nix-amd-ai";
-
       inputs.flake-compat.follows = "flake-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     breezy-desktop.follows = "nixfigs-pkgs/breezy-desktop";
     jovian-nixos = {
