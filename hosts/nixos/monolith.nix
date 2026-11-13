@@ -229,7 +229,10 @@
       inheritParentConfig = true;
       configuration = {
         imports = [../../modules/nixos/hardening.nix];
+        nixfigs.meta.specialisation = "hardening";
       };
     };
   };
+
+  environment.etc."specialisation".text = config.nixfigs.meta.specialisation;
 }
