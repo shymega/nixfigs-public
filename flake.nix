@@ -159,7 +159,7 @@
       inputs.flake-compat.follows = "flake-compat";
     };
     devenv = {
-      url = "github:cachix/devenv?ref=latest";
+      url = "github:cachix/devenv?ref=v2.4.0";
       inputs.flake-compat.follows = "flake-compat";
       inputs.nixpkgs.follows = "nixpkgs";
     };
