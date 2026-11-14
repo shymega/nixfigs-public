@@ -233,6 +233,4 @@
       };
     };
   };
-
-  environment.etc."specialisation".text = config.nixfigs.meta.specialisation;
 }
