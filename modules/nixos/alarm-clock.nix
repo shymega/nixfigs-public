@@ -191,6 +191,10 @@ in
       (mkIf cfg.bedtime.enable {
         systemd.services.bedtime = {
           description = "Suspend the system at bedtime";
+          # Timer-triggered oneshot, not part of any boot target: without
+          # this, nixos-rebuild switch re-runs it (suspending the machine
+          # mid-switch) any time its unit definition changes.
+          restartIfChanged = false;
           serviceConfig = {
             Type = "oneshot";
             # No --ignore-inhibitors: a held sleep lock (a long build, a manual
