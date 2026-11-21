@@ -132,6 +132,29 @@ in {
     deployable = true;
   };
 
+  MIMIR-LINUX = mkHost rec {
+    type = "nixos";
+    address = "MIMIR-LINUX.rnet.rodriguez.org.uk";
+    hostname = "MIMIR-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "personal"
+    ];
+    hardwareModules = [
+      inputs.hardware.nixosModules.lenovo-thinkpad-x220
+      inputs.hardware.nixosModules.common-cpu-intel
+      inputs.hardware.nixosModules.common-gpu-intel
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc-laptop
+      inputs.hardware.nixosModules.common-pc
+    ];
+    pubkey = "";
+    embedHm = true;
+    remoteBuild = true;
+    deployable = true;
+  };
+
   HEIMDALL-LINUX = mkHost rec {
     type = "nixos";
     address = "HEIMDALL-LINUX.rnet.rodriguez.org.uk";
