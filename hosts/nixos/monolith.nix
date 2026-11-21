@@ -217,13 +217,6 @@
     xwayland.enable = true; # Xwayland can be disabled.
   };
 
-  hardware.graphics = let
-    hypr-nixpkgs = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  in {
-    package = hypr-nixpkgs.mesa;
-    package32 = hypr-nixpkgs.pkgsi686Linux.mesa;
-  };
-
   specialisation = {
     hardening = {
       inheritParentConfig = true;
