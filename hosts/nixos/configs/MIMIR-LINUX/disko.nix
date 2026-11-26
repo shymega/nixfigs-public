@@ -9,12 +9,10 @@
 # Replace the `REPLACE_ME_*` by-id paths below with the real
 # `/dev/disk/by-id/...` identifiers (`ls -l /dev/disk/by-id/`) before running.
 #
-# This host (a Lenovo ThinkPad X220T) runs Libreboot, which provides no UEFI
-# -- unlike every other host in this repo, which boots via Limine in EFI
-# mode. Both disks below therefore use a legacy-BIOS-compatible GPT layout
-# (a reserved `EF02` gap, same convention GRUB uses, kept here for Limine's
-# BIOS install) plus a real `/boot` filesystem, since Limine's BIOS loader
-# can't read the ZFS pool directly to find the kernel/initrd.
+# This host (a Lenovo ThinkPad X220T) runs a coreboot+EDK II (TianoCore)
+# UEFI build, giving it real UEFI firmware -- unlike the original Libreboot
+# revision of this config, it now boots the same way every other host in
+# this repo does: Limine in EFI mode against a standard ESP.
 {
   disko.devices = {
     disk = {
@@ -26,25 +24,14 @@
         content = {
           type = "gpt";
           partitions = {
-            # Reserved legacy-BIOS compatibility gap for Limine's bootstrap
-            # code (same role as GRUB's "bios_grub" partition).
-            bios_boot = {
-              size = "1M";
-              type = "EF02";
-              attributes = [0]; # legacy BIOS bootable flag
-            };
-
-            # Real filesystem Limine's BIOS loader can read to find the
-            # kernel/initrd/limine.cfg -- the ZFS pool below isn't natively
-            # readable by Limine at this stage.
-            boot = {
-              size = "1G";
-              type = "8300";
-              label = "BOOT";
+            esp = {
+              size = "2G";
+              type = "EF00";
+              label = "ESP";
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot";
+                mountpoint = "/boot/efi";
                 mountOptions = [
                   "fmask=0022"
                   "dmask=0022"

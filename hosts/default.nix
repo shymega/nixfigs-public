@@ -149,6 +149,9 @@ in {
       inputs.hardware.nixosModules.common-pc-laptop
       inputs.hardware.nixosModules.common-pc
     ];
+    extraModules = [
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
     pubkey = "";
     embedHm = true;
     remoteBuild = true;
