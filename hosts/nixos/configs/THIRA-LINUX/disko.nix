@@ -2,25 +2,26 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Declarative reference for THIRA-LINUX's disk layout. Not wired into
-# `imports`; run manually before install with:
+# Declarative reference for THIRA-LINUX's disk layout (TP Art X210Ai,
+# Core Ultra 9 285H). Not wired into `imports`; run manually before install
+# with:
 #   nix run github:nix-community/disko -- --mode disko ./disko.nix
 #
 # Replace the `REPLACE_ME_*` by-id paths below with the real
 # `/dev/disk/by-id/...` identifiers (`ls -l /dev/disk/by-id/`) before running.
+#
+# The X210Ai's M.2 2242 slot is left empty -- only the 2.5" SATA bay and the
+# M.2 2280 NVMe slot are used below.
 {
   disko.devices = {
     disk = {
-      # 2TB NVMe (2280) -- quad-boot: NixOS (primary, via Limine) + CachyOS +
-      # Bazzite + Windows 11 all share this disk, each in its own ESP/root
-      # pair. ~440G is left unpartitioned for future use.
-      os = {
+      # 2TB 2.5" SATA SSD -- OS pool `ztank`.
+      os_sata = {
         type = "disk";
-        device = "/dev/disk/by-id/REPLACE_ME_NVME_2280";
+        device = "/dev/disk/by-id/REPLACE_ME_SATA_SSD_2TB";
         content = {
           type = "gpt";
           partitions = {
-            # NixOS ESP (Limine bootloader)
             esp = {
               size = "2G";
               type = "EF00";
@@ -38,7 +39,7 @@
 
             # LUKS container for ZFS (NixOS root/nix/gnu/persist/var)
             luks = {
-              size = "600G";
+              size = "100%";
               type = "8309";
               label = "OS_CRYPTO";
               content = {
@@ -51,115 +52,24 @@
                 };
               };
             };
-
-            # CachyOS ESP
-            esp_cachyos = {
-              size = "2G";
-              type = "EF00";
-              label = "ESP_CACHYOS";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-              };
-            };
-
-            # CachyOS root
-            root_cachyos = {
-              size = "350G";
-              type = "8300";
-              label = "CACHYOS_ROOT";
-              content = {
-                type = "filesystem";
-                format = "ext4";
-              };
-            };
-
-            # Bazzite ESP
-            esp_bazzite = {
-              size = "2G";
-              type = "EF00";
-              label = "ESP_BAZZITE";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-              };
-            };
-
-            # Bazzite root
-            root_bazzite = {
-              size = "350G";
-              type = "8300";
-              label = "BAZZITE_ROOT";
-              content = {
-                type = "filesystem";
-                format = "btrfs";
-              };
-            };
-
-            # Windows ESP
-            esp_windows = {
-              size = "2G";
-              type = "EF00";
-              label = "ESP_WINDOWS";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-              };
-            };
-
-            # Windows C: drive
-            root_windows = {
-              size = "250G";
-              type = "0700";
-              label = "WINDOWS";
-              content = {
-                type = "filesystem";
-                format = "ntfs";
-              };
-            };
           };
         };
       };
 
-      # 2TB 2.5" SATA SSD -- half of the data pool, pool `zdata` (striped).
-      data_sata = {
-        type = "disk";
-        device = "/dev/disk/by-id/REPLACE_ME_SATA_SSD";
-        content = {
-          type = "gpt";
-          partitions = {
-            luks = {
-              size = "100%";
-              type = "8309";
-              label = "DATA_SATA";
-              content = {
-                type = "luks";
-                name = "DATA_SATA";
-                settings.allowDiscards = true;
-                content = {
-                  type = "zfs";
-                  pool = "zdata";
-                };
-              };
-            };
-          };
-        };
-      };
-
-      # 2TB NVMe (2242) -- other half of the data pool, pool `zdata` (striped).
+      # 4TB NVMe (2280) -- data pool `zdata`, single disk.
       data_nvme = {
         type = "disk";
-        device = "/dev/disk/by-id/REPLACE_ME_NVME_2242";
+        device = "/dev/disk/by-id/REPLACE_ME_NVME_2280_4TB";
         content = {
           type = "gpt";
           partitions = {
             luks = {
               size = "100%";
               type = "8309";
-              label = "DATA_NVME";
+              label = "DATA";
               content = {
                 type = "luks";
-                name = "DATA_NVME";
+                name = "DATA";
                 settings.allowDiscards = true;
                 content = {
                   type = "zfs";
@@ -239,9 +149,7 @@
         };
       };
 
-      # Two-disk data pool. No `mode` set, so disko stripes the member
-      # vdevs (SATA SSD + NVMe 2242) for combined ~4TB capacity -- there is
-      # no redundancy here, by choice; a single-disk failure loses the pool.
+      # Single-disk data pool (the 4TB NVMe).
       zdata = {
         type = "zpool";
         rootFsOptions = {

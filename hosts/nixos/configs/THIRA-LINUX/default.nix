@@ -76,15 +76,8 @@
             preLVM = true;
             allowDiscards = true;
           };
-          # `zdata` is striped across these two disks (SATA SSD + NVMe
-          # 2242); both must unlock for the pool to assemble.
-          DATA_SATA = {
-            device = "/dev/disk/by-label/DATA_SATA";
-            preLVM = true;
-            allowDiscards = true;
-          };
-          DATA_NVME = {
-            device = "/dev/disk/by-label/DATA_NVME";
+          DATA = {
+            device = "/dev/disk/by-label/DATA";
             preLVM = true;
             allowDiscards = true;
           };
@@ -119,11 +112,13 @@
     };
 
     kernelParams = let
-      # 32 GiB RAM - 12 GiB iGPU VRAM carve-out = 20 GiB usable; cap ARC at
-      # half of that, floor high enough it won't collapse to near-zero
-      # under memory pressure from VMs/AI workloads.
-      zfs_arc_max = 10 * 1024 * 1024 * 1024;
-      zfs_arc_min = 2 * 1024 * 1024 * 1024;
+      # 96 GiB RAM - 16 GiB assumed iGPU VRAM carve-out (Arrow Lake H's Xe2
+      # UMA allocation isn't confirmed yet -- re-check against the real BIOS
+      # setting post-install) = 80 GiB usable; cap ARC at half of that,
+      # floor high enough it won't collapse to near-zero under memory
+      # pressure from VMs/AI workloads.
+      zfs_arc_max = 40 * 1024 * 1024 * 1024;
+      zfs_arc_min = 8 * 1024 * 1024 * 1024;
     in
       lib.mkAfter [
         "nohibernate"
@@ -219,6 +214,15 @@
       enable = false;
     };
   };
+
+  # Intel AI Boost NPU (Core Ultra 9 285H) -- first Intel NPU setup in this
+  # repo, unlike the AMD `hardware.amd-npu` hosts. Verify /dev/accel0
+  # permissions and driver functionality once installed.
+  environment.systemPackages = with pkgs; [
+    intel-npu-driver
+    level-zero
+    openvino
+  ];
 
   services = {
     fwupd.enable = true;
