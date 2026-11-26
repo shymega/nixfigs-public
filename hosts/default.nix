@@ -158,6 +158,32 @@ in {
     deployable = true;
   };
 
+  THIRA-LINUX = mkHost rec {
+    type = "nixos";
+    address = "THIRA-LINUX.rnet.rodriguez.org.uk";
+    hostname = "THIRA-LINUX";
+    hostPlatform = "x86_64-linux";
+    hostRoles = [
+      "workstation"
+      "gaming"
+      "personal"
+    ];
+    hardwareModules = [
+      inputs.hardware.nixosModules.common-cpu-intel
+      inputs.hardware.nixosModules.common-gpu-intel
+      inputs.hardware.nixosModules.common-pc-ssd
+      inputs.hardware.nixosModules.common-pc-laptop
+      inputs.hardware.nixosModules.common-pc
+    ];
+    extraModules = [
+      {environment.systemPackages = [inputs.nixpkgs.legacyPackages.${hostPlatform}.sbctl];}
+    ];
+    pubkey = "";
+    embedHm = true;
+    remoteBuild = true;
+    deployable = true;
+  };
+
   HEIMDALL-LINUX = mkHost rec {
     type = "nixos";
     address = "HEIMDALL-LINUX.rnet.rodriguez.org.uk";
