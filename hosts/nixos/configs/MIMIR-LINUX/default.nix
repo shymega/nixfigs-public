@@ -88,14 +88,18 @@
     };
 
     loader = {
-      # Libreboot provides no UEFI on the X220T -- Limine runs in BIOS mode
-      # against the whole mSATA disk instead of an ESP.
       limine = {
         enable = true;
-        biosSupport = true;
-        biosDevice = "/dev/disk/by-id/REPLACE_ME_MSATA";
-        efiSupport = false;
+        secureBoot.enable = true;
         maxGenerations = 3;
+        additionalFiles = {
+          "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+          "efi/memtest86/memtest86.efi" = "${pkgs.memtest86-efi}/BOOTX64.efi";
+        };
+      };
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
       };
       generationsDir.copyKernels = true;
       timeout = 6;
@@ -116,6 +120,13 @@
     enable = true;
     cpuFreqGovernor = "powersave";
   };
+
+  # Tooling for reflashing/updating Libreboot on the X220T's SPI flash chip.
+  environment.systemPackages = with pkgs; [
+    flashrom
+    coreboot-utils # cbfstool, ifdtool, nvramtool, intelmetool, cbmem, etc.
+    me_cleaner
+  ];
 
   hardware = {
     graphics = {
